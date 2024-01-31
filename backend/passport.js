@@ -1,5 +1,6 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
+const User = require("./src/api/models/user.model");
 
 passport.use(
   new GoogleStrategy(
@@ -9,7 +10,19 @@ passport.use(
       callbackURL: "/auth/google/callback",
       scope: ["profile", "email"],
     },
-    function (accessToken, refreshToken, profile, done) {
+    async (accessToken, refreshToken, profile, done) => {
+      const user = await User.findOne({ email: profile.emails[0].value });
+      if (!user) {
+        const newUser = await User.create({
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          email: profile.emails[0].value,
+          avatar: profile.photos[0].value,
+          googleId: profile.id,
+        });
+        return done(null, newUser);
+      }
+
       console.log(profile);
       return done(null, profile);
     }
