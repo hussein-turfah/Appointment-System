@@ -1,8 +1,12 @@
-const MyApp = () => {
+import { AnimatePresence } from "framer-motion";
+
+
+const MyApp = ({ Component, pageProps, domainName }) => {
   return (
-    <div>
-      <h1>My App</h1>
-      <p>My app is awesome!</p>
+    <div className="page">
+      <AnimatePresence mode="wait">
+        <Component key={"pageContent"} {...pageProps} domainName={domainName} />
+      </AnimatePresence>
     </div>
   );
 };
