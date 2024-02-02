@@ -1,10 +1,11 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const passport = require("passport");
 
 router.get("/login/success", (req, res) => {
   if (req.user) {
     res.json({
-      message: "Successffully logged in",
+      message: "Successfully logged in",
       user: req.user,
       error: false,
       cookies: req.cookies,
@@ -20,7 +21,7 @@ router.get("/login/success", (req, res) => {
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
     error: true,
-    message: "user failed to authenticate.",
+    message: "User failed to authenticate.",
   });
 });
 
