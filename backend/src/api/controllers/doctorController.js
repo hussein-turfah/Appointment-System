@@ -52,9 +52,6 @@ const getAllDoctors = async (req, res) => {
       });
     }
   };
-
-  const User = require("../models/user.model");
-  const httpStatus = require("http-status");
   
   /**
    * Delete doctor by id
