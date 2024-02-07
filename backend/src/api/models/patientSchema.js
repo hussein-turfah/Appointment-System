@@ -1,37 +1,41 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const patientSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
-    required: true
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
   },
   dob: {
     type: Date,
-    required: true
+    required: true,
   },
   gender: {
     type: String,
-    enum: ['male', 'female'],
-    required: true
+    enum: ["male", "female"],
+    required: true,
   },
   email: {
     type: String,
-    unique: true
+    unique: true,
   },
   phone: {
     type: String,
-    required: true
+    required: true,
   },
   allergies: {
     type: [String],
-    default: []
+    default: [],
   },
   address: {
-      type: String,
-      required: true
-  }
+    type: String,
+    required: true,
+  },
 });
 
-const Patient = mongoose.model('Patient', patientSchema);
+const Patient = mongoose.model("Patient", patientSchema);
 
 module.exports = Patient;
