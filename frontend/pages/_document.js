@@ -20,7 +20,6 @@ class MyDocument extends Document {
           <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="preconnect" href="https://snap.licdn.com" />
           <link rel="preconnect" href="https://static.doubleclick.net" />
-          <link rel="preconnect" href="https://connect.facebook.net" />
         </Head>
         <body>
           <Main />
