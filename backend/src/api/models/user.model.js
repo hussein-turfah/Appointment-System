@@ -1,63 +1,65 @@
-const mongoose = require('mongoose');
-const httpStatus = require('http-status');
+const mongoose = require("mongoose");
+const httpStatus = require("http-status");
 
-const roles = ['user', 'admin'];
-const types = ['patient', 'doctor', 'secretary'];
+const roles = ["user", "admin"];
+const types = ["patient", "doctor", "secretary"];
 
 /**
  * User Schema
  * @private
  */
-const userSchema = new mongoose.Schema({
-  role: {
-    type: String,
-    enum: roles,
-    default: 'user',
+const userSchema = new mongoose.Schema(
+  {
+    role: {
+      type: String,
+      enum: roles,
+      default: "user",
+    },
+    type: {
+      type: String,
+      enum: types,
+      default: "patient",
+    },
+    firstName: {
+      type: String,
+      maxlength: 128,
+      index: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      maxlength: 128,
+      index: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      maxlength: 128,
+      index: true,
+      trim: true,
+      lowercase: true,
+      unique: true,
+      required: true,
+    },
+    password: {
+      type: String,
+      // required: true,
+      minlength: 6,
+      maxlength: 128,
+    },
+    avatar: {
+      type: String,
+      trim: true,
+    },
+    googleId: {
+      type: String,
+      trim: true,
+    },
   },
-  type: {
-    type: String,
-    enum: types,
-    default: 'patient',
-  },
-  firstName: {
-    type: String,
-    maxlength: 128,
-    index: true,
-    trim: true,
-  },
-  lastName: {
-    type: String,
-    maxlength: 128,
-    index: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    maxlength: 128,
-    index: true,
-    trim: true,
-    lowercase: true,
-    unique: true,
-    required: true,
-  },
-  password: {
-    type: String,
-    // required: true,
-    minlength: 6,
-    maxlength: 128,
-  },
-  avatar: {
-    type: String,
-    trim: true,
-  },
-  googleId: {
-    type: String,
-    trim: true,
-  },
-
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 /**
  * Methods
@@ -65,7 +67,15 @@ const userSchema = new mongoose.Schema({
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'firstName', 'lastName', 'email', 'createdAt', 'role', 'type'];
+    const fields = [
+      "id",
+      "firstName",
+      "lastName",
+      "email",
+      "createdAt",
+      "role",
+      "type",
+    ];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -100,7 +110,7 @@ userSchema.statics = {
       }
 
       throw new Error({
-        message: 'User does not exist',
+        message: "User does not exist",
         status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
@@ -117,7 +127,7 @@ userSchema.statics = {
   async findAndGenerateToken(options) {
     try {
       const { email, password, refreshObject } = options;
-      if (!email) throw new Error('An email is required to generate a token');
+      if (!email) throw new Error("An email is required to generate a token");
 
       const user = await this.findOne({ email }).exec();
       const err = {
@@ -125,14 +135,14 @@ userSchema.statics = {
         isPublic: true,
       };
       if (password) {
-        if (user && await user.passwordMatches(password)) {
+        if (user && (await user.passwordMatches(password))) {
           return { user, accessToken: user.token() };
         }
-        err.message = 'Incorrect email or password';
+        err.message = "Incorrect email or password";
       } else if (refreshObject && refreshObject.userEmail === email) {
         return { user, accessToken: user.token() };
       } else {
-        err.message = 'Incorrect email or refreshToken';
+        err.message = "Incorrect email or refreshToken";
       }
       throw err;
     } catch (error) {
@@ -144,5 +154,5 @@ userSchema.statics = {
 /**
  * @typedef User
  */
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 module.exports = User;

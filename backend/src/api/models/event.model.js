@@ -42,7 +42,7 @@ const eventSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-);
+)
 
 /**
  * @typedef Event
