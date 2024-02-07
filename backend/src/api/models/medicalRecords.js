@@ -8,34 +8,30 @@ const medicalRecordSchema = new mongoose.Schema({
   },
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Doctor',
+    ref: 'User',
+    required: true
+  },
+  appointment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Appointment',
     required: true
   },
   date: {
     type: Date,
-    required: true
+    default: Date.now
   },
   diagnosis: {
-    type: String,
-    required: true,
-    trim: true
+    type: String
   },
-  treatmentPlan: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  notes: {
-    type: String,
-    trim: true
-  },
-  attachments: [{
-    type: String, // object with details like filename, URL, etc.
-    description: {
-      type: String,
-      trim: true
+  notes: String,
+  attachments: [
+    {
+      fileName: String,
+      filePath: String
     }
-  }],
+  ]
 });
 
-module.exports = mongoose.model('MedicalRecord', medicalRecordSchema);
+const MedicalRecord = mongoose.model('MedicalRecord', medicalRecordSchema);
+
+module.exports = MedicalRecord;

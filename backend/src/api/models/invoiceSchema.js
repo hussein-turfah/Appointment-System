@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
 const invoiceSchema = new mongoose.Schema({
-  patient: {
-    type: String,
+  doctor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
-  doctor: {
-    type: String,
+  patient: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Patient',
     required: true
   },
   date: {

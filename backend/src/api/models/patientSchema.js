@@ -3,50 +3,35 @@ const mongoose = require('mongoose');
 const patientSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
-  phoneNumber: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    validate: {
-      validator: (phone) => /^\d+$/.test(phone),
-      message: 'Invalid phone number format'
-    }
-  },
-  dateOfBirth: {
+  dob: {
     type: Date,
     required: true
   },
-  address: {
-      type: String,
-      required: true,
-      trim: true
-  },
-
-  allergies: {
-    type: [String],
-    trim: true
-  },
-
   gender: {
     type: String,
-    enum: ['Male', 'Female']
+    enum: ['male', 'female'],
+    required: true
   },
-  invoices: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Invoice'
-  }],
-  medicalRecords: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'MedicalRecord'
-  }],
-  prescriptions: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Prescription'
-  }]
+  email: {
+    type: String,
+    unique: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  allergies: {
+    type: [String],
+    default: []
+  },
+  address: {
+      type: String,
+      required: true
+  }
 });
 
-module.exports = mongoose.model('Patient', patientSchema);
+const Patient = mongoose.model('Patient', patientSchema);
+
+module.exports = Patient;
