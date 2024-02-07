@@ -20,7 +20,6 @@ const patientSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
   },
   phone: {
     type: String,
@@ -35,7 +34,20 @@ const patientSchema = new mongoose.Schema({
     required: true,
   },
 });
-
+patientSchema.methods.transform = function() {
+  const { _id, firstName, lastName, dob, gender, email, phone, allergies, address } = this;
+  return {
+      id: _id,
+      firstName,
+      lastName,
+      dob,
+      gender,
+      email,
+      phone,
+      allergies,
+      address
+  };
+};
 const Patient = mongoose.model("Patient", patientSchema);
 
 module.exports = Patient;

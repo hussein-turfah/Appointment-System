@@ -11,11 +11,6 @@ const medicalRecordSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  appointment: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Appointment',
-    required: true
-  },
   date: {
     type: Date,
     default: Date.now
@@ -23,13 +18,24 @@ const medicalRecordSchema = new mongoose.Schema({
   diagnosis: {
     type: String
   },
-  notes: String,
-  attachments: [
-    {
-      fileName: String,
-      filePath: String
+  attachments: [{
+    fileName: {
+      type: String,
+      required: true
+    },
+    filePath: {
+      type: String,
+      required: true
+    },
+    uploadDate: {
+      type: Date,
+      default: Date.now
     }
-  ]
+  }],
+  notes: {
+    type: String,
+    required: true
+  }
 });
 
 const MedicalRecord = mongoose.model('MedicalRecord', medicalRecordSchema);

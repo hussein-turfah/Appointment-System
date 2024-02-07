@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 const httpStatus = require("http-status");
 
 const roles = ["user", "admin"];
-const types = ["patient", "doctor", "secretary"];
+const types = ["doctor", "secretary"];
 
 /**
  * User Schema
@@ -41,6 +42,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    phone: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
@@ -56,11 +61,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+  
   },
   {
     timestamps: true,
   }
 );
+
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  // Hashing user password
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
 
 /**
  * Methods
