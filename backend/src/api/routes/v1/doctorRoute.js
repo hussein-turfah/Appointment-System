@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {createDoctorValidator}=require('../../utils/validators/doctorValidator');
 const {
   addDoctor,
   deleteDoctorById,
@@ -9,19 +10,19 @@ const {
 } = require('../../controllers/doctorController');
 
 // Route to add a new doctor
-router.post('/doctors', addDoctor);
+router.post('/', createDoctorValidator ,addDoctor);
 
 // Route to get all doctors
-router.get('/doctors', getAllDoctors);
+router.get('/', getAllDoctors);
 
 // Route to get a specific doctor by ID
-router.get('/doctors/:id', getDoctorById);
+router.get('/:id', getDoctorById);
 
 // Route to update a specific doctor by ID
-router.put('/doctors/:id', updateDoctorById);
+router.put('/:id', updateDoctorById);
 
 // Route to delete a specific doctor by ID
-router.delete('/doctors/:id', deleteDoctorById);
+router.delete('/:id', deleteDoctorById);
 
 module.exports = router;
 
