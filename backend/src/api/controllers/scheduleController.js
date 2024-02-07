@@ -1,7 +1,9 @@
 const DoctorSchedule = require('../models/scheduleSchema'); 
+
 // CREATE 
 async function createDoctorSchedule(req, res) {
-  const { doctorId, weekday, startTime, endTime } = req.body;
+  const { doctorId } = req.params;
+  const {weekday, startTime, endTime } = req.body;
   try {
     const newSchedule = await DoctorSchedule.create({
       doctor: doctorId,
@@ -18,14 +20,16 @@ async function createDoctorSchedule(req, res) {
 
 // GET 
 async function getDoctorSchedules(req, res) {
-  try {
-    const schedules = await DoctorSchedule.find().populate('doctor');
-    res.json(schedules);
-  } catch (error) {
-    console.error("Error fetching doctor schedules:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    const { doctorId } = req.params; 
+    try {
+      const schedules = await DoctorSchedule.find({ doctor: doctorId });
+      res.json(schedules);
+    } catch (error) {
+      console.error("Error fetching doctor schedules:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-}
+  
 
 // UPDATE 
 async function updateDoctorSchedule(req, res) {
@@ -42,19 +46,19 @@ async function updateDoctorSchedule(req, res) {
 
 // DELETE 
 async function deleteDoctorSchedule(req, res) {
-  const { scheduleId } = req.params;
-  try {
-    await DoctorSchedule.findByIdAndDelete(scheduleId);
-    console.log("Doctor schedule deleted successfully.");
-    res.sendStatus(204);
-  } catch (error) {
-    console.error("Error deleting doctor schedule:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    const { doctorId, scheduleId } = req.params;
+    try {
+      await DoctorSchedule.findOneAndDelete({ _id: scheduleId, doctor: doctorId });
+      console.log("Doctor schedule deleted successfully.");
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error deleting doctor schedule:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-}
+  
 
 module.exports={
-  DoctorSchedule,
   createDoctorSchedule,
   deleteDoctorSchedule,
   getDoctorSchedules,
