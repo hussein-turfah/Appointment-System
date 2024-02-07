@@ -4,10 +4,12 @@ const cors = require("cors");
 const passport = require("passport");
 const passportSetup = require("../passport");
 const authRoute = require("./api/routes/v1/auth.route");
+const patientRoute = require("./api/routes/v1/patientRoute");
+const doctorRoute = require("./api/routes/v1/doctorRoute");
 const app = express();
 const session = require("express-session");
 const mongoose = require("./config/mongoose");
-
+app.use(express.json());
 
 app.use(
   session({
@@ -34,6 +36,8 @@ app.use(
 );
 
 app.use("/auth", authRoute);
+app.use("/patient", patientRoute);
+app.use("/doctor", doctorRoute);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
