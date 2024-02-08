@@ -1,53 +1,172 @@
 const mongoose = require("mongoose");
 
-const patientSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
+const patientSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    dob: {
+      type: Date,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female"],
+      required: true,
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    allergies: {
+      type: [String],
+      default: [],
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    doctors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    medicalRecords: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MedicalRecord",
+      },
+    ],
+    invoices: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Invoice",
+      },
+    ],
+    appointments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Appointment",
+      },
+    ],
+    prescriptions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Prescription",
+      },
+    ],
   },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  dob: {
-    type: Date,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: ["male", "female"],
-    required: true,
-  },
-  email: {
-    type: String,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  allergies: {
-    type: [String],
-    default: [],
-  },
-  address: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
+  }
+);
+
+// methods
+
+patientSchema.method({
+  transform() {
+    const transformed = {};
+    const fields = [
+      "id",
+      "firstName",
+      "lastName",
+      "dob",
+      "gender",
+      "email",
+      "phone",
+      "allergies",
+      "address",
+      "doctor",
+      "medicalRecords",
+      "invoices",
+      "appointments",
+      "prescriptions",
+      "createdAt",
+    ];
+
+    fields.forEach((field) => {
+      transformed[field] = this[field];
+    });
+
+    return transformed;
   },
 });
-patientSchema.methods.transform = function() {
-  const { _id, firstName, lastName, dob, gender, email, phone, allergies, address } = this;
-  return {
-      id: _id,
-      firstName,
-      lastName,
-      dob,
-      gender,
-      email,
-      phone,
-      allergies,
-      address
-  };
+
+// statics
+
+patientSchema.statics = {
+  async get(id) {
+    try {
+      let patient;
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        patient = await this.findById(id).exec();
+      }
+      if (patient) {
+        return patient;
+      }
+      throw new Error("Patient not found");
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /**
+   * List patients in descending order of 'createdAt' timestamp.
+   *
+   * @param {number} skip - Number of patients to be skipped.
+   * @param {number} limit - Limit number of patients to be returned.
+   * @returns {Promise<Patient[]>}
+   */
+  list({ skip = 0, limit = 50 } = {}) {
+    return this.find().sort({ createdAt: -1 }).skip(+skip).limit(+limit).exec();
+  },
+
+  /**
+   * Get patients by doctorId
+   */
+  async getByDoctorId(doctorId) {
+    try {
+      let patients;
+      if (mongoose.Types.ObjectId.isValid(doctorId)) {
+        patients = await this.find({ doctor: doctorId }).exec();
+      }
+      if (patients) {
+        return patients;
+      }
+      throw new Error("No such patient exists!");
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /**
+   * Get patients by patientId
+   */
+  async getByPatientId(patientId) {
+    try {
+      let patients;
+      if (mongoose.Types.ObjectId.isValid(patientId)) {
+        patients = await this.find({ patient: patientId }).exec();
+      }
+      if (patients) {
+        return patients;
+      }
+      throw new Error("No such patient exists!");
+    } catch (error) {
+      throw error;
+    }
+  },
 };
+
 const Patient = mongoose.model("Patient", patientSchema);
 
 module.exports = Patient;
