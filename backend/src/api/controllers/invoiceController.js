@@ -1,4 +1,4 @@
-const Invoice = require('../models/invoiceSchema');
+const Invoice = require('../models/invoice.model');
 
 
 const createInvoice = async (req, res) => {
