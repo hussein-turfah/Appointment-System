@@ -25,9 +25,15 @@ const createMedicalRecord = async (req, res) => {
     try {
       const { patientId } = req.params;
       const { title, notes } = req.body;
-      const attachment = `/uploads/records/${req.file.filename}`;
       const { doctorId } = req.body;
-  
+
+      if (!notes && !req.file) {
+        return res.status(400).json({ message: 'Notes or attachment is required' });
+      }
+      let attachment = null;
+      if (req.file) {
+      attachment = `/uploads/records/${req.file.filename}`;}
+
       const medicalRecordData = {
         patient: patientId,
         doctor: doctorId,
@@ -47,29 +53,7 @@ const createMedicalRecord = async (req, res) => {
     }
   };
 
-  const createMedicalRecordForm = async (req, res) => {
-    try {
-      const { patientId } = req.params;
-      const { title, notes } = req.body;
-      const { doctorId } = req.body;
-  
-      const medicalRecordData = {
-        patient: patientId,
-        doctor: doctorId,
-        title: title,
-        notes: notes
-      };
-  
-      const newMedicalRecord = new MedicalRecord(medicalRecordData);
-      await newMedicalRecord.save();
-  
-      console.log('Medical record created successfully:', newMedicalRecord);
-      res.status(201).json(newMedicalRecord); 
-    } catch (error) {
-      console.error('Error creating medical record:', error);
-      res.status(500).json({ message: 'Server Error' }); 
-    }
-  };
+
   const updateMedicalRecord = async (req, res) => {
     try {
       const { medicalRecordId } = req.params;
@@ -162,4 +146,4 @@ const createMedicalRecord = async (req, res) => {
     }
   };
 
-module.exports = {createMedicalRecord,createMedicalRecordForm,uploadRecordAttach,getMedicalRecordByPatientId,updateMedicalRecord ,deleteMedicalRecord,getMedicalRecordById};
+module.exports = {createMedicalRecord,uploadRecordAttach,getMedicalRecordByPatientId,updateMedicalRecord ,deleteMedicalRecord,getMedicalRecordById}
