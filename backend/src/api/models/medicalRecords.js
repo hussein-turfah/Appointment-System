@@ -15,26 +15,16 @@ const medicalRecordSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  diagnosis: {
-    type: String
+  title: {
+    type: String,
+    required:true,
   },
-  attachments: [{
-    fileName: {
+  attachment: {
       type: String,
-      required: true
     },
-    filePath: {
-      type: String,
-      required: true
-    },
-    uploadDate: {
-      type: Date,
-      default: Date.now
-    }
-  }],
   notes: {
     type: String,
-    required: true
+
   }
 });
 

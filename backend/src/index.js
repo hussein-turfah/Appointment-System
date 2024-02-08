@@ -7,6 +7,7 @@ const authRoute = require("./api/routes/v1/auth.route");
 const patientRoute = require("./api/routes/v1/patientRoute");
 const doctorRoute = require("./api/routes/v1/doctorRoute");
 const ScheduleRoute = require("./api/routes/v1/scheduleRoute");
+const RecordRoute = require("./api/routes/v1/recordRoutes");
 const app = express();
 const session = require("express-session");
 const mongoose = require("./config/mongoose");
@@ -40,6 +41,7 @@ app.use("/auth", authRoute);
 app.use("/patient", patientRoute);
 app.use("/doctor", doctorRoute);
 app.use("/schedule", ScheduleRoute);
+app.use("/record", RecordRoute);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
