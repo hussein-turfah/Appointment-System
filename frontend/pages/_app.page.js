@@ -23,6 +23,7 @@ const ClinIQ = ({ Component, pageProps, domainName }) => {
           Component={Component}
           pageProps={pageProps}
           domainName={domainName}
+          
         />
       </Provider>
     </GoogleOAuthProvider>

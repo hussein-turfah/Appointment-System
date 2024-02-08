@@ -8,6 +8,8 @@ const patientRoute = require("./api/routes/v1/patientRoute");
 const doctorRoute = require("./api/routes/v1/doctorRoute");
 const ScheduleRoute = require("./api/routes/v1/scheduleRoute");
 const RecordRoute = require("./api/routes/v1/recordRoutes");
+const PrescriptionsRoute = require("./api/routes/v1/prescriptionRoutes");
+const InvoiceRoute = require("./api/routes/v1/invoiceRoutes")
 const app = express();
 const session = require("express-session");
 const mongoose = require("./config/mongoose");
@@ -27,7 +29,7 @@ app.use(
 mongoose.connect();
 
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 app.use(
   cors({
@@ -42,7 +44,8 @@ app.use("/patient", patientRoute);
 app.use("/doctor", doctorRoute);
 app.use("/schedule", ScheduleRoute);
 app.use("/record", RecordRoute);
-
+app.use("/prescription",PrescriptionsRoute)
+app.use("/invoices",InvoiceRoute);
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

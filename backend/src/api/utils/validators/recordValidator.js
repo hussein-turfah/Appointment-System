@@ -19,7 +19,7 @@ exports.createMedicalRecordValidator = [
   validatorMiddleware,
 ];
 
-// Validator middleware for updating a medical record
+
 exports.updateMedicalRecordValidator = [
   check('medicalRecordId')
     .isMongoId()

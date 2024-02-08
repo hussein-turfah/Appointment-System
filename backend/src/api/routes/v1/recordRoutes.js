@@ -4,8 +4,7 @@ const {createMedicalRecordValidator,deleteMedicalRecordValidator,getMedicalRecor
 const { createMedicalRecord, createMedicalRecordForm ,uploadRecordAttach, getMedicalRecordByPatientId, deleteMedicalRecord, updateMedicalRecord, getMedicalRecordById } = require('../../controllers/medicalRecord');
 
 // Route for creating a medical record
-router.post('/:patientId' ,uploadRecordAttach, createMedicalRecord);
-router.post('/:patientId', createMedicalRecordValidator , createMedicalRecordForm);
+router.post('/:patientId' ,createMedicalRecordValidator ,uploadRecordAttach, createMedicalRecord);
 
 
 // Route for updating a medical record
