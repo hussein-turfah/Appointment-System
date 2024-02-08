@@ -24,8 +24,9 @@ const medicalRecordSchema = new mongoose.Schema({
     },
   notes: {
     type: String,
-
   }
+}, {
+  timestamps: true
 });
 
 const MedicalRecord = mongoose.model('MedicalRecord', medicalRecordSchema);

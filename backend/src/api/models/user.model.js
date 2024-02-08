@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcryptjs");
 const httpStatus = require("http-status");
 
 const roles = ["user", "admin"];
@@ -57,20 +57,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    googleId: {
+    color: {
       type: String,
       trim: true,
+      unique: true,      
     },
-  
   },
   {
     timestamps: true,
   }
 );
 
-
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   // Hashing user password
   this.password = await bcrypt.hash(this.password, 12);
   next();
