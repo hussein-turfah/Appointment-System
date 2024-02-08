@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const httpStatus = require("http-status");
 
 const roles = ["user", "admin"];
