@@ -57,8 +57,6 @@ const createPrescription = async (req, res) => {
   const deletePrescription = async (req, res) => {
     try {
       const { prescriptionId } = req.params;
-  
-      // Assuming Prescription is your Mongoose model
       const deletedPrescription = await Prescription.findByIdAndDelete(prescriptionId);
   
       if (!deletedPrescription) {
@@ -76,8 +74,6 @@ const createPrescription = async (req, res) => {
   const getPrescriptionById = async (req, res) => {
     try {
       const { prescriptionId } = req.params;
-  
-      // Assuming Prescription is your Mongoose model
       const prescription = await Prescription.findById(prescriptionId);
   
       if (!prescription) {
@@ -93,8 +89,7 @@ const createPrescription = async (req, res) => {
   const getPrescriptionsByPatientId = async (req, res) => {
     try {
       const { patientId } = req.params;
-  
-      // Assuming Prescription is your Mongoose model
+
       const prescriptions = await Prescription.find({ patient: patientId });
   
       if (!prescriptions || prescriptions.length === 0) {
