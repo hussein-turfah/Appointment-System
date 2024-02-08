@@ -4,14 +4,14 @@ const Invoice = require('../models/invoiceSchema');
 const createInvoice = async (req, res) => {
     try {
       const {patientId} = req.params;
-      const { doctorId, amount, currency } = req.body;
+      const { doctorId, amount, currency,paymentStatus } = req.body;
   
       const newInvoice = new Invoice({
         patient: patientId,
         doctor: doctorId,
         amount: amount,
         currency: currency,
-        paymentStatus: 'Paid'
+        paymentStatus: paymentStatus
       });
   
       await newInvoice.save();
@@ -121,6 +121,33 @@ const updateInvoice = async (req, res) => {
     }
   };
 
+  const getInvoicesByDate = async (req, res) => {
+    try {
+      const { date } = req.params;
+      const targetDate = new Date(date);
+      const startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+      const endDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+  
+      // Find invoices for the target day
+      const invoices = await Invoice.find({
+        date: {
+          $gte: startDate,
+          $lt: endDate
+        }
+      });
+  
+      if (!invoices || invoices.length === 0) {
+        return res.status(404).json({ message: 'No invoices found for the specified day.' });
+      }
+  
+      res.status(200).json(invoices);
+    } catch (error) {
+      console.error('Error retrieving invoices for the day:', error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  };
+  
+  
   
   module.exports = {
     createInvoice,
@@ -129,5 +156,6 @@ const updateInvoice = async (req, res) => {
     getInvoicesByPatientId,
     getInvoiceById,
     getInvoicesByDoctorId,
+    getInvoicesByDate
 
   };

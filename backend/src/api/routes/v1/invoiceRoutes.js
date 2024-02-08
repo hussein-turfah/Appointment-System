@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// Import your model and functions
 const {
   createInvoice,
   updateInvoice,
@@ -9,16 +8,22 @@ const {
   getInvoicesByPatientId,
   getInvoiceById,
   getInvoicesByDoctorId,
-  getInvoicesForDay
-} = require('../../controllers/invoiceController'); 
+  getInvoicesByDate
+} = require('../../controllers/invoiceController');
 
-// Routes
-router.post('/:patientId', createInvoice);
-router.put('/:invoiceId', updateInvoice);
-router.delete('/:invoiceId', deleteInvoice);
+const {
+  createInvoiceValidator,
+  getInvoiceValidator,
+  updateInvoiceValidator,
+  deleteInvoiceValidator
+} = require('../../utils/validators/invoiceValidator');
+
+router.post('/:patientId', createInvoiceValidator, createInvoice);
+router.put('/:invoiceId', updateInvoiceValidator, updateInvoice);
+router.delete('/:invoiceId', deleteInvoiceValidator, deleteInvoice);
 router.get('/patient/:patientId', getInvoicesByPatientId);
-router.get('/:invoiceId', getInvoiceById);
+router.get('/:invoiceId', getInvoiceValidator, getInvoiceById);
 router.get('/doctor/:doctorId', getInvoicesByDoctorId);
-// router.get('/day', getInvoicesForDay);
+router.get('/day/:date', getInvoicesByDate);
 
 module.exports = router;
