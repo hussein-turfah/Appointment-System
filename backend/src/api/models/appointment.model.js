@@ -1,31 +1,40 @@
 const mongoose = require("mongoose");
 
-const appointmentSchema = new mongoose.Schema({
-  doctor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const appointmentSchema = new mongoose.Schema(
+  {
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Patient",
+      required: true,
+    },
+    invoice: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Invoice",
+    },
+    startTime: {
+      type: Date,
+      required: true,
+    },
+    endTime: {
+      type: Date,
+      required: true,
+    },
+    reason: String,
+    status: {
+      type: String,
+      enum: ["scheduled", "cancelled", "completed"],
+      default: "scheduled",
+    },
   },
-  patient: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Patient",
-    required: true,
-  },
-  startTime: {
-    type: Date,
-    required: true,
-  },
-  endTime: {
-    type: Date,
-    required: true,
-  },
-  reason: String,
-  status: {
-    type: String,
-    enum: ["scheduled", "cancelled", "completed"],
-    default: "scheduled",
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 /**
  * Methods
@@ -37,10 +46,12 @@ appointmentSchema.method({
       "id",
       "doctor",
       "patient",
+      "invoice",
       "startTime",
       "endTime",
       "reason",
       "status",
+      "createdAt",
     ];
 
     fields.forEach((field) => {
