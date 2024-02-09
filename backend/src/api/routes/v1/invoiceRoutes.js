@@ -17,7 +17,7 @@ const {
   createInvoiceValidator,
   getInvoiceValidator,
   updateInvoiceValidator,
-  deleteInvoiceValidator
+  deleteInvoiceValidator,
 } = require('../../utils/validators/invoiceValidator');
 
 router.post('/:patientId', createInvoiceValidator, createInvoice);
@@ -25,8 +25,8 @@ router.put('/:invoiceId', updateInvoiceValidator, updateInvoice);
 router.delete('/:invoiceId', deleteInvoiceValidator, deleteInvoice);
 router.get('/patient/:patientId', getInvoicesByPatientId);
 router.get('/:invoiceId', getInvoiceValidator, getInvoiceById);
-router.get('/invoices/:date/:doctorId?', getInvoicesAndTotal);
+router.get('/:date/:doctorId?', getInvoicesAndTotal);
 router.get('/doctor/:doctorId', getInvoicesByDoctorId);
 router.get('/day/:date', getInvoicesByDate);
-router.get('/invoices',getAllInvoices);
+router.get('/',getAllInvoices);
 module.exports = router;

@@ -1,5 +1,5 @@
 const User = require("../models/user.model");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const httpStatus = require("http-status");
 
 /**
@@ -80,26 +80,27 @@ const deleteDoctorById = async (req, res) => {
 };
 
 // Create doctor
-const addDoctor = async (req, res) => {
+const addDoctor = async (req, res, next) => {
   try {
-    const newDoctor = new User({
-      type: "doctor",
-      ...req.body,
-      password: await bcrypt.hash(req.body.password, 10),
-      color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-    });
+    const doctorData = req.body;
+    doctorData.type = "doctor";
 
-    await newDoctor.save();
+    
+    // Generate a random color for the doctor
+    doctorData.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
-    res.status(201).json({
-      message: "Doctor created successfully!",
-      data: newDoctor.transform(),
+    const doctor = await User.create(doctorData);
+
+    res.status(httpStatus.CREATED).json({
+      success: true,
+      message: "Doctor created successfully",
+      doctor: doctor.transform()
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error creating doctor");
+    next(error);
   }
 };
+
 
 /**
  * Update doctor by id
