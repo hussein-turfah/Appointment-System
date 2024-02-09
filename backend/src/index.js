@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
+<<<<<<< HEAD
 const passportSetup = require("../passport");
 const authRoute = require("./api/routes/v1/auth.route");
 const patientRoute = require("./api/routes/v1/patientRoute");
@@ -12,8 +13,12 @@ const PrescriptionsRoute = require("./api/routes/v1/prescriptionRoutes");
 const InvoiceRoute = require("./api/routes/v1/invoiceRoutes")
 const SecretaryRoute = require("./api/routes/v1/secretaryRoute");
 const app = express();
+=======
+const routes = require("./api/routes/v1/index");
+>>>>>>> a1262b79f6703c109b0f09bb37104ae50f8215df
 const session = require("express-session");
 const mongoose = require("./config/mongoose");
+const app = express();
 app.use(express.json());
 
 app.use(
@@ -40,14 +45,9 @@ app.use(
   })
 );
 
-app.use("/auth", authRoute);
-app.use("/patient", patientRoute);
-app.use("/doctor", doctorRoute);
-app.use("/schedule", ScheduleRoute);
-app.use("/record", RecordRoute);
-app.use("/prescription",PrescriptionsRoute)
-app.use("/invoices",InvoiceRoute);
-app.use("/secretary",SecretaryRoute);
+
+app.use("/v1", routes);
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

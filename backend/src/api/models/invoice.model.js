@@ -37,4 +37,32 @@ const invoiceSchema = new mongoose.Schema(
   }
 );
 
+invoiceSchema.pre("save", async function (next) {
+  const invoice = this;
+  if (invoice.isModified("amount")) {
+    if (invoice.amount < 0) {
+      throw new Error("Amount cannot be negative");
+    }
+  }
+  next();
+});
+
+// statics
+invoiceSchema.statics = {
+  async get(id) {
+    try {
+      const invoice = await this.findById(id).exec();
+      if (invoice) {
+        return invoice;
+      }
+      throw new Error({
+        message: "Invoice does not exist",
+        status: 404,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+};
+
 module.exports = mongoose.model("Invoice", invoiceSchema);

@@ -16,11 +16,11 @@ const appointmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Invoice",
     },
-    startTime: {
+    start: {
       type: Date,
       required: true,
     },
-    endTime: {
+    end: {
       type: Date,
       required: true,
     },
@@ -29,6 +29,14 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       enum: ["scheduled", "cancelled", "completed"],
       default: "scheduled",
+    },
+    allDay: {
+      type: Boolean,
+      default: false,
+    },
+    title: {
+      type: String,
+      default: "Appointment",
     },
   },
   {
@@ -47,8 +55,8 @@ appointmentSchema.method({
       "doctor",
       "patient",
       "invoice",
-      "startTime",
-      "endTime",
+      "start",
+      "end",
       "reason",
       "status",
       "createdAt",
@@ -109,6 +117,7 @@ appointmentSchema.statics = {
     try {
       let appointments;
 
+
       if (mongoose.Types.ObjectId.isValid(doctorId)) {
         appointments = await this.find({ doctor: doctorId }).exec();
       }
@@ -117,6 +126,7 @@ appointmentSchema.statics = {
       }
 
       throw new Error("No such appointment exists!");
+
     } catch (error) {
       throw error;
     }
@@ -195,7 +205,7 @@ appointmentSchema.statics = {
         appointment = await this.findById(id).exec();
       }
       if (appointment) {
-        return appointment.remove();
+        return this.deleteOne({ _id: id }).exec();
       }
 
       throw new Error("No such appointment exists!");

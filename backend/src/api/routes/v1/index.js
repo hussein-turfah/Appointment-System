@@ -2,14 +2,29 @@ const express = require("express");
 const { authLimiter } = require("../../middleware/rateLimiter");
 
 const authRoutes = require("./auth.route");
-const calendarRoutes = require("./calendar.route");
-// const userRoute = require('./user.route');
+const authRoute = require("./auth.route");
+const patientRoute = require("./patientRoute");
+const doctorRoute = require("./doctorRoute");
+const RecordRoute = require("./recordRoutes");
+const PrescriptionsRoute = require("./prescriptionRoutes");
+const InvoiceRoute = require("./invoiceRoutes");
+
+const appointmentRoutes = require("./appointment.route");
+// const scheduleRoutes = require("./schedule.route");
+const app = express();
 
 const router = express.Router();
 
-// setup api routes
 router.get("/status", (req, res) => res.send("OK"));
 router.use("/auth", authLimiter, authRoutes);
-router.use("/calendar", calendarRoutes);
+app.use("/auth", authRoute);
+app.use("/patient", patientRoute);
+app.use("/doctor", doctorRoute);
+app.use("/record", RecordRoute);
+app.use("/prescription", PrescriptionsRoute);
+app.use("/invoices", InvoiceRoute);
+
+router.use("/appointment", appointmentRoutes);
+// router.use("/schedule", scheduleRoutes);
 
 module.exports = router;
