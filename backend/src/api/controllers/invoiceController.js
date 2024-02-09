@@ -149,18 +149,57 @@ const updateInvoice = async (req, res) => {
   
   const getAllInvoices = async (req, res) => {
     try {
-        const invoices = await Invoice.find();
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 10; 
+        const skip = (page - 1) * limit; 
+
+        const invoices = await Invoice.find().skip(skip).limit(limit);
 
         if (!invoices || invoices.length === 0) {
             return res.status(404).json({ message: 'No invoices found' });
         }
 
-        console.log('All invoices retrieved successfully:', invoices);
+        console.log('Invoices retrieved successfully:', invoices);
         res.status(200).json(invoices);
     } catch (error) {
-        console.error('Error retrieving all invoices:', error);
+        console.error('Error retrieving invoices:', error);
         res.status(500).json({ message: 'Server Error' });
     }
+};
+
+const getInvoicesAndTotal = async (req, res) => {
+  try {
+    const { doctorId, date } = req.params;
+    let query = {};
+
+    if (doctorId) {
+      query.doctor = doctorId;
+    }
+
+    if (date) {
+      const targetDate = new Date(date);
+      const startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+      const endDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+      query.date = {
+        $gte: startDate,
+        $lt: endDate
+      };
+    }
+
+    const invoices = await Invoice.find(query);
+
+    if (!invoices || invoices.length === 0) {
+      return res.status(404).json({ message: 'No invoices found.' });
+    }
+
+    const totalInvoices = invoices.length;
+    const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+
+    res.status(200).json({ invoices, totalInvoices, totalAmount });
+  } catch (error) {
+    console.error('Error retrieving invoices:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
 };
 
   
@@ -172,5 +211,6 @@ const updateInvoice = async (req, res) => {
     getInvoiceById,
     getInvoicesByDoctorId,
     getInvoicesByDate,
-    getAllInvoices
+    getAllInvoices,
+    getInvoicesAndTotal
   };

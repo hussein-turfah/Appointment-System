@@ -9,7 +9,8 @@ const {
   getInvoiceById,
   getInvoicesByDoctorId,
   getInvoicesByDate,
-  getAllInvoices
+  getAllInvoices,
+  getInvoicesAndTotal
 } = require('../../controllers/invoiceController');
 
 const {
@@ -24,6 +25,7 @@ router.put('/:invoiceId', updateInvoiceValidator, updateInvoice);
 router.delete('/:invoiceId', deleteInvoiceValidator, deleteInvoice);
 router.get('/patient/:patientId', getInvoicesByPatientId);
 router.get('/:invoiceId', getInvoiceValidator, getInvoiceById);
+router.get('/invoices/:date/:doctorId?', getInvoicesAndTotal);
 router.get('/doctor/:doctorId', getInvoicesByDoctorId);
 router.get('/day/:date', getInvoicesByDate);
 router.get('/invoices',getAllInvoices);
