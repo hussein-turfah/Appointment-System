@@ -12,21 +12,23 @@ const SecretaryRoute = require("./secretaryRoute");
 const AuthRoute = require("./authRoutes")
 const appointmentRoutes = require("./appointment.route");
 const scheduleRoutes = require("./scheduleRoute");
+// const {protect}= require("../../controllers/authControllers")
 const app = express();
 
 const router = express.Router();
+router.use(express.json());
 
 router.get("/status", (req, res) => res.send("OK"));
 // router.use("/auth", authLimiter, authRoutes);
 // app.use("/auth", authRoute);
-app.use("/auth",AuthRoute)
-app.use("/patient", patientRoute);
-app.use("/doctor", doctorRoute);
-app.use("/record", RecordRoute);
-app.use("/prescription", PrescriptionsRoute);
-app.use("/invoices", InvoiceRoute);
-app.use("/secretary",SecretaryRoute);
+router.use("/patient", patientRoute);
+router.use("/doctor", doctorRoute);
+router.use("/record", RecordRoute);
+router.use("/prescription", PrescriptionsRoute);
+router.use("/invoices", InvoiceRoute);
+router.use("/secretary",SecretaryRoute);
 router.use("/appointment", appointmentRoutes);
 router.use("/schedule", scheduleRoutes);
+router.use("/auth",AuthRoute)
 
 module.exports = router;
