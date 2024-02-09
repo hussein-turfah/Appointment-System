@@ -25,8 +25,7 @@ app.use("/record", RecordRoute);
 app.use("/prescription", PrescriptionsRoute);
 app.use("/invoices", InvoiceRoute);
 app.use("/secretary",SecretaryRoute);
-
 router.use("/appointment", appointmentRoutes);
-// router.use("/schedule", scheduleRoutes);
+router.use("/schedule", scheduleRoutes);
 
 module.exports = router;
