@@ -1,8 +1,20 @@
-import axios from "axios";
+import axios from "../utils/Http";
+
 import { toast } from "react-toastify";
 
 export const ACTIONS = {
-  SET_USER: "/user",
-  SET_LOADING: "/laoding",
-  SET_ERROR: "/error",
+  SET_USER: "/auth/login",
+};
+
+export const login = (formData) => async (dispatch) => {
+  try {
+    const { data } = await axios.post("/auth/login", {
+      email: formData.email,
+      password: formData.password,
+    });
+
+    dispatch({ type: ACTIONS.SET_USER, data });
+  } catch (error) {
+    toast.error("Invalid email or password");
+  }
 };

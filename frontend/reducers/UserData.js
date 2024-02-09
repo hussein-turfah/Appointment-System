@@ -2,7 +2,7 @@ import { ACTIONS } from "../actions/UserActions";
 
 const initialState = {
   loaded: false,
-  data: null,
+  data: {},
 };
 
 const UserData = (state = initialState, { type, data }) => {
