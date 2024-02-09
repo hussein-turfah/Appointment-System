@@ -5,9 +5,25 @@ const initialState = {
     loaded: false,
     data: [],
   },
+  selectedAppointment: {
+    loaded: false,
+    data: {},
+  },
+  appointmentsByDoctor: {
+    loaded: false,
+    data: [],
+  },
+  appointmentsByPatient: {
+    loaded: false,
+    data: [],
+  },
+  appointmentStatus: {
+    loaded: false,
+    data: {},
+  },
 };
 
-const DoctorData = (state = initialState, { type, data }) => {
+const AppointmentData = (state = initialState, { type, data }) => {
   switch (type) {
     case ACTIONS.GET_ALL_APPOINTMENTS:
       return {
@@ -48,15 +64,31 @@ const DoctorData = (state = initialState, { type, data }) => {
     case ACTIONS.GET_APPOINTMENT_BY_ID:
       return {
         ...state,
-        allAppointments: {
+        selectedAppointment: {
           loaded: true,
-          data: [data],
+          data,
         },
       };
     case ACTIONS.GET_APPOINTMENT_BY_DOCTOR_ID:
       return {
         ...state,
-        allAppointments: {
+        appointmentsByDoctor: {
+          loaded: true,
+          data,
+        },
+      };
+    case ACTIONS.GET_APPOINTMENT_BY_PATIENT_ID:
+      return {
+        ...state,
+        appointmentsByPatient: {
+          loaded: true,
+          data,
+        },
+      };
+    case ACTIONS.UPDATE_APPOINTMENT_STATUS:
+      return {
+        ...state,
+        appointmentStatus: {
           loaded: true,
           data,
         },
@@ -66,4 +98,4 @@ const DoctorData = (state = initialState, { type, data }) => {
   }
 };
 
-export default DoctorData;
+export default AppointmentData;
