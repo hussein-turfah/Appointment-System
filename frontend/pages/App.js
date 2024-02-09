@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getAllDoctors } from "../actions/DoctorActions";
-import { getAllAppointments } from "../actions/AppointmentActions";
 
 const MyApp = ({ Component, pageProps, domainName }) => {
   const router = useRouter();
@@ -24,9 +23,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
   useEffect(() => {
     // get all doctors
     dispatch(getAllDoctors());
-    dispatch(getAllAppointments());
-  }
-  , []);
+  }, [dispatch]);
 
 
   return (
