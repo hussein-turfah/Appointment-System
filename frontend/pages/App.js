@@ -11,12 +11,14 @@ const MyApp = ({ Component, pageProps, domainName }) => {
   const authPages = ["/login", "/register", "/forgot-password"];
   const isAuthPage = authPages.includes(router.pathname);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token && !isAuthPage) {
-      router.push("/login");
-    }
-  }, []);
+
+  // If the user is not logged in and the page is not an auth page, redirect to the login page
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token && !isAuthPage) {
+  //     router.push("/login");
+  //   }
+  // }, []);
 
   useEffect(() => {
     // get all doctors
