@@ -28,5 +28,5 @@ router.get('/:invoiceId', getInvoiceValidator, getInvoiceById);
 router.get('/:date/:doctorId?', getInvoicesAndTotal);
 router.get('/doctor/:doctorId', getInvoicesByDoctorId);
 router.get('/day/:date', getInvoicesByDate);
-router.get('/invoices',getAllInvoices);
+router.get('/',getAllInvoices);
 module.exports = router;

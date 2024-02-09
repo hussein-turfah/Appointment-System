@@ -5,7 +5,7 @@ export const ACTIONS = {
   CREATE_INVOICE: "/invoices",
   UPDATE_INVOICE: "/invoices/:id",
   DELETE_INVOICE: "/invoices/:id",
-  GET_ALL_INVOICES: "/invoices",
+  GET_ALL_INVOICES: "/",
   GET_INVOICES_BY_PATIENT_ID: "/invoices/patient/:id",
   GET_INVOICE_BY_ID: "/invoices/:id",
   GET_INVOICES_BY_DOCTOR_ID: "/invoices/doctor/:id",
