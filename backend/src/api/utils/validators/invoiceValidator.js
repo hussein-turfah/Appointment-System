@@ -1,6 +1,6 @@
 const { check } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
-const Invoice = require('../../models/invoiceSchema');
+const Invoice = require('../../models/invoice.model');
 
 exports.createInvoiceValidator = [
   check('doctorId')

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const httpStatus = require("http-status");
 
 const roles = ["user", "admin"];
@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: types,
-      default: "patient",
+      default: "doctor",
     },
     firstName: {
       type: String,

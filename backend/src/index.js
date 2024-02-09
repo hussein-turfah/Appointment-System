@@ -10,6 +10,7 @@ const ScheduleRoute = require("./api/routes/v1/scheduleRoute");
 const RecordRoute = require("./api/routes/v1/recordRoutes");
 const PrescriptionsRoute = require("./api/routes/v1/prescriptionRoutes");
 const InvoiceRoute = require("./api/routes/v1/invoiceRoutes")
+const SecretaryRoute = require("./api/routes/v1/secretaryRoute");
 const app = express();
 const session = require("express-session");
 const mongoose = require("./config/mongoose");
@@ -46,6 +47,7 @@ app.use("/schedule", ScheduleRoute);
 app.use("/record", RecordRoute);
 app.use("/prescription",PrescriptionsRoute)
 app.use("/invoices",InvoiceRoute);
+app.use("/secretary",SecretaryRoute);
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
