@@ -1,16 +1,13 @@
+// components/InvoiceTable.js
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { getAllInvoices } from '../../actions/InvoiceAction';
 
-import React from 'react';
+const InvoiceTable = ({ invoices, getAllInvoices }) => {
+  useEffect(() => {
+    getAllInvoices();
+  }, [getAllInvoices]);
 
-// Sample invoice data
-const Invoice = [
-  { patientName: 'John Doe', doctor: 'Dr. Smith', date: '2024-02-09', amount: 100, currency: 'USD', status: 'Paid' },
-  { patientName: 'Jane Doe', doctor: 'Dr. Johnson', date: '2024-02-10', amount: 150, currency: 'USD', status: 'Pending' },
-  { patientName: 'John Doe', doctor: 'Dr. Smith', date: '2024-02-09', amount: 100, currency: 'USD', status: 'Paid' },
-  { patientName: 'Jane Doe', doctor: 'Dr. Johnson', date: '2024-02-10', amount: 150, currency: 'USD', status: 'Pending' },
-  // Add more invoice data as needed
-];
-
-const InvoiceTable = () => {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -40,7 +37,7 @@ const InvoiceTable = () => {
           </tr>
         </thead>
         <tbody>
-          {Invoice.map((invoice, index) => (
+          {invoices.map((invoice, index) => (
             <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b dark:bg-gray-800 dark:border-gray-700`}>
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{invoice.patientName}</td>
               <td className="px-6 py-4">{invoice.doctor}</td>
@@ -59,4 +56,8 @@ const InvoiceTable = () => {
   );
 };
 
-export default InvoiceTable;
+const mapStateToProps = (state) => ({
+  invoices: state.invoices 
+});
+
+export default connect(mapStateToProps, { getAllInvoices })(InvoiceTable);

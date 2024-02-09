@@ -147,7 +147,22 @@ const updateInvoice = async (req, res) => {
     }
   };
   
-  
+  const getAllInvoices = async (req, res) => {
+    try {
+        const invoices = await Invoice.find();
+
+        if (!invoices || invoices.length === 0) {
+            return res.status(404).json({ message: 'No invoices found' });
+        }
+
+        console.log('All invoices retrieved successfully:', invoices);
+        res.status(200).json(invoices);
+    } catch (error) {
+        console.error('Error retrieving all invoices:', error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
   
   module.exports = {
     createInvoice,
@@ -156,6 +171,6 @@ const updateInvoice = async (req, res) => {
     getInvoicesByPatientId,
     getInvoiceById,
     getInvoicesByDoctorId,
-    getInvoicesByDate
-
+    getInvoicesByDate,
+    getAllInvoices
   };

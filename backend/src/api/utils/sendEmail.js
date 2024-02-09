@@ -4,8 +4,8 @@ const nodemailer = require('nodemailer');
 const sendEmail = async (options) => {
   // 1) Create transporter ( service that will send email like "gmail","Mailgun", "mialtrap", sendGrid)
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT, // if secure false port = 587, if true port= 465
+    host: "smtp.gmail.com",
+    port: 465, 
     secure: true,
     auth: {
       user: process.env.EMAIL_USER,

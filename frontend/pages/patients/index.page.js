@@ -1,284 +1,60 @@
-import { useState } from "react";
-import Sidenav from "./components/Sidenav";
-import styles from "./styles/index.module.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPenToSquare,
-  faPlusSquare,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
-import Input from "../../common/Input";
-import Breadcrumb from "../users/header";
-const breadcrumbItems2 = [
-  { label: 'Details', url: '#' },
-  { label: 'Working Time', url: '#' },
+import React from 'react';
+
+// Sample invoice data
+const Invoice = [
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "dob": "1990-01-01",
+    "gender": "male",
+    "email": "john.doe@example.com",
+    "phone": "1234567890",
+  }  
 ];
-const Patients = () => {
-  const [activePatient, setActivePatient] = useState({});
-  const [addActive, setAddActive] = useState(false);
-  const [editActive, setEditActive] = useState(false);
 
-  console.log("activePatient", activePatient);
-
-  const patients = [
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@gmail.com",
-      age: "25",
-      phoneNumer: "1234567890",
-      city: "New York",
-      notes: "Some notes",
-    },
-  ];
+const PatientTable = () => {
   return (
-    <div className={styles.container}>
-      <div>
-        <Sidenav
-          patients={patients}
-          activePatient={activePatient}
-          setActivePatient={setActivePatient}
-        />
-      </div>
-      <div className={styles.details}>
-        <div className={styles.actions}>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              console.log("add");
-              setAddActive(true);
-            }}
-          >
-            <FontAwesomeIcon icon={faPlusSquare} />
-            <p>Add</p>
-          </div>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              console.log("edit");
-              setEditActive(true);
-            }}
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-            <p>Edit</p>
-          </div>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              console.log("delete");
-            }}
-          >
-            <FontAwesomeIcon icon={faTrashCan} />
-            <p>Delete</p>
-          </div>
-         <div className="ml-5"> <Breadcrumb items={breadcrumbItems2} />
-         </div>
-        </div>
-        <h3>Details</h3>
-        <div>
-          <div>
-            <h4>First Name</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input
-                  type="text"
-                  value={activePatient?.firstName}
-                  placeholder=""
-                />
-              ) : (
-                activePatient?.firstName
-              )}
-            </p>
-          </div>
-          <div>
-            <h4>Last Name</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input
-                  type="text"
-                  value={activePatient?.lastName}
-                  placeholder=""
-                />
-              ) : (
-                activePatient?.lastName
-              )}
-            </p>
-          </div>
-          <div>
-            <h4>Email</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input
-                  type="email"
-                  value={activePatient?.email}
-                  placeholder=""
-                />
-              ) : (
-                activePatient?.email
-              )}
-            </p>
-          </div>
-          <div>
-            <h4>Phone Number</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input
-                  type="text"
-                  value={activePatient?.phoneNumer}
-                  placeholder=""
-                />
-              ) : (
-                activePatient?.phoneNumer
-              )}
-            </p>
-          </div>
-          <div>
-            <h4>Age</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input type="text" value={activePatient?.age} placeholder="" />
-              ) : (
-                activePatient?.age
-              )}
-            </p>
-          </div>
-          <div>
-            <h4>City</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input type="text" value={activePatient?.city} placeholder="" />
-              ) : (
-                activePatient?.city
-              )}
-            </p>
-          </div>
-          <div>
-            <h4>Notes</h4>
-            <p>
-              {addActive || editActive ? (
-                <Input
-                  type="text"
-                  value={
-                    editActive ?
-                      activePatient?.notes :
-                      ""
-                  }
-                  placeholder=""
-                  setValue={(value) => {
-                    setActivePatient((prev) => ({
-                      ...prev,
-                      notes: value,
-                    }));
-                  }
-                  }
-                />
-              ) : (
-                activePatient?.notes
-              )}
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="px-6 py-3">
+              Patient Name
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Doctor
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Date
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Amount
+            </th>
+
+
+            <th scope="col" className="px-6 py-3">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Invoice.map((invoice, index) => (
+            <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b dark:bg-gray-800 dark:border-gray-700`}>
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{`${invoice.firstName} ${invoice.lastName}` }</td>
+              <td className="px-6 py-4">{invoice.dob}</td>
+              <td className="px-6 py-4">{invoice.gender}</td>
+              <td className="px-6 py-4">{invoice.phone}</td>
+              <td className="px-6 py-4">
+                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline"> Records</a>
+                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Prescrpetions</a>
+                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Billing</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
-export default Patients;
+
+export default PatientTable;

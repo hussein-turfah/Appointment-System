@@ -8,7 +8,8 @@ const {
   getInvoicesByPatientId,
   getInvoiceById,
   getInvoicesByDoctorId,
-  getInvoicesByDate
+  getInvoicesByDate,
+  getAllInvoices
 } = require('../../controllers/invoiceController');
 
 const {
@@ -25,5 +26,5 @@ router.get('/patient/:patientId', getInvoicesByPatientId);
 router.get('/:invoiceId', getInvoiceValidator, getInvoiceById);
 router.get('/doctor/:doctorId', getInvoicesByDoctorId);
 router.get('/day/:date', getInvoicesByDate);
-
+router.get('/invoices',getAllInvoices);
 module.exports = router;
