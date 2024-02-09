@@ -65,12 +65,12 @@ exports.deleteAppointmentValidator = [
 ];
 
 exports.getAppointmentByDoctorValidator = [
-  check("doctor").isMongoId().withMessage("Invalid doctor ID format"),
+  check("id").isMongoId().withMessage("Invalid doctor ID format"),
   validatorMiddleware,
 ];
 
 exports.getAppointmentByPatientValidator = [
-  check("patient").isMongoId().withMessage("Invalid patient ID format"),
+  check("id").isMongoId().withMessage("Invalid patient ID format"),
   validatorMiddleware,
 ];
 

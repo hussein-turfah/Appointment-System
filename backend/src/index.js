@@ -2,20 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
-<<<<<<< HEAD
+
 const passportSetup = require("../passport");
-const authRoute = require("./api/routes/v1/auth.route");
-const patientRoute = require("./api/routes/v1/patientRoute");
-const doctorRoute = require("./api/routes/v1/doctorRoute");
-const ScheduleRoute = require("./api/routes/v1/scheduleRoute");
-const RecordRoute = require("./api/routes/v1/recordRoutes");
-const PrescriptionsRoute = require("./api/routes/v1/prescriptionRoutes");
-const InvoiceRoute = require("./api/routes/v1/invoiceRoutes")
-const SecretaryRoute = require("./api/routes/v1/secretaryRoute");
-const app = express();
-=======
+
 const routes = require("./api/routes/v1/index");
->>>>>>> a1262b79f6703c109b0f09bb37104ae50f8215df
+
 const session = require("express-session");
 const mongoose = require("./config/mongoose");
 const app = express();

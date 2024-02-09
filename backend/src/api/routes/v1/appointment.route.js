@@ -31,12 +31,12 @@ router
 
 router
   .get(
-    "/doctor/:doctor",
+    "/doctor/:id",
     getAppointmentByDoctorValidator,
     getAppointmentsByDoctorId
   )
   .get(
-    "/patient/:patient",
+    "/patient/:id",
     getAppointmentByPatientValidator,
     getAppointmentByPatientId
   );

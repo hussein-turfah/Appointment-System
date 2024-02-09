@@ -127,19 +127,19 @@ const getAppointmentsByDoctorId = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const appointment = await Appointment.getByDoctorId(id);
+    const appointments = await Appointment.getByDoctorId(id);
 
-    if (!appointment) {
+    if (!appointments || appointments.length === 0) {
       throw new Error({
-        message: "Appointment does not exist",
+        message: "Appointments not found for the doctor",
         status: httpStatus.NOT_FOUND,
       });
     }
 
     // Transform appointment data before sending response
-    const transformedAppointment = appointment.transform();
+    const transformedAppointments = appointments.map(appointment => appointment.transform());
 
-    res.status(httpStatus.OK).json(transformedAppointment);
+    res.status(httpStatus.OK).json(transformedAppointments);
   } catch (error) {
     res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
       message: error.message,
@@ -156,25 +156,26 @@ const getAppointmentByPatientId = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const appointment = await Appointment.getByPatientId(id);
+    const appointments = await Appointment.getByPatientId(id);
 
-    if (!appointment) {
+    if (!appointments || appointments.length === 0) {
       throw new Error({
-        message: "Appointment does not exist",
+        message: "Appointments not found for the patient",
         status: httpStatus.NOT_FOUND,
       });
     }
 
-    // Transform appointment data before sending response
-    const transformedAppointment = appointment.transform();
+    // Transform each appointment data before sending response
+    const transformedAppointments = appointments.map(appointment => appointment.transform());
 
-    res.status(httpStatus.OK).json(transformedAppointment);
+    res.status(httpStatus.OK).json(transformedAppointments);
   } catch (error) {
     res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
       message: error.message,
     });
   }
 };
+
 
 /**
  * Update appointment status
