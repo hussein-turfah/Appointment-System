@@ -1,4 +1,4 @@
-import { ACTIONS } from "../actions/DoctorActions";
+import { ACTIONS } from "../actions/AppointmentActions";
 
 const initialState = {
   allAppointments: {
