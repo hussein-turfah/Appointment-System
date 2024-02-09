@@ -16,13 +16,9 @@ const router = express.Router();
 router.use(express.json());
 
 router.get("/status", (req, res) => res.send("OK"));
-<<<<<<< HEAD
-// router.use("/auth", authLimiter, authRoutes);
-// app.use("/auth", authRoute);
-=======
+
 
 router.use("/auth",AuthRoute)
->>>>>>> f428854d613df8e69267e356ce0c9458a027e7ed
 router.use("/patient", patientRoute);
 router.use("/doctor", doctorRoute);
 router.use("/record", RecordRoute);
