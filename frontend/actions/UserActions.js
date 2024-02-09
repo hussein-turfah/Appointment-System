@@ -8,11 +8,13 @@ export const ACTIONS = {
 
 export const login = (formData) => async (dispatch) => {
   try {
-    const { data } = await axios.post("/auth/login", formData);
-
+    const { data } = await axios.post("/auth/login", {
+      email: formData.email,
+      password: formData.password,
+    });
 
     dispatch({ type: ACTIONS.SET_USER, data });
   } catch (error) {
     toast.error("Invalid email or password");
   }
-}
+};
