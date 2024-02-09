@@ -3,13 +3,11 @@ const DoctorSchedule = require('../models/scheduleSchema');
 // CREATE 
 async function createDoctorSchedule(req, res) {
   const { doctorId } = req.params;
-  const {weekday, startTime, endTime } = req.body;
+  const {weekdays } = req.body;
   try {
     const newSchedule = await DoctorSchedule.create({
       doctor: doctorId,
-      weekday: weekday,
-      startTime: startTime,
-      endTime: endTime
+      weekdays
     });
     res.status(201).json(newSchedule);
   } catch (error) {
