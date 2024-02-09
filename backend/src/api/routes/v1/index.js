@@ -9,6 +9,7 @@ const InvoiceRoute = require("./invoiceRoutes");
 const SecretaryRoute = require("./secretaryRoute");
 const appointmentRoutes = require("./appointment.route");
 const scheduleRoutes = require("./scheduleRoute");
+const AdminRoute = require("./adminRoutes");
 // const {protect}= require("../../controllers/authControllers")
 const app = express();
 
@@ -18,6 +19,7 @@ router.use(express.json());
 router.get("/status", (req, res) => res.send("OK"));
 
 router.use("/auth",AuthRoute)
+router.use("/admin",AdminRoute)
 router.use("/patient", patientRoute);
 router.use("/doctor", doctorRoute);
 router.use("/record", RecordRoute);
