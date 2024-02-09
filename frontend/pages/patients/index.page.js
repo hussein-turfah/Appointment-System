@@ -8,7 +8,11 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import Input from "../../common/Input";
-
+import Breadcrumb from "../users/header";
+const breadcrumbItems2 = [
+  { label: 'Details', url: '#' },
+  { label: 'Working Time', url: '#' },
+];
 const Patients = () => {
   const [activePatient, setActivePatient] = useState({});
   const [addActive, setAddActive] = useState(false);
@@ -166,6 +170,8 @@ const Patients = () => {
             <FontAwesomeIcon icon={faTrashCan} />
             <p>Delete</p>
           </div>
+         <div className="ml-5"> <Breadcrumb items={breadcrumbItems2} />
+         </div>
         </div>
         <h3>Details</h3>
         <div>

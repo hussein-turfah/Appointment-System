@@ -6,6 +6,7 @@ import {
   faUser,
   faUsers,
   faCalendarDays,
+  faMoneyBill,
 } from "@fortawesome/free-solid-svg-icons";
 import Tab from "./components/tab";
 import { useEffect, useState } from "react";
@@ -46,8 +47,8 @@ export default function Nav() {
             setActive={setActive}
           />
           <Tab
-            text={"Services"}
-            icon={faBriefcase}
+            text={"Invoice"}
+            icon={faMoneyBill}
             active={active === "services"}
             setActive={setActive}
           />
