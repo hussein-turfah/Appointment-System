@@ -7,6 +7,7 @@ const InvoiceTable = ({ invoices, getAllInvoices }) => {
   useEffect(() => {
     getAllInvoices();
   }, [getAllInvoices]);
+  console.log(invoices)
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">

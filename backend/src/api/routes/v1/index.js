@@ -10,6 +10,7 @@ const SecretaryRoute = require("./secretaryRoute");
 const appointmentRoutes = require("./appointment.route");
 const scheduleRoutes = require("./scheduleRoute");
 const AdminRoute = require("./adminRoutes");
+const pdfRoute = require("./pdfRoutes");
 // const {protect}= require("../../controllers/authControllers")
 const app = express();
 
@@ -28,6 +29,7 @@ router.use("/invoices", InvoiceRoute);
 router.use("/secretary",SecretaryRoute);
 router.use("/appointment", appointmentRoutes);
 router.use("/schedule", scheduleRoutes);
+router.use("/pdf",pdfRoute)
 router.use("/auth",AuthRoute)
 
 module.exports = router;
