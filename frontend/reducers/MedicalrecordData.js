@@ -3,46 +3,46 @@ import { ACTIONS } from "../actions/MedicalRecordActions";
 const initialState = {
   loaded: false,
   medicalRecords: [],
+  patientMedicalRecords: [],
   medicalRecord: {},
 };
 
-export default function MedicalRecordData(state = initialState, action) {
-  switch (action.type) {
-    case ACTIONS.CREATE_MEDICAL_RECORD:
+const MedicalRecordData = (state = initialState, { type, data }) => {
+  switch (type) {
+    case ACTIONS.GET_MEDICAL_RECORDS_BY_PATIENT_ID:
+      console.log(data);
       return {
         ...state,
         loaded: true,
-        medicalRecords: [...state.medicalRecords, action.data],
-      };
-    case ACTIONS.UPDATE_MEDICAL_RECORD:
-      return {
-        ...state,
-        loaded: true,
-        medicalRecords: state.medicalRecords.map((record) =>
-          record.id === action.data.id ? action.data : record
-        ),
-      };
-    case ACTIONS.DELETE_MEDICAL_RECORD:
-      return {
-        ...state,
-        loaded: true,
-        medicalRecords: state.medicalRecords.filter(
-          (record) => record.id !== action.id
-        ),
+        patientMedicalRecords: data,
       };
     case ACTIONS.GET_MEDICAL_RECORD_BY_ID:
       return {
         ...state,
         loaded: true,
-        medicalRecord: action.data,
+        medicalRecord: data,
       };
-    case ACTIONS.GET_MEDICAL_RECORDS_BY_PATIENT_ID:
+    case ACTIONS.CREATE_MEDICAL_RECORD:
       return {
         ...state,
         loaded: true,
-        medicalRecords: action.data,
+        medicalRecord: data,
+      };
+    case ACTIONS.UPDATE_MEDICAL_RECORD:
+      return {
+        ...state,
+        loaded: true,
+        medicalRecord: data,
+      };
+    case ACTIONS.DELETE_MEDICAL_RECORD:
+      return {
+        ...state,
+        loaded: true,
+        medicalRecord: data,
       };
     default:
       return state;
   }
-}
+};
+
+export default MedicalRecordData;

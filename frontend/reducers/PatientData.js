@@ -21,6 +21,14 @@ const PatientData = (state = initialState, { type, data }) => {
           data,
         },
       };
+    case ACTIONS.GET_PATIENT_BY_ID:
+      return {
+        ...state,
+        selectedPatient: {
+          loaded: true,
+          data,
+        },
+      };
     case ACTIONS.CREATE_PATIENT:
       return {
         ...state,
@@ -45,14 +53,6 @@ const PatientData = (state = initialState, { type, data }) => {
         allPatients: {
           loaded: true,
           data: state.allPatients.data.filter((patient) => patient.id !== data),
-        },
-      };
-    case ACTIONS.GET_PATIENT_BY_ID:
-      return {
-        ...state,
-        selectedPatient: {
-          loaded: true,
-          data,
         },
       };
     default:
