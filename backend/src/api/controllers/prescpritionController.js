@@ -25,8 +25,8 @@ const createPrescription = async (req, res) => {
       const { patientId } = req.params;
       const { medication, dosage, instructions,title } = req.body;
   
-      if (!medication && !req.file) {
-        return res.status(400).json({ message: 'Medication or attachment is required' });
+      if ( !req.file) {
+        return res.status(400).json({ message: 'attachment is required' });
       }
   
       let attachment = null;
@@ -36,10 +36,7 @@ const createPrescription = async (req, res) => {
   
       const prescriptionData = {
         patient: patientId,
-        medication: medication,
-        dosage: dosage,
         title:title,
-        instructions: instructions,
         attachment: attachment
       };
   
@@ -118,10 +115,7 @@ const createPrescription = async (req, res) => {
       }
   
       const prescriptionData = {
-        medication: medication,
-        dosage: dosage,
         title: title,
-        instructions: instructions,
         attachment: attachment
       };
   
