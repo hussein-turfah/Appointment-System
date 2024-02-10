@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import styles from "./styles/index.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,13 +8,68 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Input from "../../../../common/Input";
 import Breadcrumb from "../header";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createPatient,
+  updatePatient,
+} from "../../../../actions/PatientActions";
 const breadcrumbItems2 = [
   { label: "Details", url: "#" },
   { label: "Working Time", url: "#" },
 ];
-const Patients = ({ activePatient, setActivePatient }) => {
+const Patients = () => {
+  const dispatch = useDispatch();
   const [addActive, setAddActive] = useState(false);
   const [editActive, setEditActive] = useState(false);
+
+  const selectedPatient = useState(
+    useSelector(({ PatientData }) => PatientData?.selectedPatient.data)
+  );
+
+  const [newPatientData, setNewPatientData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumer: "",
+    dob: "",
+    city: "",
+    notes: "",
+  });
+
+  const edit = (id) => {
+    dispatch(updatePatient(id, newPatientData));
+  };
+
+  const create = useCallback(async () => {
+    await dispatch(createPatient(newPatientData));
+  }, [dispatch, newPatientData]);
+
+  const age = (newPatientData) => {
+    const dob = new Date(newPatientData.dob);
+    const now = new Date();
+    const ageInYears = now.getFullYear() - dob.getFullYear();
+    const ageInMonths = now.getMonth() - dob.getMonth();
+    const ageInDays = now.getDate() - dob.getDate();
+    const ageInHours = Math.floor((now - dob) / (1000 * 60 * 60));
+    const ageInWeeks = Math.floor(ageInDays / 7);
+
+    // Condition for years
+    if (ageInYears > 1) {
+      return `${ageInYears} years`;
+    } else if (ageInYears === 1) {
+      return `${ageInYears} year`;
+    } else if (ageInMonths > 0) {
+      return `${ageInMonths} months`;
+    } else if (ageInDays > 0) {
+      return `${ageInDays} days`;
+    } else if (ageInHours > 0) {
+      return `${ageInHours} hours`;
+    } else if (ageInWeeks > 0) {
+      return `${ageInWeeks} weeks`;
+    } else {
+      return "";
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -25,9 +80,13 @@ const Patients = ({ activePatient, setActivePatient }) => {
             <div
               className={styles.saveBtn}
               onClick={() => {
-                console.log("save");
-                setAddActive(false);
-                setEditActive(false);
+                // setAddActive(false);
+                // setEditActive(false);
+                addActive
+                  ? create()
+                  : editActive
+                  ? edit(selectedPatient.id)
+                  : null;
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
@@ -36,7 +95,6 @@ const Patients = ({ activePatient, setActivePatient }) => {
             <div
               className={styles.cancelBtn}
               onClick={() => {
-                console.log("save");
                 setAddActive(false);
                 setEditActive(false);
               }}
@@ -50,9 +108,7 @@ const Patients = ({ activePatient, setActivePatient }) => {
             <div
               className={styles.btn}
               onClick={() => {
-                console.log("add");
                 setAddActive(true);
-                setActivePatient({});
               }}
             >
               <FontAwesomeIcon icon={faPlusSquare} />
@@ -80,162 +136,156 @@ const Patients = ({ activePatient, setActivePatient }) => {
           </div>
         )}
         <h3>Details</h3>
-        <div
-          className={styles.detailsContent}
-        >
-          <div
-            className={styles.row}
-          >
+        <div className={styles.detailsContent}>
+          <div className={styles.row}>
             <h4>First Name</h4>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={activePatient?.firstName}
+                  value={newPatientData.firstName || selectedPatient?.firstName}
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       firstName: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.firstName
+                selectedPatient?.firstName
               )}
             </p>
           </div>
-          <div
-            className={styles.row}
-          >
+          <div className={styles.row}>
             <h4>Last Name</h4>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={activePatient?.lastName}
+                  value={newPatientData.lastName || selectedPatient?.lastName}
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       lastName: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.lastName
+                selectedPatient?.lastName
               )}
             </p>
           </div>
-          <div
-            className={styles.row}
-          >
+          <div className={styles.row}>
             <h4>Email</h4>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="email"
-                  value={activePatient?.email}
+                  value={newPatientData.email || selectedPatient?.email}
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       email: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.email
+                selectedPatient?.email
               )}
             </p>
           </div>
-          <div
-            className={styles.row}
-          >
+          <div className={styles.row}>
             <h4>Phone Number</h4>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={activePatient?.phoneNumer}
+                  value={
+                    newPatientData.phoneNumer || selectedPatient?.phoneNumer
+                  }
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       phoneNumer: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.phoneNumer
+                selectedPatient?.phoneNumer
               )}
             </p>
           </div>
-          <div
-            className={styles.row}
-          >
-            <h4>Date of Birth</h4>
+          <div className={styles.row}>
+            <div className={styles.dob}>
+              <h4>Date of Birth</h4>
+              {age(newPatientData) === "" ? null : (
+                <h6>
+                  <span>Age:</span> {age(newPatientData)}
+                </h6>
+              )}
+            </div>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="date"
                   value={
-                    editActive ? activePatient?.dob?.toString().slice(0, 10) : ""
+                    newPatientData.dob.toString().slice(0, 10) ||
+                    selectedPatient?.dob?.toString().slice(0, 10)
                   }
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       dob: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.dob?.toString().slice(0, 10)
+                selectedPatient?.dob?.toString().slice(0, 10)
               )}
             </p>
           </div>
-          <div
-            className={styles.row}
-          >
+          <div className={styles.row}>
             <h4>City</h4>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={activePatient?.city}
+                  value={newPatientData.city || selectedPatient?.city}
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       city: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.city
+                selectedPatient?.city
               )}
             </p>
           </div>
-          <div
-            className={styles.row}
-          >
+          <div className={styles.row}>
             <h4>Notes</h4>
             <p>
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={editActive ? activePatient?.notes : ""}
+                  value={newPatientData.notes || selectedPatient?.notes}
                   placeholder=""
                   setValue={(value) => {
-                    setActivePatient((prev) => ({
+                    setNewPatientData((prev) => ({
                       ...prev,
                       notes: value,
                     }));
                   }}
                 />
               ) : (
-                activePatient?.notes
+                selectedPatient?.notes
               )}
             </p>
           </div>
