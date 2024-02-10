@@ -1,4 +1,3 @@
-// PatientDetailsPage.jsx
 import React from 'react';
 import PatientDetails from './PatientDetails';
 import MedicalRecords from './MedicalRecords';

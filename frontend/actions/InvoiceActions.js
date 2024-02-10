@@ -78,6 +78,7 @@ export const getInvoicesByDate = (date) => async (dispatch) => {
 export const getAllInvoices = () => async (dispatch) => {
     try {
       const { data } = await axios.get("/invoices");
+      console.log("raan")
       dispatch({ type: ACTIONS.GET_ALL_INVOICES, data });
     } catch (error) {
       toast.error("Error while fetching invoices");

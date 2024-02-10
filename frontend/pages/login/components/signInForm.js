@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../../actions/UserActions";
+import { login } from "../../../actions/UserActions";
 
 const SignInForm = () => {
   const dispatch = useDispatch();
@@ -10,9 +10,14 @@ const SignInForm = () => {
     password: "",
   });
 
-  const handleSubmit = async () => {
-    await dispatch(login(formData));
-  };
+  const handleSubmit = useCallback(() => {
+    dispatch(
+      login({
+        email: formData.email,
+        password: formData.password,
+      })
+    );
+  }, [dispatch, formData]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -97,7 +102,10 @@ const SignInForm = () => {
               <button
                 type="submit"
                 className="w-full text bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                onClick={handleSubmit}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
               >
                 Sign in
               </button>
