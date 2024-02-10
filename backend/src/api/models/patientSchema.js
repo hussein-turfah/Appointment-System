@@ -30,7 +30,7 @@ const patientSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    address: {
+    city: {
       type: String,
       required: true,
     },
@@ -104,6 +104,17 @@ patientSchema.method({
 // statics
 
 patientSchema.statics = {
+  /**
+   * Create a patient
+   */
+  async createPatient(patientData) {
+    try {
+      const patient = new this(patientData);
+      return await patient.save();
+    } catch (error) {
+      throw error;
+    }
+  },
   async get(id) {
     try {
       let patient;
