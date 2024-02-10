@@ -1,13 +1,24 @@
 import classNames from "classnames";
 import styles from "./styles/index.module.scss";
+import { useDispatch } from "react-redux";
+import { getPatientById } from "../../../../../../actions/PatientActions";
+import { useCallback } from "react";
 
 export default function Patient({
   patient,
   index,
   active,
   setActive,
-  setActivePatient,
+  setActivePatient
 }) {
+  const dispatch = useDispatch();
+
+  const select = async (id) => {
+    await dispatch(getPatientById(id));
+    setActive(index);
+    setActivePatient(patient);
+  };
+
   return (
     <div
       key={index}
@@ -15,10 +26,7 @@ export default function Patient({
         [styles.patient]: true,
         [styles.active]: index === active,
       })}
-      onClick={() => {
-        setActive(index);
-        setActivePatient(patient);
-      }}
+      onClick={() => select(patient.id)}
     >
       <div>
         <h3>
