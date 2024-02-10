@@ -9,7 +9,6 @@ const medicalRecordSchema = new mongoose.Schema({
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
   },
   date: {
     type: Date,

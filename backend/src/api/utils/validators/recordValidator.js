@@ -7,15 +7,9 @@ exports.createMedicalRecordValidator = [
   check('patientId')
     .notEmpty()
     .withMessage('Patient ID is required'),
-  check('title')
-    .notEmpty()
-    .withMessage('Title is required'),
-  check('notes')
-    .notEmpty()
-    .withMessage('Notes are required'),
-  check('doctorId')
-    .notEmpty()
-    .withMessage('Doctor ID is required'),
+  // check('title')
+  //   .notEmpty()
+  //   .withMessage('Title is required'),
   validatorMiddleware,
 ];
 
@@ -24,18 +18,10 @@ exports.updateMedicalRecordValidator = [
   check('medicalRecordId')
     .isMongoId()
     .withMessage('Invalid medical record ID format'),
-  check('title')
-    .optional()
-    .notEmpty()
-    .withMessage('Title is required'),
-  check('notes')
-    .optional()
-    .notEmpty()
-    .withMessage('Notes are required'),
-  check('doctorId')
-    .optional()
-    .notEmpty()
-    .withMessage('Doctor ID is required'),
+  // check('title')
+  //   .optional()
+  //   .notEmpty()
+  //   .withMessage('Title is required'),
   validatorMiddleware,
 ];
 

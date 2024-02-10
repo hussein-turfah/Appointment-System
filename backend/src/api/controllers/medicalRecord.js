@@ -23,12 +23,12 @@ const uploadRecordAttach = uploadImage.single('attachment') ;
 
 const createMedicalRecord = async (req, res) => {
     try {
+      console.log(req.body)
       const { patientId } = req.params;
       const { title, notes } = req.body;
-      const { doctorId } = req.body;
 
-      if (!notes && !req.file) {
-        return res.status(400).json({ message: 'Notes or attachment is required' });
+      if (!req.file) {
+        return res.status(400).json({ message: ' attachment is required' });
       }
       let attachment = null;
       if (req.file) {
@@ -36,7 +36,6 @@ const createMedicalRecord = async (req, res) => {
 
       const medicalRecordData = {
         patient: patientId,
-        doctor: doctorId,
         title: title,
         attachment: attachment,
         notes: notes

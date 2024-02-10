@@ -86,21 +86,9 @@ const createAppointment = async (req, res) => {
       });
     }
 
-    const invoice = new Invoice({
-      doctor,
-      patient,
-      amount: 0,
-      currency: "USD",
-      paymentStatus: "Unpaid",
-    });
-
-    const createdInvoice = await invoice.save();
-    const invoiceId = createdInvoice._id;
-
     const newAppointment = new Appointment({
       doctor,
       patient,
-      invoice: invoiceId,
       start,
       end,
       reason,
