@@ -88,6 +88,8 @@ userSchema.method({
       "createdAt",
       "role",
       "type",
+      "avatar",
+      "color",
     ];
 
     fields.forEach((field) => {
