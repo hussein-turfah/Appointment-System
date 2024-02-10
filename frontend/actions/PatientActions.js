@@ -2,8 +2,8 @@ import axios from "../utils/Http";
 import { toast } from "react-toastify";
 
 export const ACTIONS = {
-  GET_ALL_PATIENTS: "/patient",
-  CREATE_PATIENT: "/patient",
+  GET_ALL_PATIENTS: "/patient/get",
+  CREATE_PATIENT: "/patient/create",
   UPDATE_PATIENT: "/patient/:id",
   DELETE_PATIENT: "/patient/:id",
   GET_PATIENT_BY_ID: "/patient/:id",
@@ -20,9 +20,12 @@ export const getAllPatients = () => async (dispatch) => {
 
 export const createPatient = (patient) => async (dispatch) => {
   try {
-    const { data } = await axios.post("/patient", patient);
-    dispatch({ type: ACTIONS.CREATE_PATIENT, data });
+    const { data } = await axios.post("/patient", {
+      ...patient,
+      dob: new Date(patient.dob).toISOString(),
+    });
     toast.success("Patient created successfully");
+    dispatch({ type: ACTIONS.CREATE_PATIENT, data });
   } catch (error) {
     toast.error("Error while creating patient");
   }

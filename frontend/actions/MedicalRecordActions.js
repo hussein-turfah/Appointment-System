@@ -6,7 +6,7 @@ export const ACTIONS = {
   UPDATE_MEDICAL_RECORD: "/record/:id",
   DELETE_MEDICAL_RECORD: "/record/:id",
   GET_MEDICAL_RECORD_BY_ID: "/record/:id",
-  GET_MEDICAL_RECORDS_BY_PATIENT_ID: "/record/patient/:id",
+  GET_MEDICAL_RECORDS_BY_PATIENT_ID: "/record/patient/:patientId",
 };
 
 export const createMedicalRecord = (patientId, recordData) => async (dispatch) => {
@@ -47,6 +47,7 @@ export const getMedicalRecordById = (id) => async (dispatch) => {
 
 export const getMedicalRecordsByPatientId = (patientId) => async (dispatch) => {
   try {
+    console.log(patientId);
     const { data } = await axios.get(`/record/patient/${patientId}`);
     dispatch({ type: ACTIONS.GET_MEDICAL_RECORDS_BY_PATIENT_ID, data });
   } catch (error) {
