@@ -153,7 +153,7 @@ const updateInvoice = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10; 
         const skip = (page - 1) * limit; 
 
-        const invoices = await Invoice.find().skip(skip).limit(limit);
+        const invoices = await Invoice.find().skip(skip).limit(limit).populate('patient');
 
         if (!invoices || invoices.length === 0) {
             return res.status(404).json({ message: 'No invoices found' });
