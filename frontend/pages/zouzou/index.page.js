@@ -55,11 +55,11 @@ export default function Users() {
     <div className={styles.container}>
       <Breadcrumb items={breadcrumbItems} />
       <div>
-        {/* <Sidenav
+        <Sidenav
           patients={allPatients.data}
           activePatient={activePatient}
           setActivePatient={setActivePatient}
-        /> */}
+        />
         <Patients
           activePatient={activePatient}
           setActivePatient={setActivePatient}
@@ -79,7 +79,7 @@ export default function Users() {
         </div>
       </div>
       <Modal
-        active={true}
+        active={modal}
         setActive={setModal}
         title="Edit Invoice"
         children={

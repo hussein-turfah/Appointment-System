@@ -23,7 +23,9 @@ export const createInvoice = (patientId, invoice) => async (dispatch) => {
 
 export const updateInvoice = (id, invoice) => async (dispatch) => {
   try {
-    const { data } = await axios.put(`/invoices/${id}`, invoice);
+    const { data } = await axios.put(`/invoices/${id}`, {
+      ...invoice
+    });
     dispatch({ type: ACTIONS.UPDATE_INVOICE, data });
   } catch (error) {
     toast.error("Error while updating invoice");

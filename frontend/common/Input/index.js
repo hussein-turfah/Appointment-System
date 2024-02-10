@@ -10,6 +10,8 @@ export default function Input({
   theme = "outlined",
   search = false,
   setValue,
+  disabled,
+  title,
 }) {
   return (
     <div className={styles.container}>
@@ -17,7 +19,8 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        disabled={disabled}
+        onChange={(e) => !disabled && setValue(e.target.value)}
         className={classNames({
           [styles.input]: true,
           [styles.outlined]: theme === "outlined",

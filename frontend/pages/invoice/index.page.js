@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllInvoices } from "../../actions/InvoiceActions";
-import Modal from "./components/modal"; 
-import InvoiceForm from "./components/editForm"
+import Modal from "../../common/Modal"; 
+import InvoiceForm from "../../common/EditInvoiceModal"
 
 const InvoiceTable = () => {
   const dispatch = useDispatch();
