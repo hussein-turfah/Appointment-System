@@ -1,1 +1,1 @@
-export { default } from "./login/index.page";
+export { default } from "./calendar/index.page";
