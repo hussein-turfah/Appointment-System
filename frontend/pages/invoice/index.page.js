@@ -50,7 +50,7 @@ const InvoiceTable = () => {
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {`${invoice.patient.firstName} ${invoice.patient.lastName}`}
               </td>
-              <td className="px-6 py-4">{invoice.doctor}</td>
+              <td className="px-6 py-4"> {`${invoice.doctor.firstName} ${invoice.doctor.lastName}`}</td>
               <td className="px-6 py-4">{invoice.date}</td>
               <td className="px-6 py-4">{invoice.amount}</td>
               <td className="px-6 py-4">{invoice.currency}</td>
