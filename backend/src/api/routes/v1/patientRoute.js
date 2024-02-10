@@ -10,7 +10,7 @@ const {
 } = require('../../controllers/patientController');
 
 // Route to create a new patient
-router.post('/', createPatientValidator ,createPatient);
+router.post('/', createPatientValidator, createPatient);
 
 // Route to get all patients
 router.get('/', getAllPatients);
