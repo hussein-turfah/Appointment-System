@@ -2,19 +2,16 @@ const Patient = require("../models/patientSchema");
 
 const createPatient = async (req, res) => {
   try {
-    
-    const { firstName, lastName, email, dob, phoneNumer, city, notes } =
-    req.body;
+    const { firstName, lastName, email, dob, phone, city, gender } = req.body;
     const newPatient = await Patient.createPatient({
       firstName,
       lastName,
       email,
       dob,
-      phoneNumer,
+      phone,
       city,
-      notes,
+      gender
     });
-    await newPatient.save();
 
     return res.status(201).json({
       ...newPatient.transform(),

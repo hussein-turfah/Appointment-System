@@ -84,7 +84,7 @@ patientSchema.method({
       "email",
       "phone",
       "allergies",
-      "address",
+      "city",
       "doctor",
       "medicalRecords",
       "invoices",

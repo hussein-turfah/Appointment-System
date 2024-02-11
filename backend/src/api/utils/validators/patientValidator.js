@@ -35,9 +35,9 @@ exports.createPatientValidator = [
     .optional()
     .isArray()
     .withMessage('Allergies must be an array'),
-  check('address')
+  check('city')
     .notEmpty()
-    .withMessage('Address is required'),
+    .withMessage('City is required'),
   validatorMiddleware,
 ];
 
