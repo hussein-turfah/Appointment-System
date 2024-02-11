@@ -24,7 +24,6 @@ export default function PatientInfo() {
   const [invoiceModal, setInvoiceModal] = useState(false);
   const [recordModal, setRecordModal] = useState(false);
   const [prescriptionModal, setPrescriptionModal] = useState(false);
-  const [activePatient, setActivePatient] = useState({});
 
   const selectedPatient = useSelector(
     ({ PatientData }) => PatientData?.selectedPatient.data

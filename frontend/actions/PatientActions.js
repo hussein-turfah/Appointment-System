@@ -27,7 +27,6 @@ export const createPatient = (patient) => async (dispatch) => {
     toast.success("Patient created successfully");
     dispatch({ type: ACTIONS.CREATE_PATIENT, data });
   } catch (error) {
-    toast.error("Error while creating patient");
     console.log(error);
   }
 };
