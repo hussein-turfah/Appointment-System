@@ -6,13 +6,13 @@ import {
   faPlusSquare,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import Input from "../../../../common/Input";
+import Input from "../../../../../common/Input";
 import Breadcrumb from "../header";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createPatient,
   updatePatient,
-} from "../../../../actions/PatientActions";
+} from "../../../../../actions/PatientActions";
 const breadcrumbItems2 = [
   { label: "Details", url: "#" },
   { label: "Working Time", url: "#" },
@@ -22,27 +22,25 @@ const Patients = () => {
   const [addActive, setAddActive] = useState(false);
   const [editActive, setEditActive] = useState(false);
 
-  const selectedPatient = useState(
-    useSelector(({ PatientData }) => PatientData?.selectedPatient.data)
+  const selectedPatient = useSelector(
+    ({ PatientData }) => PatientData?.selectedPatient.data
   );
 
-  const [newPatientData, setNewPatientData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumer: "",
-    dob: "",
-    city: "",
-    notes: "",
-  });
+  const [newPatientData, setNewPatientData] = useState(
+    selectedPatient || {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      dob: "",
+      city: "",
+      notes: "",
+    }
+  );
 
-  const edit = (id) => {
+  const update = useCallback((id) => {
     dispatch(updatePatient(id, newPatientData));
-  };
-
-  const create = useCallback(async () => {
-    await dispatch(createPatient(newPatientData));
-  }, [dispatch, newPatientData]);
+  }, [addActive, newPatientData]);
 
   const age = (newPatientData) => {
     const dob = new Date(newPatientData.dob);
@@ -80,12 +78,10 @@ const Patients = () => {
             <div
               className={styles.saveBtn}
               onClick={() => {
-                // setAddActive(false);
-                // setEditActive(false);
-                addActive
-                  ? create()
-                  : editActive
-                  ? edit(selectedPatient.id)
+                setAddActive(false);
+                setEditActive(false);
+                editActive
+                  ? update(selectedPatient.id)
                   : null;
               }}
             >
@@ -117,7 +113,6 @@ const Patients = () => {
             <div
               className={styles.btn}
               onClick={() => {
-                console.log("edit");
                 setEditActive(true);
               }}
             >
@@ -204,20 +199,104 @@ const Patients = () => {
                 <Input
                   type="text"
                   value={
-                    newPatientData.phoneNumer || selectedPatient?.phoneNumer
+                    newPatientData.phone || selectedPatient?.phone
                   }
                   placeholder=""
                   setValue={(value) => {
                     setNewPatientData((prev) => ({
                       ...prev,
-                      phoneNumer: value,
+                      phone: value,
                     }));
                   }}
                 />
               ) : (
-                selectedPatient?.phoneNumer
+                selectedPatient?.phone
               )}
             </p>
+          </div>
+          <div className={styles.row}>
+            <h4>Gender</h4>
+            <div>
+              {addActive || editActive ? (
+                <div className={styles.gender}>
+                  <div>
+                    <input
+                      type="radio"
+                      name="gender"
+                      id="male"
+                      value="male"
+                      checked={
+                        selectedPatient.gender === "male" ||
+                        newPatientData.gender === "male"
+                      }
+                      onChange={(e) => {
+                        setNewPatientData((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }));
+                      }}
+                    />
+                    <label htmlFor="male">Male</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      name="gender"
+                      id="female"
+                      value="female"
+                      checked={
+                        selectedPatient.gender === "female" ||
+                        newPatientData.gender === "female"
+                      }
+                      onChange={(e) => {
+                        setNewPatientData((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }));
+                      }}
+                    />
+                    <label htmlFor="female">Female</label>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.gender}>
+                  <div>
+                    <input
+                      type="radio"
+                      name="gender"
+                      id="male"
+                      value="male"
+                      checked={selectedPatient.gender === "male"}
+                      onChange={(e) => {
+                        setNewPatientData((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }));
+                      }}
+                      disabled
+                    />
+                    <label htmlFor="male">Male</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      name="gender"
+                      id="female"
+                      value="female"
+                      checked={selectedPatient.gender === "female"}
+                      onChange={(e) => {
+                        setNewPatientData((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }));
+                      }}
+                      disabled
+                    />
+                    <label htmlFor="female">Female</label>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div className={styles.row}>
             <div className={styles.dob}>
@@ -233,7 +312,7 @@ const Patients = () => {
                 <Input
                   type="date"
                   value={
-                    newPatientData.dob.toString().slice(0, 10) ||
+                    newPatientData?.dob?.toString().slice(0, 10) ||
                     selectedPatient?.dob?.toString().slice(0, 10)
                   }
                   placeholder=""

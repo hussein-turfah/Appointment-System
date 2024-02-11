@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllDoctors } from "../actions/DoctorActions";
 import { getUser } from "../actions/UserActions";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyApp = ({ Component, pageProps, domainName }) => {
   const router = useRouter();
@@ -18,7 +20,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
   // useEffect(() => {
   //   if (!token && !isAuthPage) {
   //     router.push("/login");
-  //   } 
+  //   }
   //   else if (token && isAuthPage) {
   //     router.push("/");
   //   }
@@ -53,6 +55,17 @@ const MyApp = ({ Component, pageProps, domainName }) => {
             {...pageProps}
             domainName={domainName}
           />
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
         </motion.div>
       </AnimatePresence>
     </div>

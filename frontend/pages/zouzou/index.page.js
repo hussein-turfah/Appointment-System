@@ -85,7 +85,7 @@ export default function Users() {
         children={
           <InvoiceForm
             invoice={selectedPatient}
-            onClose={() => setModal(false)}
+            setInvoiceModal={setModal}
           />
         }
       />

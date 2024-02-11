@@ -1,72 +1,87 @@
-import React, { useState } from 'react';
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPatients } from "../../actions/PatientActions";
+import Modal from "../../common/Modal";
+import CreatePatientModal from "../../common/CreatePatientModal";
 
-// Sample schedule data
-const Schedules = [
-  { day: 'Monday', startTime: '09:00', endTime: '17:00' },
-  { day: 'Tuesday', startTime: '08:00', endTime: '16:00' },
-  { day: 'Wednesday', startTime: '08:30', endTime: '17:30' },
-  { day: 'Thursday', startTime: '09:30', endTime: '18:30' },
-  { day: 'Friday', startTime: '07:00', endTime: '15:00' },
-];
+const PatientsTable = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-const ScheduleTable = () => {
-  const [startTimes, setStartTimes] = useState(Schedules.map(schedule => schedule.startTime));
-  const [endTimes, setEndTimes] = useState(Schedules.map(schedule => schedule.endTime));
+  const allPatients = useSelector(({ PatientData }) => PatientData?.allPatients?.data?.data);
 
-  const handleStartTimeChange = (index, event) => {
-    const newStartTimes = [...startTimes];
-    newStartTimes[index] = event.target.value;
-    setStartTimes(newStartTimes);
-  };
+  useEffect(() => {
+    dispatch(getAllPatients());
+  }, [dispatch]);
 
-  const handleEndTimeChange = (index, event) => {
-    const newEndTimes = [...endTimes];
-    newEndTimes[index] = event.target.value;
-    setEndTimes(newEndTimes);
-  };
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
+    <div className="
+    flex flex-col w-full justify-end overflow-x-auto shadow-md sm:rounded-lg mt-20">
+      <div
+        // className=
+        // make it as a button above the table
+        className="flex p-4 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40"
+      >
+        <button>
+          Create Patient
+        </button>
+
+      </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Day
+              Patient
             </th>
             <th scope="col" className="px-6 py-3">
-              Start Time
+              Email
             </th>
             <th scope="col" className="px-6 py-3">
-              End Time
+              Phone
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Gender
+            </th>
+            <th scope="col" className="px-6 py-3">
+              City
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Notes
             </th>
           </tr>
         </thead>
         <tbody>
-          {Schedules.map((schedule, index) => (
-            <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b dark:bg-gray-800 dark:border-gray-700`}>
-              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{schedule.day}</td>
-              <td className="px-6 py-4">
-                <input 
-                  type="time" 
-                  value={startTimes[index]} 
-                  onChange={event => handleStartTimeChange(index, event)} 
-                  className="border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                />
+          {allPatients.map((patient, index) => (
+            <tr
+              key={index}
+              className={`${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50"
+              } border-b dark:bg-gray-800 dark:border-gray-700`}
+              onClick={() => router.push(`/patients/${patient.id}`)}
+            >
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {patient.firstName} {patient.lastName}
               </td>
-              <td className="px-6 py-4">
-                <input 
-                  type="time" 
-                  value={endTimes[index]} 
-                  onChange={event => handleEndTimeChange(index, event)} 
-                  className="border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                />
-              </td>
+              <td className="px-6 py-4">{patient.email}</td>
+              <td className="px-6 py-4">{patient.phone}</td>
+              <td className="px-6 py-4">{patient.gender}</td>
+              <td className="px-6 py-4">{patient.city}</td>
+              <td className="px-6 py-4"></td>
             </tr>
           ))}
         </tbody>
       </table>
+      <Modal
+        active={true}
+        setActive={() => {}}
+        title="Create Patient"
+        children={ <CreatePatientModal />
+        }
+      />
     </div>
   );
 };
 
-export default ScheduleTable;
+export default PatientsTable;

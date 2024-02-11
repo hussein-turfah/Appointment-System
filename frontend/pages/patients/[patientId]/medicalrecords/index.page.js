@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMedicalRecordsByPatientId } from "../../../../actions/MedicalRecordActions";
+import { getMedicalRecordsByPatientId } from "../../../../actions/MedicalRecordActions"
 
 const MedicalRecordTable = () => {
   const dispatch = useDispatch();

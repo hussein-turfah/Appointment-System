@@ -15,9 +15,11 @@ export const ACTIONS = {
 export const createInvoice = (patientId, invoice) => async (dispatch) => {
   try {
     const { data } = await axios.post(`/invoices/${patientId}`, invoice);
+    toast.success("Invoice created successfully");
     dispatch({ type: ACTIONS.CREATE_INVOICE, data });
   } catch (error) {
     toast.error("Error while creating invoice");
+    console.log(error);
   }
 };
 

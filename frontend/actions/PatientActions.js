@@ -28,6 +28,7 @@ export const createPatient = (patient) => async (dispatch) => {
     dispatch({ type: ACTIONS.CREATE_PATIENT, data });
   } catch (error) {
     toast.error("Error while creating patient");
+    console.log(error);
   }
 };
 
@@ -37,7 +38,8 @@ export const updatePatient = (id, patient) => async (dispatch) => {
     dispatch({ type: ACTIONS.UPDATE_PATIENT, data });
     toast.success("Patient updated successfully");
   } catch (error) {
-    toast.error("Error while updating patient");
+    toast.error(error.response.data.error);
+    console.log(error);
   }
 };
 

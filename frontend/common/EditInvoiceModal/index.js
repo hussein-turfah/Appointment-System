@@ -14,9 +14,14 @@ const InvoiceForm = ({
     currency: "",
     date: new Date(),
   },
+  setInvoiceModal,
 }) => {
   const dispatch = useDispatch();
-  const [doctor, setDoctor] = useState(initialValues.doctor);
+  const [doctor, setDoctor] = useState(
+    editing
+      ? initialValues.doctor
+      : useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data[0]?.id)
+  );
   const [paymentStatus, setPaymentStatus] = useState(
     initialValues.paymentStatus
   );
@@ -35,7 +40,7 @@ const InvoiceForm = ({
       editing
         ? dispatch(
             updateInvoice(initialValues.id, {
-              doctor,
+              doctorId: doctor,
               paymentStatus,
               amount,
               currency,
@@ -43,8 +48,8 @@ const InvoiceForm = ({
             })
           )
         : dispatch(
-            createInvoice({
-              doctor,
+            createInvoice(patient.id, {
+              doctorId: doctor,
               paymentStatus,
               amount,
               currency,
@@ -63,11 +68,18 @@ const InvoiceForm = ({
       dispatch,
       initialValues.id,
       editing,
+      patient.id,
     ]
   );
 
   return (
-    <form className="invoice-form gap-4" onSubmit={handleSubmit}>
+    <form
+      className="invoice-form gap-4"
+      onSubmit={(e) => {
+        handleSubmit(e);
+        setInvoiceModal(false);
+      }}
+    >
       <div className="form-group">
         <label htmlFor="doctor">Doctor:</label>
         <select
@@ -87,10 +99,8 @@ const InvoiceForm = ({
       <div className="form-group">
         <label htmlFor="patient">Patient:</label>
         <input
-          type="number"
           id="patient"
           value={patient?.firstName + " " + patient?.lastName}
-          min={0}
           required
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
           disabled
@@ -135,11 +145,14 @@ const InvoiceForm = ({
       <div className="form-group">
         <label htmlFor="date">Invoice Date:</label>
         <input
-          type="text"
-          id="currency"
-          value={currency}
+          type="date"
+          id="date"
+          value={
+            date instanceof Date
+              ? date.toISOString().split("T")[0]
+              : date.split("T")[0]
+          }
           onChange={(e) => setDate(e.target.value)}
-          maxLength={3}
           required
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
         />
