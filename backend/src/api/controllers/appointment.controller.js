@@ -68,7 +68,23 @@ const getAllAppointments = async (req, res) => {
  */
 const createAppointment = async (req, res) => {
   try {
-    const { doctor, patient, start, end, reason } = req.body;
+    const {
+      doctor,
+      patient,
+      start,
+      end,
+      reason,
+      newPatient,
+      firstName,
+      lastName,
+      email,
+      phone,
+      dob,
+      city,
+      gender
+    } = req.body;
+
+    let existingPatient;
 
     const existingDoctor = await User.get(doctor);
     if (!existingDoctor || existingDoctor.type !== "doctor") {
@@ -78,17 +94,31 @@ const createAppointment = async (req, res) => {
       });
     }
 
-    const existingPatient = await Patient.get(patient);
-    if (!existingPatient) {
-      throw new Error({
-        message: "Patient does not exist",
-        status: httpStatus.NOT_FOUND,
-      });
+    if (!newPatient) {
+      existingPatient = await Patient.get(patient);
+      if (!existingPatient) {
+        throw new Error({
+          message: "Patient does not exist",
+          status: httpStatus.NOT_FOUND,
+        });
+      }
+    } else if (newPatient) {
+      const newPatientData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dob,
+        city,
+        gender
+      };
+      const newPatientInstance = new Patient(newPatientData);
+      existingPatient = await newPatientInstance.save();
     }
 
     const newAppointment = new Appointment({
       doctor,
-      patient,
+      patient: newPatient ? existingPatient._id : existingPatient,
       start,
       end,
       reason,
@@ -106,6 +136,7 @@ const createAppointment = async (req, res) => {
     });
   }
 };
+
 
 /**
  * Get appointment by doctor id
@@ -125,7 +156,9 @@ const getAppointmentsByDoctorId = async (req, res) => {
     }
 
     // Transform appointment data before sending response
-    const transformedAppointments = appointments.map(appointment => appointment.transform());
+    const transformedAppointments = appointments.map((appointment) =>
+      appointment.transform()
+    );
 
     res.status(httpStatus.OK).json(transformedAppointments);
   } catch (error) {
@@ -154,7 +187,9 @@ const getAppointmentByPatientId = async (req, res) => {
     }
 
     // Transform each appointment data before sending response
-    const transformedAppointments = appointments.map(appointment => appointment.transform());
+    const transformedAppointments = appointments.map((appointment) =>
+      appointment.transform()
+    );
 
     res.status(httpStatus.OK).json(transformedAppointments);
   } catch (error) {
@@ -163,7 +198,6 @@ const getAppointmentByPatientId = async (req, res) => {
     });
   }
 };
-
 
 /**
  * Update appointment status

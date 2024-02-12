@@ -9,10 +9,17 @@ exports.createAppointmentValidator = [
     .isMongoId()
     .withMessage("Invalid doctor ID format"),
   check("patient")
+    .if((value, { req }) => !req.body.newPatient)
     .notEmpty()
     .withMessage("Patient is required")
     .isMongoId()
     .withMessage("Invalid patient ID format"),
+check("newPatient")
+    .if((value, { req }) => !req.body.patient) 
+    .notEmpty()
+    .withMessage("New patient is required")
+    .isBoolean()
+    .withMessage("Invalid new patient format"),
   check("invoice")
     .optional()
     .isMongoId()

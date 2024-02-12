@@ -33,9 +33,10 @@ const createUser = async (req, res) => {
 
     // Extract user data from request body
     const userData = req.body;
+    const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
     // Create the new user
-    const newUser = new User(userData);
+    const newUser = new User({...userData, color});
     await newUser.save();
 
     return res.status(httpStatus.CREATED).json({ message: "User created successfully", data: newUser.transform() });

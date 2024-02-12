@@ -32,4 +32,24 @@ const doctorScheduleSchema = new mongoose.Schema(
   }
 );
 
+
+// statics
+
+doctorScheduleSchema.statics = {
+  async getDoctorSchedules(doctorId) {
+    return this.find({ doctor: doctorId });
+  },
+  async updateDoctorSchedule(scheduleId, updatedFields) {
+    return this.findByIdAndUpdate(scheduleId, updatedFields, { new: true });
+  },
+  
+  async createDoctorSchedule(doctorId, weekdays) {
+    return this.create({
+      doctor: doctorId,
+      weekdays,
+    });
+  },
+};
+
+
 module.exports = mongoose.model("DoctorSchedule", doctorScheduleSchema);

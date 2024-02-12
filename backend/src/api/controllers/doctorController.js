@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const httpStatus = require("http-status");
+const { createDoctorSchedule } = require("./scheduleController");
 
 /**
  * Get doctor by id
@@ -84,22 +85,48 @@ const addDoctor = async (req, res, next) => {
     const doctorData = req.body;
     doctorData.type = "doctor";
 
-    
     // Generate a random color for the doctor
     doctorData.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
     const doctor = await User.create(doctorData);
 
+    createDoctorSchedule(doctor._id, {
+      weekdays: [
+        {
+          day: "Monday",
+          startTime: "09:00",
+          endTime: "18:00",
+        },
+        {
+          day: "Tuesday",
+          startTime: "09:00",
+          endTime: "18:00",
+        },
+        {
+          day: "Wednesday",
+          startTime: "09:00",
+          endTime: "18:00",
+        },
+        {
+          day: "Thursday",
+          startTime: "09:00",
+          endTime: "18:00",
+        },
+        {
+          day: "Friday",
+          startTime: "09:00",
+          endTime: "18:00",
+        },
+      ],
+    });
+
     res.status(httpStatus.CREATED).json({
-      success: true,
-      message: "Doctor created successfully",
-      doctor: doctor.transform()
+      ...doctor.transform(),
     });
   } catch (error) {
     next(error);
   }
 };
-
 
 /**
  * Update doctor by id
