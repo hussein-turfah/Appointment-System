@@ -11,10 +11,13 @@ import {
 import Tab from "./components/tab";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 export default function Nav() {
   const [active, setActive] = useState("calendar");
   const router = useRouter();
+
+  const user = useSelector(({ UserData }) => UserData.data);
 
   useEffect(() => {
     setActive(router.pathname.split("/")[1]);
@@ -30,14 +33,13 @@ export default function Nav() {
         className={styles.container}
       >
         <div>
-          {/* <div>Logo</div> */}
           <h1>TABIB CLINIC</h1>
         </div>
         <div className={styles.tabs}>
           <Tab
             text={"Calendar"}
             icon={faCalendarDays}
-            active={active === "calendar"}
+            active={active === "calendar" || active === ""}
             setActive={setActive}
           />
           <Tab
@@ -49,20 +51,21 @@ export default function Nav() {
           <Tab
             text={"Invoice"}
             icon={faMoneyBill}
-            active={active === "services"}
+            active={active === "invoice"}
             setActive={setActive}
           />
           <Tab
-            text={"Users"}
+            text={"Doctors"}
             icon={faUsers}
-            active={active === "users"}
+            active={active === "doctors"}
             setActive={setActive}
           />
           <Tab
-            text={"Zeinab Mohsen"}
+            text={user.firstName + " " + user.lastName}
             icon={faUser}
-            active={active === "zeinab mohsen"}
+            active={active === "profile"}
             setActive={setActive}
+            profile
           />
         </div>
       </motion.div>

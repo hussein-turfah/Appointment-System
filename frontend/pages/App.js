@@ -3,33 +3,20 @@ import Navbar from "../common/Navbar";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllDoctors } from "../actions/DoctorActions";
 import { getUser } from "../actions/UserActions";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const MyApp = ({ Component, pageProps, domainName }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const authPages = ["/login", "/register", "/forgot-password"];
   const isAuthPage = authPages.includes(router.pathname);
-
   const [token, setToken] = useState(null);
-
-  // If the user is not logged in and the page is not an auth page, redirect to the login page
-  // useEffect(() => {
-  //   if (!token && !isAuthPage) {
-  //     router.push("/login");
-  //   }
-  //   else if (token && isAuthPage) {
-  //     router.push("/");
-  //   }
-  // }, [router, isAuthPage]);
 
   useEffect(() => {
     if (token) {
-      dispatch(getAllDoctors());
-      // dispatch(getUser());
+      dispatch(getUser(token));
     }
   }, [dispatch, token]);
 
@@ -37,7 +24,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     const token = localStorage.getItem("token");
     setToken(token);
   }, []);
-
+    
   return (
     <div className="page">
       <AnimatePresence mode="wait">
@@ -55,17 +42,17 @@ const MyApp = ({ Component, pageProps, domainName }) => {
             {...pageProps}
             domainName={domainName}
           />
-            <ToastContainer
-              position="bottom-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </motion.div>
       </AnimatePresence>
     </div>

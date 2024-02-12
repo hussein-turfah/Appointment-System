@@ -1,9 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../../actions/UserActions";
+import { useRouter } from "next/router";
 
 const SignInForm = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [formData, setForomData] = useState({
     email: "",
@@ -33,7 +35,15 @@ const SignInForm = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Login to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form
+              className="space-y-4 md:space-y-6"
+              action="#"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+                router.push("/calendar");
+              }}
+            >
               <div>
                 <label
                   htmlFor="email"
@@ -102,10 +112,6 @@ const SignInForm = () => {
               <button
                 type="submit"
                 className="w-full text bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSubmit();
-                }}
               >
                 Sign in
               </button>

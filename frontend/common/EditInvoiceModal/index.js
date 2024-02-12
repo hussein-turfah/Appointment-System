@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createInvoice, updateInvoice } from "../../actions/InvoiceActions";
+import { getAllDoctors } from "../../actions/DoctorActions";
+import { getAllPatients } from "../../actions/PatientActions";
 
 const InvoiceForm = ({
   onSubmit,
@@ -13,6 +15,7 @@ const InvoiceForm = ({
     amount: "",
     currency: "",
     date: new Date(),
+    patient: "",
   },
   setInvoiceModal,
 }) => {
@@ -22,12 +25,14 @@ const InvoiceForm = ({
       ? initialValues.doctor
       : useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data[0]?.id)
   );
+
   const [paymentStatus, setPaymentStatus] = useState(
     initialValues.paymentStatus
   );
   const [amount, setAmount] = useState(initialValues.amount);
   const [currency, setCurrency] = useState(initialValues.currency);
   const [date, setDate] = useState(initialValues.date);
+  const [selectedPatient, setSelectedPatient] = useState(initialValues.patient);
 
   const patient = useSelector(
     ({ PatientData }) => PatientData?.selectedPatient?.data
@@ -39,7 +44,7 @@ const InvoiceForm = ({
       e.preventDefault();
       editing
         ? dispatch(
-            updateInvoice(initialValues.id, {
+            updateInvoice(initialValues._id, {
               doctorId: doctor,
               paymentStatus,
               amount,
@@ -72,6 +77,11 @@ const InvoiceForm = ({
     ]
   );
 
+  useEffect(() => {
+    dispatch(getAllDoctors());
+    dispatch(getAllPatients());
+  }, [dispatch]);
+
   return (
     <form
       className="invoice-form gap-4"
@@ -100,7 +110,10 @@ const InvoiceForm = ({
         <label htmlFor="patient">Patient:</label>
         <input
           id="patient"
-          value={patient?.firstName + " " + patient?.lastName}
+          value={
+            selectedPatient?.firstName + " " + selectedPatient?.lastName ||
+            patient?.firstName + " " + patient?.lastName
+          }
           required
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
           disabled

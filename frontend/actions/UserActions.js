@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 export const ACTIONS = {
   LOGIN_USER: "/auth/login",
-  GET_USER: "/auth",
+  GET_USER: "/user",
 };
 
 const token = global.window?.localStorage?.getItem("token");
@@ -40,20 +40,18 @@ export const login =
         data: data.data,
       });
     } catch (error) {
-      toast.error(error.response.data.message);
-      throw error;
+      console.log(error, "error");
     }
   };
 
-export const getUser = () => async (dispatch) => {
+export const getUser = (token) => async (dispatch) => {
   try {
-    const { data } = await axios.get("/auth");
+    const { data } = await axios.get("/user", { token });
     dispatch({
       type: ACTIONS.GET_USER,
-      data
+      data,
     });
   } catch (error) {
-    toast.error(error.response.data.message);
-    throw error;
+    console.log(error, "error");
   }
 };

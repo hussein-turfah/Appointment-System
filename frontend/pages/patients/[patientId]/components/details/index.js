@@ -9,10 +9,7 @@ import {
 import Input from "../../../../../common/Input";
 import Breadcrumb from "../header";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createPatient,
-  updatePatient,
-} from "../../../../../actions/PatientActions";
+import { updatePatient } from "../../../../../actions/PatientActions";
 const breadcrumbItems2 = [
   { label: "Details", url: "#" },
   { label: "Working Time", url: "#" },
@@ -38,9 +35,12 @@ const Patients = () => {
     }
   );
 
-  const update = useCallback((id) => {
-    dispatch(updatePatient(id, newPatientData));
-  }, [addActive, newPatientData]);
+  const update = useCallback(
+    (id) => {
+      dispatch(updatePatient(id, newPatientData));
+    },
+    [addActive, newPatientData]
+  );
 
   const age = (newPatientData) => {
     const dob = new Date(newPatientData.dob);
@@ -80,9 +80,7 @@ const Patients = () => {
               onClick={() => {
                 setAddActive(false);
                 setEditActive(false);
-                editActive
-                  ? update(selectedPatient.id)
-                  : null;
+                editActive ? update(selectedPatient.id) : null;
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
@@ -198,9 +196,7 @@ const Patients = () => {
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={
-                    newPatientData.phone || selectedPatient?.phone
-                  }
+                  value={newPatientData.phone || selectedPatient?.phone}
                   placeholder=""
                   setValue={(value) => {
                     setNewPatientData((prev) => ({

@@ -9,7 +9,7 @@ const PatientsTable = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [modal, setModal] = useState(false);
-
+  const user = useSelector(({ UserData }) => UserData.data);
   const allPatients = useSelector(
     ({ PatientData }) => PatientData?.allPatients?.data?.data
   );
@@ -20,9 +20,11 @@ const PatientsTable = () => {
 
   return (
     <div className="flex flex-col w-full justify-end overflow-x-auto shadow-md sm:rounded-lg mt-20">
-      <div className="flex p-4 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40">
-        <button onClick={() => setModal(true)}>Create Patient</button>
-      </div>
+      {(user.role === "admin" || user.role === "secretary") && (
+        <div className="flex p-4 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40">
+          <button onClick={() => setModal(true)}>Create Patient</button>
+        </div>
+      )}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>

@@ -21,8 +21,11 @@ const Dropdown = ({ value, values, setValue }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center w-full relative z-0">
-      <div className="relative group w-full border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-transparent">
+    <div className="relative z-50">
+      <div className="
+        absolute z-50
+        group w-full border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-transparent"
+      >
         {!isOpen && !value ? (
           <div
             onClick={toggleDropdown}

@@ -3,7 +3,13 @@ import styles from "./styles/index.module.scss";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
-export default function Tab({ text, icon, active, setActive }) {
+export default function Tab({
+  text,
+  icon,
+  active,
+  setActive,
+  profile = false,
+}) {
   const router = useRouter();
 
   return (
@@ -14,7 +20,9 @@ export default function Tab({ text, icon, active, setActive }) {
       })}
       onClick={() => {
         setActive(text.toLowerCase());
-        router.push(`/${text.toLowerCase()}`);
+        profile
+          ? router.push(`/profile`)
+          : router.push(`/${text.toLowerCase()}`);
       }}
     >
       <FontAwesomeIcon icon={icon} />

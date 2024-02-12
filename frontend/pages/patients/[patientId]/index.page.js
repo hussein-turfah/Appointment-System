@@ -44,9 +44,11 @@ export default function PatientInfo() {
   ];
 
   useEffect(() => {
-    dispatch(getPatientById(patientId));
-    dispatch(getMedicalRecordsByPatientId(patientId));
-    dispatch(getPrescriptionsByPatientId(patientId));
+    if (patientId !== "new") {
+      dispatch(getPatientById(patientId));
+      dispatch(getMedicalRecordsByPatientId(patientId));
+      dispatch(getPrescriptionsByPatientId(patientId));
+    } 
   }, [dispatch, patientId]);
 
   return (

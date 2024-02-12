@@ -6,6 +6,8 @@ import InvoiceData from "./InvoiceData";
 import MedicalRecordData from "./MedicalrecordData";
 import PatientData from "./PatientData";
 import PrescriptionData from "./PrescriptionData";
+import ScheduleData from "./ScheduleData";
+import AdminData from "./AdminData";
 
 const combinedReducers = combineReducers({
   UserData,
@@ -14,7 +16,9 @@ const combinedReducers = combineReducers({
   InvoiceData,
   MedicalRecordData,
   PatientData,
-  PrescriptionData
+  PrescriptionData,
+  ScheduleData,
+  AdminData,
 });
 
 export default combinedReducers;
