@@ -16,7 +16,7 @@ export default function CreateAppointmentModal({ active, setActive }) {
     ({ PatientData }) => PatientData.allPatients?.data
   );
   const [formData, setFormData] = useState({
-    doctor: allDoctors?.data[0]?.id,
+    doctor: `${allDoctors?.data[0]?.id}`,
     patient: "",
     date: "",
     start: "",
