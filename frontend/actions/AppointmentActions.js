@@ -25,9 +25,9 @@ export const getAllAppointments = () => async (dispatch) => {
 export const createAppointment = (appointment) => async (dispatch) => {
   try {
     const { data } = await axios.post("/appointment", appointment);
-    
+
     toast.success("Appointment created successfully");
-    dispatch({ type: ACTIONS.CREATE_APPOINTMENT, data });
+    dispatch(getAllAppointments());
   } catch (error) {
     toast.error("Error while creating appointment");
     console.log(error);
