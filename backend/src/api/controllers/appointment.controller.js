@@ -94,7 +94,7 @@ const createAppointment = async (req, res) => {
       });
     }
 
-    if (!newPatient) {
+    if (newPatient=== false) {
       existingPatient = await Patient.get(patient);
       if (!existingPatient) {
         throw new Error({
@@ -102,7 +102,7 @@ const createAppointment = async (req, res) => {
           status: httpStatus.NOT_FOUND,
         });
       }
-    } else if (newPatient) {
+    } else if (newPatient === true) {
       const newPatientData = {
         firstName,
         lastName,
@@ -129,7 +129,7 @@ const createAppointment = async (req, res) => {
     // Transform appointment data before sending response
     const transformedAppointment = appointment.transform();
 
-    res.status(httpStatus.CREATED).json(transformedAppointment);
+    res.status(httpStatus.CREATED).json({...transformedAppointment});
   } catch (error) {
     res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
       message: error.message,
