@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import axios from "../utils/Http";
 import { toast } from "react-toastify";
 
@@ -23,6 +24,8 @@ export const login =
 
       if (data.success) {
         toast.success("You have successfully logged in!");
+        const router = useRouter();
+        router.push("/calendar");
       } else {
         toast.error("Invalid email or password!");
       }
@@ -33,7 +36,6 @@ export const login =
       if (data.token.refreshToken) {
         localStorage.setItem("refreshToken", data.token.refreshToken);
       }
-      console.log(data, "data");
 
       dispatch({
         type: ACTIONS.LOGIN_USER,
