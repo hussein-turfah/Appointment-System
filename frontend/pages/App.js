@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../common/Navbar";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../actions/UserActions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,17 +14,24 @@ const MyApp = ({ Component, pageProps, domainName }) => {
   const isAuthPage = authPages.includes(router.pathname);
   const [token, setToken] = useState(null);
 
-  useEffect(() => {
-    if (token) {
-      dispatch(getUser(token));
-    }
-  }, [dispatch, token]);
+  const user = useSelector(({ UserData }) => UserData.data);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setToken(token);
-  }, []);
-    
+  }, [router.pathname, dispatch, token, user]);
+
+  useEffect(() => {
+    if (token && authPages.includes(router.pathname)) {
+      dispatch(getUser(token));
+      router.push("/calendar");
+    } else if (!token && !authPages.includes(router.pathname)) {
+      router.push("/login");
+    } else if (token) {
+      dispatch(getUser(token));
+    }
+  }, [token, router.pathname, dispatch]);
+
   return (
     <div className="page">
       <AnimatePresence mode="wait">

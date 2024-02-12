@@ -24,8 +24,6 @@ export const login =
 
       if (data.success) {
         toast.success("You have successfully logged in!");
-        const router = useRouter();
-        router.push("/calendar");
       } else {
         toast.error("Invalid email or password!");
       }
@@ -43,6 +41,7 @@ export const login =
       });
     } catch (error) {
       console.log(error, "error");
+      toast.error("Invalid email or password!");
     }
   };
 
