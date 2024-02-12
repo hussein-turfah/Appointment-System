@@ -1,4 +1,3 @@
-import Breadcrumb from "./components/header";
 import Patients from "./components/details";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,11 +36,7 @@ export default function PatientInfo() {
     PrescriptionData?.patientPrescriptions.slice(0, 5)
   );
 
-  const breadcrumbItems = [
-    { label: "Doctors", url: "#" },
-    { label: "Secretaries", url: "#" },
-    { label: "Admins" },
-  ];
+
 
   useEffect(() => {
     if (patientId !== "new") {
@@ -53,7 +48,6 @@ export default function PatientInfo() {
 
   return (
     <div className={styles.container}>
-      <Breadcrumb items={breadcrumbItems} />
       <div>
         {/* <Sidenav
           patients={allPatients.data}

@@ -7,13 +7,9 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import Input from "../../../../../common/Input";
-import Breadcrumb from "../header";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePatient } from "../../../../../actions/PatientActions";
-const breadcrumbItems2 = [
-  { label: "Details", url: "#" },
-  { label: "Working Time", url: "#" },
-];
+
 const Patients = () => {
   const dispatch = useDispatch();
   const [addActive, setAddActive] = useState(false);
@@ -72,7 +68,7 @@ const Patients = () => {
   return (
     <div className={styles.container}>
       <div className={styles.details}>
-        <Breadcrumb items={breadcrumbItems2} />
+       
         {addActive || editActive ? (
           <div className={styles.actions}>
             <div
