@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllInvoices } from "../../actions/InvoiceActions";
+import {
+  deleteInvoice,
+  getAllInvoices,
+  getInvoicesByDoctorId,
+} from "../../actions/InvoiceActions";
 import Modal from "../../common/Modal";
 import InvoiceForm from "../../common/EditInvoiceModal";
 import { getAllPatients } from "../../actions/PatientActions";
 
 const InvoiceTable = () => {
   const dispatch = useDispatch();
-  const invoices = useSelector(({ InvoiceData }) => InvoiceData?.allInvoices);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const user = useSelector(({ UserData }) => UserData.data);
+
+  const invoices = useSelector(
+    ({ InvoiceData }) =>
+      InvoiceData?.allInvoices || InvoiceData?.invoicesByDoctor
+  );
+
   useEffect(() => {
-    dispatch(getAllInvoices());
+    if (user.role === "admin") {
+      dispatch(getAllInvoices());
+    } else {
+      dispatch(getInvoicesByDoctorId(user._id));
+    }
     dispatch(getAllPatients());
   }, [dispatch]);
 
@@ -62,9 +76,11 @@ const InvoiceTable = () => {
             <th scope="col" className="px-6 py-3">
               Status
             </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
+            {user.role === "admin" && (
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -92,23 +108,27 @@ const InvoiceTable = () => {
               >
                 {invoice.paymentStatus}
               </td>
-              <td className="px-6 py-4">
-                <button
-                  onClick={() => {
-                    setSelectedInvoice(invoice);
-                    setIsEditModalOpen(true);
-                  }}
-                  className="text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  <i className="fas fa-edit mr-2"></i>Edit
-                </button>
-                <button
-                  onClick={() => openDeleteModal(invoice)}
-                  className="text-red-600 dark:text-red-500 hover:underline ml-2"
-                >
-                  <i className="fas fa-trash-alt mr-2"></i>Delete
-                </button>
-              </td>
+              {user.role === "admin" && (
+                <td className="px-6 py-4">
+                  <button
+                    onClick={() => {
+                      setSelectedInvoice(invoice);
+                      setIsEditModalOpen(true);
+                    }}
+                    className="text-blue-600 dark:text-blue-500 hover:underline"
+                  >
+                    <i className="fas fa-edit mr-2"></i>Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      dispatch(deleteInvoice(invoice._id));
+                    }}
+                    className="text-red-600 dark:text-red-500 hover:underline ml-2"
+                  >
+                    <i className="fas fa-trash-alt mr-2"></i>Delete
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

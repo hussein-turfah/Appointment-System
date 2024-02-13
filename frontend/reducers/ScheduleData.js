@@ -1,18 +1,26 @@
 import { ACTIONS } from "../actions/ScheduleActions";
 
 const initialState = {
-  allSchedules: {
+  schedule: {
     loaded: false,
-    data: [],
+    data: {
+      weekdays: [
+        { day: "Monday", startTime: "09:00", endTime: "17:00" },
+        { day: "Tuesday", startTime: "09:00", endTime: "17:00" },
+        { day: "Wednesday", startTime: "09:00", endTime: "17:00" },
+        { day: "Thursday", startTime: "09:00", endTime: "17:00" },
+        { day: "Friday", startTime: "09:00", endTime: "17:00" },
+      ],
+    },
   },
 };
 
 const ScheduleData = (state = initialState, { type, data }) => {
   switch (type) {
-    case ACTIONS.GET_DOCTOR_SCHEDULES:
+    case ACTIONS.GET_DOCTOR_SCHEDULE:
       return {
         ...state,
-        allSchedules: {
+        schedule: {
           loaded: true,
           data,
         },
@@ -20,34 +28,14 @@ const ScheduleData = (state = initialState, { type, data }) => {
     case ACTIONS.CREATE_DOCTOR_SCHEDULE:
       return {
         ...state,
-        allSchedules: {
+        schedule: {
           loaded: true,
-          data: [...state.allSchedules.data, data],
-        },
-      };
-    case ACTIONS.UPDATE_DOCTOR_SCHEDULE:
-      return {
-        ...state,
-        allSchedules: {
-          loaded: true,
-          data: state.allSchedules.data.map((schedule) =>
-            schedule.id === data.id ? data : schedule
-          ),
-        },
-      };
-    case ACTIONS.DELETE_DOCTOR_SCHEDULE:
-      return {
-        ...state,
-        allSchedules: {
-          loaded: true,
-          data: state.allSchedules.data.filter(
-            (schedule) => schedule.id !== data
-          ),
+          data,
         },
       };
     default:
       return state;
   }
-}
+};
 
 export default ScheduleData;

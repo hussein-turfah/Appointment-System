@@ -24,16 +24,16 @@ const UsersTable = () => {
 
   return (
     <div className="flex flex-col w-full justify-end overflow-x-auto shadow-md sm:rounded-lg mt-20">
-      {(user.role === "admin" || user.role === "secretary") && (
+      {/* {(user.role === "admin" || user.role === "secretary") && (
         <div className="flex p-4 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40">
-          <button onClick={() => setModal(true)}>Create Patient</button>
+          <button onClick={() => setModal(true)}>Create Doctor</button>
         </div>
-      )}
+      )} */}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Patient
+              Doctor
             </th>
             <th scope="col" className="px-6 py-3">
               Email

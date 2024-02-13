@@ -3,59 +3,63 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createDoctorSchedule,
-  getDoctorSchedules,
+  getDoctorSchedule,
+  updateDoctorSchedule,
 } from "../../actions/ScheduleActions";
 import styles from "./styles/index.module.scss";
 
 const ScheduleTable = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const doctorId = router.query.user;
 
   const [isChanged, setIsChanged] = useState(false);
 
   const user = useSelector(({ UserData }) => UserData.data);
+  const doctorId = user?.id;
 
-  const originalSchedule = useSelector(
-    ({ ScheduleData }) => ScheduleData.allSchedules
-  );
+  const originalSchedule = user?.schedule?.weekdays;
 
-  const [schedule, setSchedule] = useState(
-    originalSchedule.data[originalSchedule.data.length - 1]?.weekdays
-  );
+  const [scheduleForm, setScheduleForm] = useState(originalSchedule);
 
   const handleStartTimeChange = (index, event) => {
-    const newSchedule = schedule;
-    newSchedule[index].startTime = event.target.value;
-    setSchedule(newSchedule);
+    const newSchedule = scheduleForm.map((day, i) => {
+      if (i === index) {
+        return { ...day, startTime: event.target.value };
+      }
+      return day;
+    });
+    setScheduleForm(newSchedule);
     setIsChanged(true);
   };
 
   const handleEndTimeChange = (index, event) => {
-    const newSchedule = schedule;
-    newSchedule[index].endTime = event.target.value;
-    setSchedule(newSchedule);
+    const newSchedule = scheduleForm.map((day, i) => {
+      if (i === index) {
+        return { ...day, endTime: event.target.value };
+      }
+      return day;
+    });
+    setScheduleForm(newSchedule);
     setIsChanged(true);
   };
 
   const createSchedule = useCallback(async () => {
-    await dispatch(createDoctorSchedule(doctorId, schedule));
-  }, [dispatch, doctorId, schedule]);
+    await dispatch(
+      updateDoctorSchedule(
+        doctorId,
+        user?.schedule?._id,
+        scheduleForm
+      )
+    );
+  }, [dispatch, doctorId, scheduleForm, user.schedule?._id]);
+
 
   useEffect(() => {
-    if (user?.type === "doctor") {
-      dispatch(getDoctorSchedules(user.id));
-    }
-  }, [dispatch, user?.type, user?.id]);
+    console.log("useEffect");
+    console.log(scheduleForm);
+  }, [scheduleForm]);
 
-  // check user if not doctor, return to /calendar
-  // useEffect(() => {
-  //   if (user?.role !== "doctor") {
-  //     router.push("/calendar");
-  //   }
-  // }, [user]);
-
-  if (!originalSchedule.loaded)
+  if (user.type === "secretary")
     return (
       <div className={styles.logout}>
         <button
@@ -96,8 +100,8 @@ const ScheduleTable = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(schedule) &&
-              schedule.map((day, index) => (
+            {Array.isArray(scheduleForm) &&
+              scheduleForm.map((day, index) => (
                 <tr
                   key={index}
                   className={`${

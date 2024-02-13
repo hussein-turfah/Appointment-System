@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Input from "../../../../../common/Input";
 import { useDispatch, useSelector } from "react-redux";
-import { updatePatient } from "../../../../../actions/PatientActions";
+import { deletePatient, updatePatient } from "../../../../../actions/PatientActions";
 
 const Patients = () => {
   const dispatch = useDispatch();
@@ -116,7 +116,7 @@ const Patients = () => {
             <div
               className={styles.btn}
               onClick={() => {
-                console.log("delete");
+                dispatch(deletePatient(selectedPatient.id));
               }}
             >
               <FontAwesomeIcon icon={faTrashCan} />

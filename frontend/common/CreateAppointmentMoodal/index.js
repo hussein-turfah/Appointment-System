@@ -1,14 +1,23 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createAppointment } from "../../actions/AppointmentActions";
+import {
+  createAppointment,
+  updateAppointment,
+} from "../../actions/AppointmentActions";
 import Dropdown from "../Dropdown";
 import styles from "./styles/index.module.scss";
 import classNames from "classnames";
 import Input from "../Input";
 
-export default function CreateAppointmentModal({ active, setActive }) {
+export default function CreateAppointmentModal({
+  active,
+  setActive,
+  selectedAppointment,
+  appointmentId,
+  appointmentRange,
+}) {
   const dispatch = useDispatch();
-
+  console.log(appointmentRange);
   const [oldPatient, setOldPatient] = useState(false);
 
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
@@ -35,8 +44,15 @@ export default function CreateAppointmentModal({ active, setActive }) {
   });
 
   const create = useCallback(async () => {
-    await dispatch(createAppointment({ ...formData, ...newPatientData }));
-  }, [dispatch, formData, newPatientData]);
+    if (appointmentId && selectedAppointment) {
+      await dispatch(
+        updateAppointment(appointmentId, { ...formData, ...newPatientData })
+      );
+      console.log({ ...formData, ...newPatientData });
+    } else {
+      await dispatch(createAppointment({ ...formData, ...newPatientData }));
+    }
+  }, [dispatch, formData, newPatientData, appointmentId, selectedAppointment]);
 
   const age = (newPatientData) => {
     const dob = new Date(newPatientData.dob);
@@ -63,6 +79,19 @@ export default function CreateAppointmentModal({ active, setActive }) {
       return "";
     }
   };
+
+  useEffect(() => {
+    if (selectedAppointment && appointmentId && appointmentRange) {
+      setFormData({
+        doctor: `${selectedAppointment.doctor}`,
+        patient: `${selectedAppointment.patient}`,
+        start: appointmentRange?.start?.toString().slice(0, 16),
+        end: appointmentRange?.end?.toString().slice(0, 16),
+        reason: selectedAppointment.reason,
+      });
+      setOldPatient(true);
+    }
+  }, []);
 
   return (
     <form
@@ -147,7 +176,14 @@ export default function CreateAppointmentModal({ active, setActive }) {
             [styles.item]: true,
             [styles.active]: oldPatient,
           })}
-          onClick={() => setOldPatient(true)}
+          onClick={() => {
+            setOldPatient(true);
+
+            setFormData({
+              ...formData,
+              newPatient: false,
+            });
+          }}
         >
           Old Patient
         </div>
@@ -156,7 +192,13 @@ export default function CreateAppointmentModal({ active, setActive }) {
             [styles.item]: true,
             [styles.active]: !oldPatient,
           })}
-          onClick={() => setOldPatient(false)}
+          onClick={() => {
+            setOldPatient(false);
+            setFormData({
+              ...formData,
+              newPatient: true,
+            });
+          }}
         >
           New Patient
         </div>
@@ -174,9 +216,14 @@ export default function CreateAppointmentModal({ active, setActive }) {
                     (patient) => patient.id === formData?.patient
                   )[0]?.firstName +
                   " " +
-                  allPatients?.data.filter(
-                    (patient) => patient.id === formData.patient
-                  )[0]?.lastName
+                  (
+                    allPatients?.data?.find(
+                      (patient) => patient.id === formData.patient
+                    ) ||
+                    allPatients?.data?.find(
+                      (patient) => patient._id === formData.patient
+                    )
+                  )?.lastName
                 : ""
             }
             values={
@@ -355,7 +402,7 @@ export default function CreateAppointmentModal({ active, setActive }) {
         type="submit"
         className="btn btn-primary w-50 mx-auto mb-3 w-full border-2 bg-gray-500 text-white border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
       >
-        Submit
+        {appointmentId && selectedAppointment ? "Update" : "Create"} Appointment
       </button>
     </form>
   );

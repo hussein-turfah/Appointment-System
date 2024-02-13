@@ -11,7 +11,6 @@ export const ACTIONS = {
   GET_INVOICES_BY_DOCTOR_ID: "/invoices/doctor/:invoiceId",
   GET_INVOICES_BY_DATE: "/invoices/day/:date",
   GET_INVOICES_AND_TOTAL: "/invoices/:date/:doctorId?",
-
 };
 
 export const createInvoice = (patientId, invoice) => async (dispatch) => {
@@ -40,9 +39,10 @@ export const updateInvoice = (id, invoice) => async (dispatch) => {
 export const deleteInvoice = (id) => async (dispatch) => {
   try {
     await axios.delete(`/invoices/${id}`);
+    toast.success("Invoice deleted successfully");
     dispatch({ type: ACTIONS.DELETE_INVOICE, id });
   } catch (error) {
-    toast.error("Error while deleting invoice");
+    console.log(error);
   }
 };
 
@@ -93,10 +93,9 @@ export const getAllInvoices = () => async (dispatch) => {
 
 export const getInvoicesAndTotal = (date, doctorId) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/invoices/${date}/${doctorId || ''}`);
+    const { data } = await axios.get(`/invoices/${date}/${doctorId || ""}`);
     // Handle data as needed
     dispatch({ type: ACTIONS.GET_INVOICES_AND_TOTAL, data });
-
   } catch (error) {
     toast.error("Error while fetching invoices and totals");
     console.log(error);

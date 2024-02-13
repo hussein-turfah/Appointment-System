@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 export const ACTIONS = {
   CREATE_DOCTOR_SCHEDULE: "/schedule/:doctorId",
-  GET_DOCTOR_SCHEDULES: "/schedule/:doctorId",
+  GET_DOCTOR_SCHEDULE: "/schedule/:doctorId",
   UPDATE_DOCTOR_SCHEDULE: "/schedule/:doctorId/:scheduleId",
   DELETE_DOCTOR_SCHEDULE: "/schedule/:doctorId/:scheduleId",
 };
@@ -20,10 +20,10 @@ export const createDoctorSchedule =
     }
   };
 
-export const getDoctorSchedules = (doctorId) => async (dispatch) => {
+export const getDoctorSchedule = (doctorId) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/schedule/${doctorId}`);
-    dispatch({ type: ACTIONS.GET_DOCTOR_SCHEDULES, data });
+    dispatch({ type: ACTIONS.GET_DOCTOR_SCHEDULE, data });
   } catch (error) {
     toast.error("Error while fetching doctor schedules");
   }
@@ -32,11 +32,14 @@ export const getDoctorSchedules = (doctorId) => async (dispatch) => {
 export const updateDoctorSchedule =
   (doctorId, scheduleId, scheduleData) => async (dispatch) => {
     try {
-      const { data } = await axios.put(
-        `/schedule/${doctorId}/${scheduleId}`,
-        scheduleData
-      );
-      dispatch({ type: ACTIONS.UPDATE_DOCTOR_SCHEDULE, data });
+      console.log("updateDoctorSchedule", scheduleData);
+      const { data } = await axios.put(`/schedule/${doctorId}/${scheduleId}`, {
+        id: scheduleId,
+        weekdays: scheduleData,
+      });
+
+      toast.success("Doctor schedule updated successfully");
+      dispatch(getDoctorSchedule(doctorId));
     } catch (error) {
       toast.error("Error while updating doctor schedule");
     }

@@ -38,6 +38,7 @@ export const updateAppointment = (id, appointment) => async (dispatch) => {
   try {
     const { data } = await axios.put(`/appointment/${id}`, appointment);
 
+    toast.success("Appointment updated successfully");
     dispatch({ type: ACTIONS.UPDATE_APPOINTMENT, data });
   } catch (error) {
     toast.error("Error while updating appointment");
@@ -49,9 +50,12 @@ export const deleteAppointment = (id) => async (dispatch) => {
   try {
     await axios.delete(`/appointment/${id}`);
 
+    toast.success("Appointment deleted successfully");
+    dispatch(getAllAppointments());
+
     dispatch({ type: ACTIONS.DELETE_APPOINTMENT, id });
   } catch (error) {
-    toast.error("Error while deleting appointment");
+    console.log(error);
   }
 };
 
