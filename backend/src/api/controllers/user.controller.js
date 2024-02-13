@@ -7,7 +7,6 @@ const httpStatus = require("http-status");
  */
 exports.loggedIn = async (req, res) => {
   try {
-    console.log(req.user);
     // Check if req.user is present (assuming req.user contains the user ID extracted from the token)
     if (!req.user) {
       return res
@@ -15,18 +14,14 @@ exports.loggedIn = async (req, res) => {
         .json({ message: "User not authenticated" });
     }
 
-    // Fetch user from database based on user ID extracted from the token
-    const user = await User.findById(req.user);
+    // Get the user details and populate all fields except password
+    const user = await User.get(req.user.id, { populate: "schedule" });
 
-    // Check if user exists
-    if (!user) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: "User not found" });
-    }
+    // Transform user data before sending response
+    const transformedUser = user.transform();
 
-    // Return user info
-    res.status(httpStatus.OK).json(user.transform());
+    // Send response
+    res.status(httpStatus.OK).json(transformedUser);
   } catch (error) {
     // Handle errors
     console.error("Error in loggedIn:", error);

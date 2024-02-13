@@ -81,7 +81,7 @@ const createAppointment = async (req, res) => {
       phone,
       dob,
       city,
-      gender
+      gender,
     } = req.body;
 
     let existingPatient;
@@ -94,7 +94,7 @@ const createAppointment = async (req, res) => {
       });
     }
 
-    if (newPatient=== false) {
+    if (newPatient === false) {
       existingPatient = await Patient.get(patient);
       if (!existingPatient) {
         throw new Error({
@@ -110,11 +110,13 @@ const createAppointment = async (req, res) => {
         phone,
         dob,
         city,
-        gender
+        gender,
       };
-      const newPatientInstance = new Patient(newPatientData);
+      const newPatientInstance = await new Patient(newPatientData);
       existingPatient = await newPatientInstance.save();
     }
+
+    console.log(existingPatient, "existingPatient._id")
 
     const newAppointment = new Appointment({
       doctor,
@@ -129,14 +131,13 @@ const createAppointment = async (req, res) => {
     // Transform appointment data before sending response
     const transformedAppointment = appointment.transform();
 
-    res.status(httpStatus.CREATED).json({...transformedAppointment});
+    res.status(httpStatus.CREATED).json({ ...transformedAppointment });
   } catch (error) {
     res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
       message: error.message,
     });
   }
 };
-
 
 /**
  * Get appointment by doctor id
@@ -235,9 +236,24 @@ const updateAppointmentStatus = async (req, res) => {
 const updateAppointment = async (req, res) => {
   try {
     const { id } = req.params;
-    const { data } = req.body;
+    const {
+      doctor,
+      patient,
+      start,
+      end,
+      reason,
+      newPatient,
+      firstName,
+      lastName,
+      email,
+      phone,
+      dob,
+      city,
+      gender,
+    } = req.body;
+    let existingPatient;
 
-    const appointment = await Appointment.update(id, data);
+    const appointment = await Appointment.get(id);
 
     if (!appointment) {
       throw new Error({
@@ -246,8 +262,46 @@ const updateAppointment = async (req, res) => {
       });
     }
 
+    const existingDoctor = await User.get(doctor);
+    if (!existingDoctor || existingDoctor.type !== "doctor") {
+      throw new Error({
+        message: "Doctor does not exist",
+        status: httpStatus.NOT_FOUND,
+      });
+    }
+
+    if (newPatient === false) {
+      existingPatient = await Patient.get(patient);
+      if (!existingPatient) {
+        throw new Error({
+          message: "Patient does not exist",
+          status: httpStatus.NOT_FOUND,
+        });
+      }
+    } else if (newPatient === true) {
+      const newPatientData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dob,
+        city,
+        gender,
+      };
+      const newPatientInstance = new Patient(newPatientData);
+      existingPatient = await newPatientInstance.save();
+    }
+
+    const updatedAppointment = await Appointment.update(id, {
+      doctor,
+      patient: newPatient ? existingPatient._id : patient,
+      start,
+      end,
+      reason,
+    });
+
     // Transform appointment data before sending response
-    const transformedAppointment = appointment.transform();
+    const transformedAppointment = updatedAppointment.transform();
 
     res.status(httpStatus.OK).json(transformedAppointment);
   } catch (error) {

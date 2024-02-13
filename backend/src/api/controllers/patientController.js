@@ -10,7 +10,7 @@ const createPatient = async (req, res) => {
       dob,
       phone,
       city,
-      gender
+      gender,
     });
 
     return res.status(201).json({
@@ -50,19 +50,20 @@ const getAllPatients = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // Fetching patients with pagination
-    const patients = await Patient.find().skip(skip).limit(limit);
+    const patients = await Patient.find();
+    // .skip(skip).limit(limit);
 
     // Check if there are more pages
     const totalPatients = await Patient.countDocuments();
     const hasMore = page * limit < totalPatients;
 
     return res.status(200).json({
-      pagination: {
-        page,
-        limit,
-        totalPatients,
-        hasMore,
-      },
+      // pagination: {
+      //   page,
+      //   limit,
+      //   totalPatients,
+      //   hasMore,
+      // },
       data: patients.map((patient) => patient.transform()),
     });
   } catch (error) {

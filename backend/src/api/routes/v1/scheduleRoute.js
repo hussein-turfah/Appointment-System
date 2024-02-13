@@ -8,7 +8,7 @@ const {
 } = require('../../utils/validators/scheduleValidator');
 const {
   createDoctorSchedule,
-  getDoctorSchedules,
+  getDoctorSchedule,
   updateDoctorSchedule,
   deleteDoctorSchedule,
 } = require('../../controllers/scheduleController');
@@ -29,7 +29,7 @@ router.post('/:doctorId', createDoctorScheduleValidator, async (req, res) => {
 });
 
 // Route for getting schedules for a specific doctor
-router.get('/:doctorId', getDoctorSchedules);
+router.get('/:doctorId', getDoctorSchedule);
 
 // Route for updating a doctor schedule
 router.put('/:doctorId/:scheduleId', updateDoctorScheduleValidator, async (req, res) => {

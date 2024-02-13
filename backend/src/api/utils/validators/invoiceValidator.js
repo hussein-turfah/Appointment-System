@@ -37,10 +37,3 @@ exports.updateInvoiceValidator = [
     .withMessage('Amount must be a number'),
   validatorMiddleware,
 ];
-
-exports.deleteInvoiceValidator = [
-  check('id')
-    .isMongoId()
-    .withMessage('Invalid invoice ID format'),
-  validatorMiddleware,
-];

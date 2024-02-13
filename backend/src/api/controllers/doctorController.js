@@ -10,8 +10,8 @@ const { createDoctorSchedule } = require("./scheduleController");
 const getDoctorById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const user = await User.get(id);
+    //populate the schedule field
+    const user = await User.get(id, { populate: "schedule" });
 
     if (!user || user.type !== "doctor") {
       throw new Error({
@@ -37,7 +37,8 @@ const getDoctorById = async (req, res) => {
  */
 const getAllDoctors = async (req, res) => {
   try {
-    const doctors = await User.find({ type: "doctor" }).exec();
+    // Get all doctors and populate everything
+    const doctors = await User.find({ type: "doctor" }).populate("schedule");
 
     if (!doctors.length) {
       res.status(httpStatus.OK).json([]);
@@ -90,7 +91,8 @@ const addDoctor = async (req, res, next) => {
 
     const doctor = await User.create(doctorData);
 
-    createDoctorSchedule(doctor._id, {
+    // Create a schedule for the doctor
+    await createDoctorSchedule(doctor._id, {
       weekdays: [
         {
           day: "Monday",
@@ -120,9 +122,10 @@ const addDoctor = async (req, res, next) => {
       ],
     });
 
-    res.status(httpStatus.CREATED).json({
-      ...doctor.transform(),
-    });
+    doctor.schedule = doctor._id;
+    await doctor.save();
+
+    res.status(httpStatus.CREATED).json(doctor.transform());
   } catch (error) {
     next(error);
   }

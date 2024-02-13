@@ -59,7 +59,11 @@ const userSchema = new mongoose.Schema(
     color: {
       type: String,
       trim: true,
-      unique: true,      
+      unique: true,
+    },
+    schedule: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "DoctorSchedule",
     },
   },
   {
@@ -90,6 +94,7 @@ userSchema.method({
       "type",
       "avatar",
       "color",
+      "schedule",
     ];
 
     fields.forEach((field) => {
@@ -118,7 +123,7 @@ userSchema.statics = {
       let user;
 
       if (mongoose.Types.ObjectId.isValid(id)) {
-        user = await this.findById(id).exec();
+        user = await this.findById(id).populate("schedule");
       }
       if (user) {
         return user;

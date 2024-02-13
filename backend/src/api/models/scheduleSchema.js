@@ -12,7 +12,15 @@ const doctorScheduleSchema = new mongoose.Schema(
         day: {
           type: String,
           required: true,
-          enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          enum: [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ],
         },
         startTime: {
           type: String,
@@ -32,17 +40,16 @@ const doctorScheduleSchema = new mongoose.Schema(
   }
 );
 
-
 // statics
 
 doctorScheduleSchema.statics = {
-  async getDoctorSchedules(doctorId) {
-    return this.find({ doctor: doctorId });
+  async getDoctorSchedule(doctorId) {
+    return this.findOne({ doctor: doctorId });
   },
   async updateDoctorSchedule(scheduleId, updatedFields) {
     return this.findByIdAndUpdate(scheduleId, updatedFields, { new: true });
   },
-  
+
   async createDoctorSchedule(doctorId, weekdays) {
     return this.create({
       doctor: doctorId,
@@ -50,6 +57,5 @@ doctorScheduleSchema.statics = {
     });
   },
 };
-
 
 module.exports = mongoose.model("DoctorSchedule", doctorScheduleSchema);
