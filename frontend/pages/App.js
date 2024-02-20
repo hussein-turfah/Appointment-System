@@ -30,7 +30,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     } else if (token) {
       dispatch(getUser(token));
     }
-  }, [token, router.pathname, dispatch]);
+  }, [token, dispatch, router.pathname]);
 
   return (
     <div className="page">
