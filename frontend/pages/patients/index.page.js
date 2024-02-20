@@ -10,43 +10,60 @@ const PatientsTable = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [modal, setModal] = useState(false);
+  const [search, setSearch] = useState("");
   const user = useSelector(({ UserData }) => UserData.data);
   const allPatients = useSelector(
     ({ PatientData }) => PatientData?.allPatients?.data?.data
   );
 
   useEffect(() => {
-    dispatch(getAllPatients());
-  }, [dispatch]);
+    dispatch(getAllPatients(search));
+  }, [dispatch, search]);
 
   return (
     <div className="flex flex-col w-full justify-end overflow-x-auto shadow-md sm:rounded-lg mt-20">
-      <div className="flex ">
-        <button
-          onClick={() =>
-            router.push(`/patients/${router.query.patientId}/printmed`)
-          }
-          className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40"
-        >
-          Print Medial Record
-        </button>
-        <button
-          onClick={() =>
-            router.push(`/patients/${router.query.patientId}/printpre`)
-          }
-          className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40"
-        >
-          Print Prescription
-        </button>{" "}
-        {/* Button 2 */}
-        {(user.role === "admin" || user.role === "secretary") && (
+      <div className="flex justify-between items-center mb-5">
+        <div className="flex items-center">
           <button
-            onClick={() => setModal(true)}
-            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 w-40"
+            onClick={() =>
+              router.push(`/patients/${router.query.patientId}/printmed`)
+            }
+            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 
+            text-nowrap
+
+            "
           >
-            Create Patient
+            Print Medial Record
           </button>
-        )}
+          <button
+            onClick={() =>
+              router.push(`/patients/${router.query.patientId}/printpre`)
+            }
+            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap
+            "
+          >
+            Print Prescription
+          </button>{" "}
+          {/* Button 2 */}
+          {(user.role === "admin" || user.role === "secretary") && (
+            <button
+              onClick={() => setModal(true)}
+              className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap"
+            >
+              Create Patient
+            </button>
+          )}
+        </div>
+        <div className="flex items-center w-1/3">
+          <input
+            type="text"
+            placeholder="Search for patient"
+            className="p-3 w-full bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg"
+            onChange={(e) => {
+              setSearch(e.target.value)
+            }}
+          />
+        </div>
       </div>
 
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
