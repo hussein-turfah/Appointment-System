@@ -16,8 +16,8 @@ import Modal from "../../common/Modal";
 import CreateAppointmentModal from "../../common/CreateAppointmentMoodal";
 import { getAllPatients } from "../../actions/PatientActions";
 import { useRouter } from "next/router";
-import CreatePatientModal from "../../common/CreatePatientModal";
 import CreateUserModal from "../../common/CreateUserModal";
+import AppointmentStatusModal from "../../common/AppointmentStatusModal";
 
 export default function Calendar() {
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ export default function Calendar() {
   const [appointmentModal, setAppointmentModal] = useState(false);
   const [modal, setModal] = useState(false);
   const [isSelected, setIsSelected] = useState({});
+  const [statusModal, setStatusModal] = useState(false);
 
   const user = useSelector(({ UserData }) => UserData.data);
   const allAppointments = useSelector(
@@ -41,6 +42,55 @@ export default function Calendar() {
   const removeAppointment = useCallback(() => {
     dispatch(deleteAppointment(isSelected?.id));
   }, [dispatch, isSelected]);
+
+  let events =
+    allAppointments.data.length > 0
+      ? allAppointments.data.map((event) => {
+          let color;
+          switch (event.status) {
+            case "scheduled":
+              color = "blue";
+              break;
+            case "cancelled":
+              color = "black";
+              break;
+            case "completed":
+              color = "green";
+              break;
+            case "absent":
+              color = "gray";
+              break;
+            case "rescheduled":
+              color = "orange";
+              break;
+            default:
+              color = "blue";
+          }
+          return { ...event, backgroundColor: color };
+        })
+      : doctorAppointments.data.map((event) => {
+          let color;
+          switch (event.status) {
+            case "scheduled":
+              color = "blue";
+              break;
+            case "cancelled":
+              color = "black";
+              break;
+            case "completed":
+              color = "green";
+              break;
+            case "absent":
+              color = "gray";
+              break;
+            case "rescheduled":
+              color = "orange";
+              break;
+            default:
+              color = "blue";
+          }
+          return { ...event, backgroundColor: color };
+        });
 
   useEffect(() => {
     if (user.role === "admin" || user.type === "secretary") {
@@ -108,6 +158,12 @@ export default function Calendar() {
                 Edit Appointment
               </button>
               <button
+                onClick={() => setStatusModal(true)}
+                className="btn btn-primary mb-3 w-50"
+              >
+                Update Status
+              </button>
+              <button
                 onClick={removeAppointment}
                 className="btn btn-primary mb-3 w-50"
               >
@@ -147,13 +203,14 @@ export default function Calendar() {
         }}
         height={"90vh"}
         events={
-          user.type === "doctor"
-            ? doctorAppointments.data
-            : selectedDoctor === "all"
-            ? allAppointments.data
-            : allAppointments.data.filter(
-                (appointment) => appointment.doctor === selectedDoctor
-              )
+          events
+          // user.type === "doctor"
+          //   ? doctorAppointments.data
+          //   : selectedDoctor === "all"
+          //   ? allAppointments.data
+          //   : allAppointments.data.filter(
+          //       (appointment) => appointment.doctor === selectedDoctor
+          //     )
         }
         editable={user?.role === "admin" || user?.type === "secretary"}
         droppable={user?.role === "admin" || user?.type === "secretary"}
@@ -164,6 +221,7 @@ export default function Calendar() {
         eventContent={(e) => {
           return (
             <div className={styles.eventContent}>
+              <h1>{e.timeText}</h1>
               {(user?.role === "admin" || user?.type === "secretary") && (
                 <p>
                   Doctor: {e?.event?.extendedProps?.doctor?.firstName}{" "}
@@ -175,29 +233,16 @@ export default function Calendar() {
                 {e?.event?.extendedProps?.patient?.lastName}
               </p>
               <p>Status: {e?.event?.extendedProps?.status}</p>
-              {console.log(e?.event?.extendedProps.doctor)}
+              <p>{e.event.extendedProps.reason}</p>
             </div>
           );
         }}
-        eventBackgroundColor={
-          // user?.role === "admin" || user?.type === "secretary"?
-          (info) => {
-            if (info?.event?.extendedProps?.status === "created") {
-              return "blue";
-            } else if (info?.event?.extendedProps?.status === "done") {
-              return "green";
-            } else if (info?.event?.extendedProps?.status === "canceled") {
-              return "red";
-            } else if (info?.event?.extendedProps?.status === "absent") {
-              return "yellow";
-            } else if (info?.event?.extendedProps?.status === "rescheduled") {
-              return "purple";
-            } else {
-              return "black";
-            }
-          }
-          // : null
-        }
+        eventBorderColor={(info) => {
+          return info.event.backgroundColor.toString();
+        }}
+        eventBackgroundColor={(info) => {
+          return info.event.backgroundColor.toString();
+        }}
       />
       <Modal
         active={appointmentModal}
@@ -221,6 +266,23 @@ export default function Calendar() {
         setActive={setModal}
         title="Create User"
         children={<CreateUserModal open={modal} setOpen={setModal} />}
+      />
+      <Modal
+        active={statusModal}
+        setActive={setStatusModal}
+        title="Update Status"
+        children={
+          <AppointmentStatusModal
+            active={statusModal}
+            setActive={setStatusModal}
+            selectedAppointment={isSelected?.extendedProps}
+            appointmentId={isSelected?.id}
+            appointmentRange={{
+              start: isSelected.startStr,
+              end: isSelected.endStr,
+            }}
+          />
+        }
       />
     </main>
   );
