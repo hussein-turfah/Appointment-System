@@ -1,4 +1,5 @@
 const Patient = require("../models/patientSchema");
+const mongoose = require("mongoose");
 
 const createPatient = async (req, res) => {
   try {
@@ -42,20 +43,27 @@ const getPatientById = async (req, res) => {
 
 const getAllPatients = async (req, res) => {
   try {
-    // Pagination parameters
-    const page = req.query.page ? parseInt(req.query.page) : 1;
-    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const { search } = req.query;
 
-    // Logic for skipping records based on page and limit
-    const skip = (page - 1) * limit;
-
-    // Fetching patients with pagination
-    const patients = await Patient.find();
-    // .skip(skip).limit(limit);
-
+    // const page = req.query.page ? parseInt(req.query.page) : 1;
+    // const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    // const skip = (page - 1) * limit;
+    // const patients = await Patient.find().skip(skip).limit(limit);
     // Check if there are more pages
-    const totalPatients = await Patient.countDocuments();
-    const hasMore = page * limit < totalPatients;
+    // const totalPatients = await Patient.countDocuments();
+    // const hasMore = page * limit < totalPatients;
+
+    // find patients by query
+    const patients = await Patient.find({
+      $or: [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { city: { $regex: search, $options: "i" } },
+        { _id: mongoose.Types.ObjectId.isValid(search) ? new mongoose.Types.ObjectId(search) : null },
+      ]
+    });
 
     return res.status(200).json({
       // pagination: {

@@ -39,7 +39,7 @@ const getAppointmentById = async (req, res) => {
  */
 const getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find().exec();
+    const appointments = await Appointment.list();
 
     if (!appointments.length) {
       res.status(httpStatus.OK).json([]);
@@ -116,7 +116,7 @@ const createAppointment = async (req, res) => {
       existingPatient = await newPatientInstance.save();
     }
 
-    console.log(existingPatient, "existingPatient._id")
+    console.log(existingPatient, "existingPatient._id");
 
     const newAppointment = new Appointment({
       doctor,

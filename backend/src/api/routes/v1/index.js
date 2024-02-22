@@ -11,6 +11,7 @@ const appointmentRoutes = require("./appointment.route");
 const scheduleRoutes = require("./scheduleRoute");
 const AdminRoute = require("./adminRoutes");
 const UserRoute = require("./user.route");
+const serviceRoute = require("./serviceRoute");
 
 const { protect } = require("../../controllers/authControllers");
 const app = express();
@@ -32,5 +33,6 @@ router.use("/appointment", protect, appointmentRoutes);
 router.use("/schedule", protect, scheduleRoutes);
 // router.use("/pdf",pdfRoute)
 router.use("/user", protect, UserRoute);
+router.use("/service", protect, serviceRoute);
 
 module.exports = router;

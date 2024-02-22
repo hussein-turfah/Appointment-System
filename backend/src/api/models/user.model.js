@@ -65,6 +65,26 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "DoctorSchedule",
     },
+    specialty: {
+      type: String,
+      required: true,
+    },
+    services: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    feeRatio: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,

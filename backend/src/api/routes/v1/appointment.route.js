@@ -41,7 +41,7 @@ router
     getAppointmentByPatientId
   );
 
-router.patch(
+router.put(
   "/:id/:status",
   updateAppointmentStatusValidator,
   updateAppointmentStatus
