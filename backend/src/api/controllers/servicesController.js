@@ -119,13 +119,13 @@ const getServicesByDoctorId = async (req, res) => {
     }
 
     // Extract the doctor's ID
-    const doctorId = user._id;
+    // const doctorId = user._id;
 
     // Retrieve the services for the doctor
     const services = user.services;
 
     // Send the services as response
-    res.status(200).json({ doctorId, services });
+    res.status(200).json({ services });
   } catch (error) {
     console.error("Error retrieving services:", error);
     res.status(500).json({ message: "Server Error" });

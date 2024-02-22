@@ -2,6 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   --color1: #8942da;
   --color2: #00d8d8;
@@ -22,6 +23,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   font-family: "Montserrat", sans-serif;
+  background-color: #2b3344;
 }
 
 ::-webkit-scrollbar {

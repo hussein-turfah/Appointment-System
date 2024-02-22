@@ -55,9 +55,21 @@ export default function Nav() {
             setActive={setActive}
           />
           <Tab
-            text={"Doctors"}
-            icon={faUsers}
-            active={active === "doctors"}
+            text={
+              user.type === "doctor"
+                ? "Services"
+                : user.role === "admin" || user.type === "secretary"
+                ? "Doctors"
+                : null
+            }
+            icon={
+              user.type === "doctor"
+                ? faBriefcase
+                : user.role === "admin" || user.type === "secretary"
+                ? faUsers
+                : null
+            }
+            active={active === "services" || active === "doctors"}
             setActive={setActive}
           />
           <Tab
