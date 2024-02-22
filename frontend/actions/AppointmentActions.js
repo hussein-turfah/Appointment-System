@@ -93,7 +93,8 @@ export const updateAppointmentStatus = (id, status) => async (dispatch) => {
   try {
     const { data } = await axios.put(`/appointment/${id}/${status}`);
 
-    dispatch({ type: ACTIONS.UPDATE_APPOINTMENT_STATUS, data });
+    dispatch(getAllAppointments());
+    toast.success("Appointment status updated successfully");
   } catch (error) {
     toast.error("Error while updating appointment status");
   }
