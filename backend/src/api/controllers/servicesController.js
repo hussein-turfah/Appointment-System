@@ -125,7 +125,7 @@ const getServicesByDoctorId = async (req, res) => {
     const services = user.services;
 
     // Send the services as response
-    res.status(200).json({ services });
+    res.status(200).json({ data: services });
   } catch (error) {
     console.error("Error retrieving services:", error);
     res.status(500).json({ message: "Server Error" });
