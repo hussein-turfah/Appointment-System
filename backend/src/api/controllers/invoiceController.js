@@ -1,52 +1,99 @@
 const Invoice = require('../models/invoice.model');
-
+const User = require('../models/user.model');
 
 const createInvoice = async (req, res) => {
-    try {
-      const {patientId} = req.params;
-      const { doctorId, amount, currency,paymentStatus } = req.body;
-  
+  try {
+      const { patientId } = req.params;
+      const { doctorId, amount, currency, paymentStatus } = req.body;
+
+      // Retrieve doctor's information from the database
+      const doctor = await User.findById(doctorId);
+      if (!doctor || doctor.type !== 'doctor') {
+          return res.status(404).json({ message: 'Doctor not found' });
+      }
+
+      // Calculate the doctor's amount considering the doctor's fee ratio
+      const feeRatio = doctor.feeRatio;
+      const clinicAmount = amount * (1 - feeRatio / 100); // Calculate the doctor's amount
+      console.log(clinicAmount)
+
+      // Calculate the clinic's amount (original amount minus doctor's amount)
+      const doctorAmount = amount - clinicAmount;
+
+      // Check if doctorAmount and clinicAmount are valid numbers
+      if (isNaN(doctorAmount) || isNaN(clinicAmount) || doctorAmount < 0 || clinicAmount < 0) {
+          return res.status(400).json({ message: 'Invalid amount calculation' });
+      }
+
+      // Create the new invoice with doctor and clinic amounts
       const newInvoice = new Invoice({
-        patient: patientId,
-        doctor: doctorId,
-        amount: amount,
-        currency: currency,
-        paymentStatus: paymentStatus
+          patient: patientId,
+          doctor: doctorId,
+          amount: amount,
+          doctorAmount: doctorAmount,
+          clinicAmount: clinicAmount,
+          currency: currency,
+          paymentStatus: paymentStatus
       });
-  
+
       await newInvoice.save();
-  
+
       console.log('Invoice created successfully:', newInvoice);
       res.status(201).json(newInvoice);
-    } catch (error) {
+  } catch (error) {
       console.error('Error creating invoice:', error);
       res.status(500).json({ message: 'Server Error' });
-    }
-  };
-  
+  }
+};
+
+
 // Update Invoice
 const updateInvoice = async (req, res) => {
-    try {
-      const { invoiceId } = req.params;
-      const { amount, currency, paymentStatus } = req.body;
-  
-      const updatedInvoice = await Invoice.findByIdAndUpdate(invoiceId, {
-        amount: amount,
-        currency: currency,
-        paymentStatus: paymentStatus
-      }, { new: true });
-  
-      if (!updatedInvoice) {
-        return res.status(404).json({ message: 'Invoice not found' });
-      }
-  
-      console.log('Invoice updated successfully:', updatedInvoice);
-      res.status(200).json(updatedInvoice);
-    } catch (error) {
-      console.error('Error updating invoice:', error);
-      res.status(500).json({ message: 'Server Error' });
+  try {
+    const { invoiceId } = req.params;
+    const { amount, currency, paymentStatus } = req.body;
+
+    // Retrieve existing invoice from the database
+    let invoice = await Invoice.findById(invoiceId);
+    if (!invoice) {
+      return res.status(404).json({ message: 'Invoice not found' });
     }
-  };
+
+    // Retrieve doctor's information from the database
+    const doctor = await User.findById(invoice.doctor);
+    if (!doctor || doctor.type !== 'doctor') {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    // Calculate the doctor's amount considering the doctor's fee ratio
+    const feeRatio = doctor.feeRatio;
+    const clinicAmount = amount * (1 - feeRatio / 100); // Calculate the doctor's amount
+
+    // Calculate the clinic's amount (original amount minus doctor's amount)
+    const doctorAmount = amount - clinicAmount;
+
+    // Check if doctorAmount and clinicAmount are valid numbers
+    if (isNaN(doctorAmount) || isNaN(clinicAmount) || doctorAmount < 0 || clinicAmount < 0) {
+      return res.status(400).json({ message: 'Invalid amount calculation' });
+    }
+
+    // Update the invoice with new amounts and other details
+    invoice.amount = amount;
+    invoice.doctorAmount = doctorAmount;
+    invoice.clinicAmount = clinicAmount;
+    invoice.currency = currency;
+    invoice.paymentStatus = paymentStatus;
+
+    // Save the updated invoice
+    invoice = await invoice.save();
+
+    console.log('Invoice updated successfully:', invoice);
+    res.status(200).json(invoice);
+  } catch (error) {
+    console.error('Error updating invoice:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
   
   // Delete Invoice
   const deleteInvoice = async (req, res) => {
@@ -96,7 +143,7 @@ const updateInvoice = async (req, res) => {
         return res.status(404).json({ message: 'Invoice not found' });
       }
   
-      res.status(200).json(invoice);
+      res.status(200).json(invoice)
     } catch (error) {
       console.error('Error retrieving invoice by ID:', error);
       res.status(500).json({ message: 'Server Error' });
