@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
 const httpStatus = require("http-status");
-const { createDoctorSchedule } = require("./scheduleController");
+
 
 /**
  * Get doctor by id
@@ -37,22 +37,21 @@ const getDoctorById = async (req, res) => {
  */
 const getAllDoctors = async (req, res) => {
   try {
-    // Get all doctors and populate everything
-    const doctors = await User.find({ type: "doctor" }).populate("schedule");
+      const doctors = await User.find({ type: "doctor" }).populate('schedule');
 
-    if (!doctors.length) {
-      res.status(httpStatus.OK).json([]);
-    } else {
-      // Transform doctor data before sending response
-      const transformedDoctors = doctors.map((doctor) => doctor.transform());
-      res.status(httpStatus.OK).json(transformedDoctors);
-    }
+      if (!doctors || doctors.length === 0) {
+          return res.status(404).json({ message: 'No doctors found' });
+      }
+      res.status(200).json(doctors);
+      console.log('Doctors retrieved successfully:', doctors);
   } catch (error) {
-    res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
-      message: error.message,
-    });
+      console.error('Error retrieving doctors:', error);
+      res.status(500).json({ message: 'Server Error' });
   }
 };
+
+
+
 
 /**
  * Delete doctor by id
@@ -86,43 +85,8 @@ const addDoctor = async (req, res, next) => {
     const doctorData = req.body;
     doctorData.type = "doctor";
 
-    // Generate a random color for the doctor
-    doctorData.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
     const doctor = await User.create(doctorData);
-
-    // Create a schedule for the doctor
-    await createDoctorSchedule(doctor._id, {
-      weekdays: [
-        {
-          day: "Monday",
-          startTime: "09:00",
-          endTime: "18:00",
-        },
-        {
-          day: "Tuesday",
-          startTime: "09:00",
-          endTime: "18:00",
-        },
-        {
-          day: "Wednesday",
-          startTime: "09:00",
-          endTime: "18:00",
-        },
-        {
-          day: "Thursday",
-          startTime: "09:00",
-          endTime: "18:00",
-        },
-        {
-          day: "Friday",
-          startTime: "09:00",
-          endTime: "18:00",
-        },
-      ],
-    });
-
-    doctor.schedule = doctor._id;
     await doctor.save();
 
     res.status(httpStatus.CREATED).json(doctor.transform());

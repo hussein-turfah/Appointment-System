@@ -111,7 +111,6 @@ const InvoiceForm = ({
         <input
           id="patient"
           value={
-            selectedPatient?.firstName + " " + selectedPatient?.lastName ||
             patient?.firstName + " " + patient?.lastName
           }
           required

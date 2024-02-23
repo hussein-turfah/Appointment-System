@@ -1,3 +1,4 @@
+const { privateEncrypt } = require('crypto');
 const Invoice = require('../models/invoice.model');
 const User = require('../models/user.model');
 
@@ -15,7 +16,6 @@ const createInvoice = async (req, res) => {
       // Calculate the doctor's amount considering the doctor's fee ratio
       const feeRatio = doctor.feeRatio;
       const clinicAmount = amount * (1 - feeRatio / 100); // Calculate the doctor's amount
-      console.log(clinicAmount)
 
       // Calculate the clinic's amount (original amount minus doctor's amount)
       const doctorAmount = amount - clinicAmount;
@@ -35,10 +35,8 @@ const createInvoice = async (req, res) => {
           currency: currency,
           paymentStatus: paymentStatus
       });
-
       await newInvoice.save();
 
-      console.log('Invoice created successfully:', newInvoice);
       res.status(201).json(newInvoice);
   } catch (error) {
       console.error('Error creating invoice:', error);
@@ -205,8 +203,6 @@ const updateInvoice = async (req, res) => {
         if (!invoices || invoices.length === 0) {
             return res.status(404).json({ message: 'No invoices found' });
         }
-
-        console.log('Invoices retrieved successfully:', invoices);
         res.status(200).json(invoices);
     } catch (error) {
         console.error('Error retrieving invoices:', error);
