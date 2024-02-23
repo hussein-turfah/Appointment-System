@@ -8,6 +8,7 @@ import Dropdown from "../Dropdown";
 import styles from "./styles/index.module.scss";
 import classNames from "classnames";
 import Input from "../Input";
+import DateTimePicker from "react-datetime-picker";
 
 export default function CreateAppointmentModal({
   active,
@@ -152,7 +153,13 @@ export default function CreateAppointmentModal({
             type="datetime-local"
             className="form-control text-center w-50 mx-auto mb-3 w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             id="exampleFormControlInput1"
-            value={formData.end}
+            value={
+              formData.end
+                ? formData.end
+                : new Date(new Date(formData.start).getTime() + 135 * 60000)
+                    .toISOString()
+                    .slice(0, 16)
+            }
             onChange={(e) => setFormData({ ...formData, end: e.target.value })}
           />
         </div>
