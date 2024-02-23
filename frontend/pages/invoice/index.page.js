@@ -68,6 +68,12 @@ const InvoiceTable = () => {
               Date
             </th>
             <th scope="col" className="px-6 py-3">
+                Doctor Amount
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Clinic Amount
+            </th>
+            <th scope="col" className="px-6 py-3">
               Amount
             </th>
             <th scope="col" className="px-6 py-3">
@@ -99,6 +105,8 @@ const InvoiceTable = () => {
                 {`${invoice.doctor.firstName} ${invoice.doctor.lastName}`}
               </td>
               <td className="px-6 py-4">{invoice.date}</td>
+              <td className="px-6 py-4">{invoice.doctorAmount}</td>
+              <td className="px-6 py-4">{invoice.clinicAmount}</td>
               <td className="px-6 py-4">{invoice.amount}</td>
               <td className="px-6 py-4">{invoice.currency}</td>
               <td

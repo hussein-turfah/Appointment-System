@@ -1,8 +1,8 @@
-import axios from "../utils/Http";
+import axios from "../utils/Http"; // Assuming you have configured Axios properly
 import { toast } from "react-toastify";
 
 export const ACTIONS = {
-  GET_ALL_DOCTORS: "/doctor",
+  GET_ALL_DOCTORS: "GET_ALL_DOCTORS",
 };
 
 export const getAllDoctors = () => async (dispatch) => {
@@ -13,4 +13,6 @@ export const getAllDoctors = () => async (dispatch) => {
   } catch (error) {
     toast.error("Error while fetching doctors");
   }
-}
+};
+
+

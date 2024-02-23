@@ -56,11 +56,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    color: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
+
     schedule: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "DoctorSchedule",

@@ -80,9 +80,9 @@ export default function PatientInfo() {
             </button>
           </div>
           <div className={styles.infoContainer}>
-            {Array.isArray(prescriptions) && prescriptions.length > 0 && (
+            {/* {Array.isArray(prescriptions) && prescriptions.length > 0 && (
               <Prescriptions data={prescriptions || []} />
-            )}
+            )} */}
             {Array.isArray(medicalRecords) && medicalRecords.length > 0 && (
               <Medicalrecords data={medicalRecords || []} />
             )}
