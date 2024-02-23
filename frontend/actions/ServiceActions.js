@@ -6,6 +6,7 @@ export const ACTIONS = {
   CREATE_SERVICE: "/service",
   UPDATE_SERVICE: "/service/:id",
   DELETE_SERVICE: "/service/:id",
+  SELECT_SERVICE: "/service/:id",
 };
 
 export const getServices = () => async (dispatch) => {
@@ -52,3 +53,9 @@ export const deleteService = (id) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const selectService =
+  ({ data }) =>
+  async (dispatch) => {
+    dispatch({ type: ACTIONS.SELECT_SERVICE, data });
+  };

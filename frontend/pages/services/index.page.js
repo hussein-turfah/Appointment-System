@@ -5,20 +5,14 @@ import { useRouter } from "next/router";
 import Sidenav from "./components/Sidenav";
 import Modal from "../../common/Modal";
 import { getServices } from "../../actions/ServiceActions";
+import Services from "./components/details";
 
 export default function ServicesInfo() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [activeService, setActiveService] = useState({});
 
-  const [invoiceModal, setInvoiceModal] = useState(false);
-  const [recordModal, setRecordModal] = useState(false);
-  const [prescriptionModal, setPrescriptionModal] = useState(false);
-
-  const selectedPatient = useSelector(
-    ({ PatientData }) => PatientData?.selectedPatient.data
-  );
-
-  const user = useSelector(({ UserData }) => UserData.data);
+  const services = useSelector(({ ServiceData }) => ServiceData.allServices.data);
 
   const medicalRecords = useSelector(({ MedicalRecordData }) =>
     MedicalRecordData?.patientMedicalRecords.slice(0, 5)
@@ -37,11 +31,12 @@ export default function ServicesInfo() {
     <div className={styles.container}>
       <div>
         <Sidenav
-        // patients={allPatients.data}
-        // activePatient={activePatient}
-        // setActivePatient={setActivePatient}
+        services={services}
+        activeService={activeService}
+        setActiveService={setActiveService}
         />
-        <div className={styles.bodyContainer}>
+        <Services />
+        {/* <div className={styles.bodyContainer}>
           <div className={styles.btns}>
             <button
               onClick={() => {
@@ -65,39 +60,8 @@ export default function ServicesInfo() {
               Create Invoice
             </button>
           </div>
-          <div className={styles.infoContainer}>
-            {Array.isArray(prescriptions) && prescriptions.length > 0 && (
-              <Prescriptions data={prescriptions || []} />
-            )}
-            {Array.isArray(medicalRecords) && medicalRecords.length > 0 && (
-              <Medicalrecords data={medicalRecords || []} />
-            )}
-          </div>
-        </div>
+        </div> */}
       </div>
-      {/* <Modal
-        active={invoiceModal}
-        setActive={setInvoiceModal}
-        title="Create Invoice"
-        children={
-          <InvoiceForm
-            invoice={selectedPatient}
-            setInvoiceModal={setInvoiceModal}
-          />
-        }
-      />
-      <Modal
-        active={recordModal}
-        setActive={setRecordModal}
-        title="Create Medical Record"
-        children={<CreateRecordModal />}
-      />
-      <Modal
-        active={prescriptionModal}
-        setActive={setPrescriptionModal}
-        title="Create Prescription"
-        children={<CreatePrescriptionModal />}
-      /> */}
     </div>
   );
 }

@@ -1,22 +1,22 @@
 import classNames from "classnames";
 import styles from "./styles/index.module.scss";
 import { useDispatch } from "react-redux";
-import { getPatientById } from "../../../../../../actions/PatientActions";
 import { useCallback } from "react";
+import { selectService } from "../../../../../../actions/ServiceActions";
 
-export default function Patient({
-  patient,
+export default function Service({
+  service,
   index,
   active,
   setActive,
-  setActivePatient
+  setActiveService,
 }) {
   const dispatch = useDispatch();
 
   const select = async (id) => {
-    await dispatch(getPatientById(id));
     setActive(index);
-    setActivePatient(patient);
+    setActiveService(service);
+    dispatch(selectService({ data: service }));
   };
 
   return (
@@ -26,17 +26,10 @@ export default function Patient({
         [styles.patient]: true,
         [styles.active]: index === active,
       })}
-      onClick={() => select(patient.id)}
+      onClick={() => select(service.id)}
     >
       <div>
-        <h3>
-          {patient?.firstName} {patient?.lastName}
-        </h3>
-        <p>{patient?.email}</p>
-      </div>
-      <div>
-        <p>{patient?.age}</p>
-        <p>{patient?.city}</p>
+        <h3>{service?.name}</h3>
       </div>
     </div>
   );

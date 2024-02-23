@@ -9,7 +9,7 @@ const MedicalRecordTable = () => {
   const patientId = router.query.patientId;
 
   const medicalRecords = useSelector(
-    ({ MedicalRecordData }) => MedicalRecordData.medicalRecords
+    ({ MedicalRecordData }) => MedicalRecordData.patientMedicalRecords
   );
 
   useEffect(() => {
