@@ -244,6 +244,27 @@ const getInvoicesAndTotal = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+const getAllInvoicesByDoctor = async (req, res) => {
+  try {
+    const loggedInUserId = req.user._id;
+    const doctor = await User.findById(loggedInUserId);
+    if (!doctor || doctor.type !== "doctor") {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+    const doctorId = doctor._id;
+    const invoices = await Invoice.find({ doctor: doctorId });
+    if (!invoices || invoices.length === 0) {
+      return res.status(404).json({ message: 'No invoices found for the specified doctor.' });
+    }
+
+
+    res.status(200).json(invoices);
+  } catch (error) {
+    console.error('Error retrieving invoices for the doctor:', error); 
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
   
   module.exports = {
@@ -255,5 +276,6 @@ const getInvoicesAndTotal = async (req, res) => {
     getInvoicesByDoctorId,
     getInvoicesByDate,
     getAllInvoices,
-    getInvoicesAndTotal
+    getInvoicesAndTotal,
+    getAllInvoicesByDoctor
   };
