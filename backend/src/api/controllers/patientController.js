@@ -44,16 +44,13 @@ const getPatientById = async (req, res) => {
 const getAllPatients = async (req, res) => {
   try {
     const { search } = req.query;
+    if (!search || search === '""') {
+      const patients = await Patient.find();
+      const data = patients.map((patient) => patient.transform());
+      return res.status(200).json(data);
+    }
 
-    // const page = req.query.page ? parseInt(req.query.page) : 1;
-    // const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    // const skip = (page - 1) * limit;
-    // const patients = await Patient.find().skip(skip).limit(limit);
-    // Check if there are more pages
-    // const totalPatients = await Patient.countDocuments();
-    // const hasMore = page * limit < totalPatients;
-
-    // find patients by query
+    // Find patients by query
     const patients = await Patient.find({
       $or: [
         { firstName: { $regex: search, $options: "i" } },
@@ -61,19 +58,17 @@ const getAllPatients = async (req, res) => {
         { email: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
         { city: { $regex: search, $options: "i" } },
-        { _id: mongoose.Types.ObjectId.isValid(search) ? new mongoose.Types.ObjectId(search) : null },
-      ]
+        {
+          _id: mongoose.Types.ObjectId.isValid(search)
+            ? new mongoose.Types.ObjectId(search)
+            : null,
+        },
+      ],
     });
 
-    return res.status(200).json({
-      // pagination: {
-      //   page,
-      //   limit,
-      //   totalPatients,
-      //   hasMore,
-      // },
-      data: patients.map((patient) => patient.transform()),
-    });
+    const data = patients.map((patient) => patient.transform());
+
+    return res.status(200).json(data);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error retrieving patients" });
