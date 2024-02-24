@@ -113,7 +113,8 @@ export default function Calendar() {
       if (clickCnt === 1) {
         setTimeout(() => {
           if (clickCnt === 1) {
-            router.push(`/patients/${info.event.extendedProps.patient}`);
+            router.push(`/patients/${info.event.extendedProps.patient._id
+            }`);
           }
           clickCnt = 0;
         }, 400);
@@ -218,6 +219,12 @@ export default function Calendar() {
         slotDuration="00:15:00"
         slotMinTime="08:00:00"
         slotMaxTime="18:00:00"
+        slotLabelInterval={{ hours: 1 }}
+
+        // change slots direction from vertical to horizontal
+        
+
+
         eventContent={(e) => {
           return (
             <div className={styles.eventContent}>

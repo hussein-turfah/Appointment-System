@@ -32,7 +32,7 @@ export default function Nav() {
         transition={{ bounce: 0, type: "spring", duration: 0.8 }}
         className={styles.container}
       >
-        <div>
+        <div onClick={() => router.push("/calendar")} className={styles.logo}>
           <h1>TABIB CLINIC</h1>
         </div>
         <div className={styles.tabs}>

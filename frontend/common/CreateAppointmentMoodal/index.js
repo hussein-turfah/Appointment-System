@@ -1,3 +1,4 @@
+import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,7 +9,8 @@ import Dropdown from "../Dropdown";
 import styles from "./styles/index.module.scss";
 import classNames from "classnames";
 import Input from "../Input";
-import DateTimePicker from "react-datetime-picker";
+import { getAllPatients } from "../../actions/PatientActions";
+import { all } from "axios";
 
 export default function CreateAppointmentModal({
   active,
@@ -18,19 +20,17 @@ export default function CreateAppointmentModal({
   appointmentRange,
 }) {
   const dispatch = useDispatch();
-  console.log(appointmentRange);
   const [oldPatient, setOldPatient] = useState(false);
+  const [search, setSearch] = useState("");
 
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
-  const allPatients = useSelector(
-    ({ PatientData }) => PatientData.allPatients?.data
-  );
+  const allPatients = useSelector(({ PatientData }) => PatientData.allPatients);
   const [formData, setFormData] = useState({
-    doctor: `${allDoctors?.data[0]?.id}`,
+    doctor: `${allDoctors?.data[0]?._id}`,
     patient: "",
     date: "",
-    start: "",
-    end: "",
+    start: new Date().toISOString().slice(0, 16),
+    end: new Date(new Date().getTime() + 15 * 60000).toISOString().slice(0, 16),
     reason: "",
     newPatient: !oldPatient,
   });
@@ -94,6 +94,10 @@ export default function CreateAppointmentModal({
     }
   }, []);
 
+  useEffect(() => {
+    dispatch(getAllPatients(search));
+  }, [search]);
+
   return (
     <form
       onSubmit={(e) => {
@@ -110,24 +114,27 @@ export default function CreateAppointmentModal({
         <Dropdown
           value={
             formData.doctor
-              ? allDoctors.data?.filter(
-                  (doctor) => doctor.id === formData?.doctor
-                )[0]?.firstName +
-                " " +
-                allDoctors.data.filter(
-                  (doctor) => doctor.id === formData.doctor
-                )[0]?.lastName
-              : ""
+              ? {
+                  label:
+                    allDoctors.data.find(
+                      (doctor) => doctor._id === formData.doctor
+                    )?.firstName +
+                    " " +
+                    allDoctors.data.find(
+                      (doctor) => doctor._id === formData.doctor
+                    )?.lastName,
+                  value: formData.doctor,
+                }
+              : null
           }
-          values={allDoctors.data.map(
-            (doctor) => doctor.firstName + " " + doctor.lastName
-          )}
-          setValue={(value) =>
+          values={allDoctors.data.map((doctor) => ({
+            label: doctor.firstName + " " + doctor.lastName,
+            value: doctor._id,
+          }))}
+          setValue={(selectedValue) =>
             setFormData({
               ...formData,
-              doctor: allDoctors.data.filter(
-                (doctor) => doctor.firstName + " " + doctor.lastName === value
-              )[0]?.id,
+              doctor: selectedValue.value,
             })
           }
         />
@@ -141,7 +148,15 @@ export default function CreateAppointmentModal({
             id="exampleFormControlInput1"
             value={formData.start}
             onChange={(e) =>
-              setFormData({ ...formData, start: e.target.value })
+              setFormData({
+                ...formData,
+                start: e.target.value,
+                end: new Date(
+                  new Date(e.target.value).getTime() + 13.5 * 600000
+                )
+                  .toISOString()
+                  .slice(0, 16),
+              })
             }
           />
         </div>
@@ -153,13 +168,7 @@ export default function CreateAppointmentModal({
             type="datetime-local"
             className="form-control text-center w-50 mx-auto mb-3 w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             id="exampleFormControlInput1"
-            value={
-              formData.end
-                ? formData.end
-                : new Date(new Date(formData.start).getTime() + 135 * 60000)
-                    .toISOString()
-                    .slice(0, 16)
-            }
+            value={formData.end}
             onChange={(e) => setFormData({ ...formData, end: e.target.value })}
           />
         </div>
@@ -219,33 +228,43 @@ export default function CreateAppointmentModal({
           <Dropdown
             value={
               formData.patient
-                ? allPatients?.data?.filter(
-                    (patient) => patient.id === formData?.patient
-                  )[0]?.firstName +
-                  " " +
-                  (
-                    allPatients?.data?.find(
-                      (patient) => patient.id === formData.patient
-                    ) ||
-                    allPatients?.data?.find(
-                      (patient) => patient._id === formData.patient
-                    )
-                  )?.lastName
-                : ""
+                ? {
+                    label:
+                      allPatients.data?.find(
+                        (patient) =>
+                          patient._id === formData.patient ||
+                          patient.id === formData.patient
+                      )?.firstName +
+                      " " +
+                      allPatients.data.find(
+                        (patient) =>
+                          patient._id === formData.patient ||
+                          patient.id === formData.patient
+                      )?.lastName +
+                      " " +
+                      allPatients.data.find(
+                        (patient) =>
+                          patient._id === formData.patient ||
+                          patient.id === formData.patient
+                      )?.phone,
+
+                    value: formData.patient,
+                  }
+                : null
             }
-            values={
-              Array.isArray(allPatients?.data) &&
-              allPatients?.data?.map(
-                (patient) => patient.firstName + " " + patient.lastName
-              )
-            }
-            setValue={(value) =>
+            values={allPatients.data.map((patient) => ({
+              label:
+                patient.firstName +
+                " " +
+                patient.lastName +
+                " " +
+                patient.phone,
+              value: patient._id || patient.id,
+            }))}
+            setValue={(selectedValue) =>
               setFormData({
                 ...formData,
-                patient: allPatients.data.filter(
-                  (patient) =>
-                    patient.firstName + " " + patient.lastName === value
-                )[0]?.id,
+                patient: selectedValue.value,
               })
             }
           />

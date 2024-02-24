@@ -11,7 +11,7 @@ export const ACTIONS = {
 
 export const getAllPatients = (search) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/patient?search=${search}`);
+    const { data } = await axios.get(`/patient?search=${search ? search : ""}`);
     dispatch({ type: ACTIONS.GET_ALL_PATIENTS, data });
   } catch (error) {
     toast.error("Error while fetching patients");

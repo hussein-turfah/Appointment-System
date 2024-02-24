@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../actions/UserActions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 const MyApp = ({ Component, pageProps, domainName }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -20,6 +19,10 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     const token = localStorage.getItem("token");
     setToken(token);
   }, [router.pathname, dispatch, token, user]);
+
+  // useEffect(() => {
+  //   dispatch(getUser(token));
+  // }, [token, dispatch]);
 
   useEffect(() => {
     if (token && authPages.includes(router.pathname)) {

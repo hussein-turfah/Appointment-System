@@ -13,12 +13,12 @@ export default function AppointmentStatusModal({
   const [status, setStatus] = useState("");
 
   const update = useCallback(async () => {
-    await dispatch(updateAppointmentStatus(appointment, status));
+    await dispatch(updateAppointmentStatus(appointment, status.value));
   }, [dispatch, appointment, status]);
 
   useEffect(() => {
-    setStatus(selectedAppointment?.status);
     setAppointment(appointmentId);
+    setStatus(selectedAppointment.status);
   }, []);
 
   return (
@@ -39,11 +39,26 @@ export default function AppointmentStatusModal({
         <Dropdown
           value={status}
           values={[
-            "scheduled",
-            "cancelled",
-            "completed",
-            "absent",
-            "rescheduled",
+            {
+              label: "Scheduled",
+              value: "scheduled",
+            },
+            {
+              label: "Cancelled",
+              value: "cancelled",
+            },
+            {
+              label: "Completed",
+              value: "completed",
+            },
+            {
+              label: "Absent",
+              value: "absent",
+            },
+            {
+              label: "Rescheduled",
+              value: "rescheduled",
+            },
           ]}
           setValue={setStatus}
         />
