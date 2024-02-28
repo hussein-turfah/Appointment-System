@@ -265,6 +265,39 @@ const getAllInvoicesByDoctor = async (req, res) => {
   }
 };
 
+const makeInvoiceStatement = async (req, res) => {
+  try {
+    const { doctorId, startDate, endDate } = req.body;
+
+    const doctor = await User.findById(doctorId);
+    if (!doctor || doctor.type !== 'doctor') {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    const invoices = await Invoice.find({
+      doctor: doctorId,
+      date: { $gte: startDate, $lte: endDate }
+    });
+
+    if (!invoices || invoices.length === 0) {
+      return res.status(404).json({ message: 'No invoices found for the specified doctor and date range.' });
+    }
+
+    const doctorAmountTotal = invoices.reduce((total, invoice) => total + invoice.doctorAmount, 0);
+    const clinicAmountTotal = invoices.reduce((total, invoice) => total + invoice.clinicAmount, 0);
+    const overallTotal = invoices.reduce((total, invoice) => total + invoice.amount, 0);
+
+    res.status(200).json({
+      doctorAmountTotal,
+      clinicAmountTotal,
+      overallTotal,
+      invoices
+    });
+  } catch (error) {
+    console.error('Error generating invoice statement:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
 
   
   module.exports = {
@@ -277,5 +310,6 @@ const getAllInvoicesByDoctor = async (req, res) => {
     getInvoicesByDate,
     getAllInvoices,
     getInvoicesAndTotal,
-    getAllInvoicesByDoctor
+    getAllInvoicesByDoctor,
+    makeInvoiceStatement
   };

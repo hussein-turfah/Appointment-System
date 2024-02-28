@@ -14,6 +14,10 @@ const medicalRecordSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  fees: {
+    type: Number,
+    min: 0 ,
+  },
   title: {
     type: String,
     required:true,
