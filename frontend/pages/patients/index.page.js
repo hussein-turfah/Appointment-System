@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllPatients } from "../../actions/PatientActions";
 import Modal from "../../common/Modal";
 import CreatePatientModal from "../../common/CreatePatientModal";
-import MedicalRecordsForm from "./[patientId]/printmed/index.page";
 
 const PatientsTable = () => {
   const dispatch = useDispatch();
@@ -21,34 +20,14 @@ const PatientsTable = () => {
   }, [dispatch, search]);
 
   return (
-    <div className="flex flex-col w-full justify-end overflow-x-auto shadow-md sm:rounded-lg mt-20">
+    <div className="flex flex-col w-full justify-end overflow-x-auto sm:rounded-lg mt-20">
       <div className="flex justify-between items-center mb-5">
         <div className="flex items-center">
-          <button
-            onClick={() =>
-              router.push(`/patients/${router.query.patientId}/printmed`)
-            }
-            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 
-            text-nowrap
-
-            "
-          >
-            Print Medial Record
-          </button>
-          <button
-            onClick={() =>
-              router.push(`/patients/${router.query.patientId}/printpre`)
-            }
-            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap
-            "
-          >
-            Print Prescription
-          </button>{" "}
           {/* Button 2 */}
           {(user.role === "admin" || user.role === "secretary") && (
             <button
               onClick={() => setModal(true)}
-              className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap"
+              className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg  text-nowrap"
             >
               Create Patient
             </button>
@@ -66,7 +45,7 @@ const PatientsTable = () => {
         </div>
       </div>
 
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-md">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">

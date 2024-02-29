@@ -8,7 +8,7 @@ const medicalRecordSchema = new mongoose.Schema({
   },
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'User'
   },
   date: {
     type: Date,
@@ -16,17 +16,17 @@ const medicalRecordSchema = new mongoose.Schema({
   },
   fees: {
     type: Number,
-    min: 0 ,
+    min: 0 
   },
   title: {
     type: String,
-    required:true,
+    required: true
   },
   attachment: {
-      type: String,
-    },
+    type: String
+  },
   notes: {
-    type: String,
+    type: String
   }
 }, {
   timestamps: true

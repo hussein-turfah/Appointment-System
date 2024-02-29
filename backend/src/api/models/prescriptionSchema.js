@@ -20,10 +20,9 @@ const prescriptionSchema = new mongoose.Schema(
       type: String,
     },
     instructions: String,
-    // Link to medical record
     medicalRecord: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "MedicalRecord", // Assuming the name of the medical record model is "MedicalRecord"
+      ref: "MedicalRecord", 
     },
   },
   {

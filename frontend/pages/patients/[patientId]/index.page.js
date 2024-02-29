@@ -57,27 +57,33 @@ export default function PatientInfo() {
         <Patients />
         <div className={styles.bodyContainer}>
           <div className={styles.btns}>
-            <button
-              onClick={() => {
-                setPrescriptionModal(true);
-              }}
-            >
-              Insert Prescription
-            </button>
-            <button
-              onClick={() => {
-                setRecordModal(true);
-              }}
-            >
-              Insert Medical Record
-            </button>
-            <button
-              onClick={() => {
-                setInvoiceModal(true);
-              }}
-            >
-              Create Invoice
-            </button>
+          <button
+            onClick={() =>
+              router.push(`/patients/${router.query.patientId}/printmed`)
+            }
+            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 
+            text-nowrap
+
+            "
+          >
+            Print Medial Record
+          </button>
+          <button
+            onClick={() =>
+              router.push(`/patients/${router.query.patientId}/printpre`)
+            }
+            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap
+            "
+          >
+            Print Prescription
+          </button>{" "}
+          <button onClick={() =>""} className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap">
+            create MR
+          </button>{" "}
+          <button onClick={() =>""} className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap">
+            Print 
+          </button>{" "}
+
           </div>
           <div className={styles.infoContainer}>
             {/* {Array.isArray(prescriptions) && prescriptions.length > 0 && (

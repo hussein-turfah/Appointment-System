@@ -8,6 +8,8 @@ import {
 import Modal from "../../common/Modal";
 import InvoiceForm from "../../common/EditInvoiceModal";
 import { getAllPatients } from "../../actions/PatientActions";
+import Link from 'next/link';
+
 
 const InvoiceTable = () => {
   const dispatch = useDispatch();
@@ -53,9 +55,16 @@ const InvoiceTable = () => {
     setIsDeleteModalOpen(false);
   };
 
+
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <div className="relative overflow-x-auto  sm:rounded-lg mt-20">
+      <Link href="/invoice/statment">
+        <button className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-4
+            text-nowrap">
+           Statement
+        </button>
+      </Link>
+      <table className="w-full shadow-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
