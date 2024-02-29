@@ -39,7 +39,7 @@ export default function Nav() {
           <Tab
             text={"Calendar"}
             icon={faCalendarDays}
-            active={active === "calendar" || active === ""}
+            active={active === "calendar"} // || active === ""}
             setActive={setActive}
           />
           <Tab

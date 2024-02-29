@@ -17,7 +17,18 @@ const ServiceData = (state = initialState, { type, data }) => {
         ...state,
         allServices: data,
       };
-    
+    case ACTIONS.DELETE_SERVICE:
+      return {
+        ...state,
+        allServices: state.allServices.filter(
+          (service) => service._id !== data
+        ),
+      };
+    case ACTIONS.CLEAR_SELECTED_SERVICE:
+      return {
+        ...state,
+        selectedService: {},
+      };
     default:
       return state;
   }

@@ -72,7 +72,7 @@
     .actions {
       display: flex;
       border: 1px solid #E5E5E5;
-      justify-content: space-between;
+      justify-content: flex-end;
       padding: 1rem;
       border-radius: 0.5rem;
       gap: 0.5rem;
@@ -90,28 +90,31 @@
         transition: 0.3s;
         border: 1px solid #E5E5E5;
         color: #2b3344;
+        font-weight: 500;
+        font-size: 0.9rem;
+        background-color: white;
       }
 
-      .btn {
+      // .btn {
 
-        &:first-of-type {
-          border-radius: 0.5rem 0 0 0.5rem;
-          background-color: #2b3344;
-          color: white;
-        }
+      //   &:first-of-type {
+      //     border-radius: 0.5rem 0 0 0.5rem;
+      //     background-color: #2b3344;
+      //     color: white;
+      //   }
 
-        &:nth-child(2) {
-          border-radius: 0;
-        }
+      //   &:nth-child(2) {
+      //     border-radius: 0;
+      //   }
 
-        &:last-of-type {
-          border-radius: 0 0.5rem 0.5rem 0;
-        }
+      //   &:last-of-type {
+      //     border-radius: 0 0.5rem 0.5rem 0;
+      //   }
 
-        &:hover {
-          background-color: #E5E5E5;
-        }
-      }
+      //   &:hover {
+      //     background-color: #E5E5E5;
+      //   }
+      // }
     }
   }
 }

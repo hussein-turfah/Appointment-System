@@ -65,7 +65,11 @@ const UsersTable = () => {
                   // onClick={() => router.push(`/patients/${user.id}`)}
                 >
                   {/* Table cells */}
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <td
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white
+                    hover:text-indigo-600 cursor-pointer transition duration-300 ease-in-out"
+                    onClick={() => router.push(`/doctors/${mUser.id}`)}
+                  >
                     {mUser.firstName} {mUser.lastName}
                   </td>
                   <td className="px-6 py-4">{mUser.email}</td>

@@ -6,7 +6,8 @@ export const ACTIONS = {
   CREATE_SERVICE: "/service",
   UPDATE_SERVICE: "/service/:id",
   DELETE_SERVICE: "/service/:id",
-  SELECT_SERVICE: "/service/:id",
+  SELECT_SERVICE: "/service",
+  CLEAR_SELECTED_SERVICE: "/service", 
 };
 
 export const getServices = () => async (dispatch) => {
@@ -22,7 +23,6 @@ export const createService = (service) => async (dispatch) => {
   try {
     const { data } = await axios.post("/service", service);
     toast.success("Service created successfully");
-    dispatch({ type: ACTIONS.CREATE_SERVICE, data });
     dispatch(getServices());
   } catch (error) {
     toast.error("Error while creating service");
@@ -35,7 +35,7 @@ export const updateService = (id, service) => async (dispatch) => {
     const { data } = await axios.put(`/service/${id}`, {
       ...service,
     });
-    dispatch({ type: ACTIONS.UPDATE_SERVICE, data });
+    toast.success("Service updated successfully");
     dispatch(getServices());
   } catch (error) {
     toast.error("Error while updating service");
@@ -48,14 +48,15 @@ export const deleteService = (id) => async (dispatch) => {
     await axios.delete(`/service/${id}`);
     toast.success("Service deleted successfully");
     dispatch({ type: ACTIONS.DELETE_SERVICE, id });
-    dispatch(getServices());
   } catch (error) {
     console.log(error);
   }
 };
 
-export const selectService =
-  ({ data }) =>
-  async (dispatch) => {
-    dispatch({ type: ACTIONS.SELECT_SERVICE, data });
-  };
+export const selectService = (data) => async (dispatch) => {
+  dispatch({ type: ACTIONS.SELECT_SERVICE, data });
+};
+
+export const clearSelectedService = () => async (dispatch) => {
+  dispatch({ type: ACTIONS.CLEAR_SELECTED_SERVICE });
+};

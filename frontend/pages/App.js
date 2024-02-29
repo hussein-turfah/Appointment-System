@@ -20,20 +20,21 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     setToken(token);
   }, [router.pathname, dispatch, token, user]);
 
-  // useEffect(() => {
-  //   dispatch(getUser(token));
-  // }, [token, dispatch]);
+  useEffect(() => {
+    dispatch(getUser(token));
+  }, [token, dispatch]);
 
   useEffect(() => {
     if (token && authPages.includes(router.pathname)) {
       dispatch(getUser(token));
       router.push("/calendar");
     } else if (!token && !authPages.includes(router.pathname)) {
-      router.push("/login");
+      // router.push("/login");
     } else if (token) {
       dispatch(getUser(token));
     }
   }, [token, dispatch, router.pathname]);
+
 
   return (
     <div className="page">
