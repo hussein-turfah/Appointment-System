@@ -33,8 +33,12 @@ const upload = multer({
 const uploadRecordAttach = upload.single('attachment');
 
 // Function to create a medical record
-const createMedicalRecord = async (patientId, title, notes) => {
+// Function to create a medical record
+const createMedicalRecord = async (req, res) => {
   try {
+    const { title, notes } = req.body; 
+    const {patientId} = req.params;
+
     const medicalRecordData = {
       patient: patientId,
       title: title,
@@ -46,12 +50,15 @@ const createMedicalRecord = async (patientId, title, notes) => {
     await newMedicalRecord.save();
 
     console.log('Medical record created successfully:', newMedicalRecord);
-    return newMedicalRecord;
+    
+    res.status(201).json({ message: 'Medical record created successfully', medicalRecord: newMedicalRecord });
   } catch (error) {
+
     console.error('Error creating medical record:', error);
-    throw new Error('Failed to create medical record');
+    res.status(500).json({ message: 'Failed to create medical record' });
   }
 };
+
 
 // Function to add fees to a medical record
 const addFeesToMedicalRecord = async (req, res) => {
