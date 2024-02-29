@@ -11,8 +11,8 @@ const getDoctorById = async (req, res) => {
   try {
     const { id } = req.params;
     //populate the schedule field
-    const user = await User.get(id, { populate: "schedule" });
-
+    const user = await User.findById(id).populate('schedule').populate('services');
+    
     if (!user || user.type !== "doctor") {
       throw new Error({
         message: "Doctor does not exist",

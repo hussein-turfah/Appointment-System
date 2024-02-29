@@ -1,30 +1,33 @@
 const User = require("../models/user.model");
+const Service = require("../models/service.model");
 
 // Create a new service for the logged-in doctor
 const createService = async (req, res) => {
   try {
-    // Get the logged-in user's ID
-    const loggedInUserId = req.data._id;
+    const { name, description, price } = req.body;
+    const doctorId = req.user._id;
 
     // Find the doctor in the database
-    const doctor = await User.findById(loggedInUserId);
+    const doctor = await User.findById(doctorId);
     if (!doctor || doctor.type !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Extract the doctor's ID
-    const doctorId = doctor._id;
+    // Create a new service object
+    const service = await Service.createService(
+      name,
+      description,
+      price,
+      doctor
+    );
 
-    // Extract service details from request body
-    const { name, price } = req.body;
-
-    // Add the new service to the doctor's services array
-    doctor.services.push({ name, price });
+    // Add the service to the doctor's services array
+    doctor.services.push(service._id);
 
     // Save the updated doctor object
     await doctor.save();
 
-    res.status(201).json({ message: "Service created successfully" });
+    res.status(201).json({ data: service.transform() });
   } catch (error) {
     console.error("Error creating service:", error);
     res.status(500).json({ message: "Server Error" });
@@ -35,33 +38,26 @@ const createService = async (req, res) => {
 const updateService = async (req, res) => {
   try {
     const { serviceId } = req.params;
-    const { name, price } = req.body;
+    const { name, description, price } = req.body;
 
-    // Get the logged-in user's ID
-    const loggedInUserId = req.user._id;
-
+    const doctorId = req.user._id;
     // Find the doctor in the database
-    const doctor = await User.findById(loggedInUserId);
+    const doctor = await User.findById(doctorId);
     if (!doctor || doctor.type !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Find the index of the service to update
-    const serviceIndex = doctor.services.findIndex(
-      (service) => service._id == serviceId
+    // Find the service to update
+    const service = await Service.updateService(
+      serviceId,
+      name,
+      description,
+      price,
+      doctorId
     );
-    if (serviceIndex === -1) {
-      return res.status(404).json({ message: "Service not found" });
-    }
 
-    // Update the service details
-    doctor.services[serviceIndex].name = name;
-    doctor.services[serviceIndex].price = price;
-
-    // Save the updated doctor object
-    await doctor.save();
-
-    res.status(200).json({ message: "Service updated successfully" });
+    // Send the updated service as response
+    res.status(200).json({ data: service.transform() });
   } catch (error) {
     console.error("Error updating service:", error);
     res.status(500).json({ message: "Server Error" });
@@ -74,24 +70,24 @@ const deleteService = async (req, res) => {
     const { serviceId } = req.params;
 
     // Get the logged-in user's ID
-    const loggedInUserId = req.user._id;
+    const doctorId = req.user._id;
 
     // Find the doctor in the database
-    const doctor = await User.findById(loggedInUserId);
+    const doctor = await User.findById(doctorId);
     if (!doctor || doctor.type !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Find the index of the service to delete
-    const serviceIndex = doctor.services.findIndex(
-      (service) => service._id == serviceId
-    );
-    if (serviceIndex === -1) {
+    // Find the service to delete
+    const service = await Service.findById(serviceId);
+    if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
 
+    await Service.deleteService(serviceId, doctorId);
+
     // Remove the service from the doctor's services array
-    doctor.services.splice(serviceIndex, 1);
+    doctor.services.pull(serviceId);
 
     // Save the updated doctor object
     await doctor.save();
@@ -102,32 +98,23 @@ const deleteService = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+// Get services by doctor ID
 const getServicesByDoctorId = async (req, res) => {
   try {
-    const loggedInUser = req.data;
+    const { doctorId } = req.params;
 
-    // Print the logged-in user's data
-    console.log(loggedInUser);
-
-    // Get the logged-in user's ID
-    const loggedInUserId = req.user._id;
-
-    // Find the user in the database
-    const user = await User.findById(loggedInUserId);
-    if (!user || user.type !== "doctor") {
+    // Find the doctor in the database
+    const doctor = await User.findById(doctorId).populate("services");
+    if (!doctor || doctor.type !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Extract the doctor's ID
-    // const doctorId = user._id;
-
-    // Retrieve the services for the doctor
-    const services = user.services;
-
-    // Send the services as response
-    res.status(200).json({ data: services });
+    res
+      .status(200)
+      .json({ data: doctor.services.map((service) => service.transform()) });
   } catch (error) {
-    console.error("Error retrieving services:", error);
+    console.error("Error getting services:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };

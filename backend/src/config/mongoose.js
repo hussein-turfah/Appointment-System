@@ -20,6 +20,7 @@ exports.connect = () => {
   try {
     return mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
+
       useUnifiedTopology: true,
     });
     //return mongoose.connection

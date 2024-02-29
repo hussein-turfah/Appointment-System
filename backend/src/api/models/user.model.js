@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const httpStatus = require("http-status");
 
 const roles = ["user", "admin"];
-const types = ["doctor", "secretary"];
+const types = ["doctor", "secretary"]; //we need to add admin here
 
 /**
  * User Schema
@@ -56,30 +56,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-
     schedule: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "DoctorSchedule",
     },
     specialty: {
       type: String,
-      required: true,
+      maxlength: 128,
+      index: true,
+      trim: true,
     },
-    services: [
-      {
-        name: {
-          type: String,
-          required: true,
-        },
-        price: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
     feeRatio: {
       type: Number,
-      required: true,
+    },
+    services: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Service",
     },
   },
   {
@@ -105,12 +97,16 @@ userSchema.method({
       "firstName",
       "lastName",
       "email",
-      "createdAt",
+      "phone",
       "role",
       "type",
       "avatar",
       "color",
       "schedule",
+      "specialty",
+      "feeRatio",
+      "services",
+      "createdAt",
     ];
 
     fields.forEach((field) => {
@@ -139,7 +135,7 @@ userSchema.statics = {
       let user;
 
       if (mongoose.Types.ObjectId.isValid(id)) {
-        user = await this.findById(id).populate("schedule");
+        user = await this.findById(id).populate("schedule services").exec();
       }
       if (user) {
         return user;
