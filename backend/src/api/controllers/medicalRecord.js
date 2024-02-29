@@ -1,4 +1,5 @@
 const MedicalRecord = require('../models/medicalRecords');
+const Prescription = require('../models/prescriptionSchema');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
@@ -63,7 +64,8 @@ const createMedicalRecord = async (req, res) => {
 // Function to add fees to a medical record
 const addFeesToMedicalRecord = async (req, res) => {
   try {
-    const { medicalRecordId, fees } = req.body;
+    const {medicalRecordId} = req.params ;
+    const { fees } = req.body;
     
     const updatedMedicalRecord = await MedicalRecord.findByIdAndUpdate(
       medicalRecordId,
@@ -82,22 +84,32 @@ const addFeesToMedicalRecord = async (req, res) => {
 // Function to add prescriptions to a medical record
 const addPrescriptionsToMedicalRecord = async (req, res) => {
   try {
-    const { medicalRecordId, prescriptions } = req.body;
-    
-    const updatedMedicalRecord = await MedicalRecord.findByIdAndUpdate(
-      medicalRecordId,
-      { $push: { prescriptions: prescriptions } },
-      { new: true }
-    );
-    
-    console.log('Prescriptions added to medical record:', updatedMedicalRecord);
-    res.status(200).json(updatedMedicalRecord);
+    const { medicalRecordId } = req.params;
+    const { title } = req.body;
+    const attachment  = req.file;
+
+    // Ensure attachment is provided
+    if (!attachment) {
+      return res.status(400).json({ message: 'Attachment is required' });
+    }
+
+    // Create a new prescription
+    const newPrescription = new Prescription({
+      title: title,
+      attachment: `/uploads/prescription/${attachment.filename}`,
+      medicalRecord: medicalRecordId,
+    });
+
+    // Save the prescription
+    const savedPrescription = await newPrescription.save();
+
+    console.log('Prescription added to medical record:', savedPrescription);
+    res.status(200).json({ message: 'Prescription added to medical record', prescription: savedPrescription });
   } catch (error) {
-    console.error('Error adding prescriptions to medical record:', error);
-    res.status(500).json({ message: 'Failed to add prescriptions to medical record' });
+    console.error('Error adding prescription to medical record:', error);
+    res.status(500).json({ message: 'Failed to add prescription to medical record' });
   }
 };
-
 // Function to upload attachment to a specific medical record
 const uploadAttachmentToMedicalRecord = async (req, res) => {
   try {
@@ -178,14 +190,25 @@ const getMedicalRecordById = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
 
+    // Find the medical record by its ID
     const medicalRecord = await MedicalRecord.findById(medicalRecordId);
 
     if (!medicalRecord) {
       return res.status(404).json({ message: 'Medical record not found.' });
     }
 
+    // Find prescriptions associated with this medical record
+    const prescriptions = await Prescription.find({ medicalRecord: medicalRecordId });
+
     console.log('Medical record retrieved successfully:', medicalRecord);
-    res.status(200).json(medicalRecord);
+
+    // Include prescriptions in the response
+    const medicalRecordWithPrescriptions = {
+      ...medicalRecord.toObject(),
+      prescriptions: prescriptions,
+    };
+
+    res.status(200).json(medicalRecordWithPrescriptions);
   } catch (error) {
     console.error('Error retrieving medical record:', error);
     res.status(500).json({ message: 'Server Error' });
