@@ -4,7 +4,19 @@ const Service = require("../models/service.model");
 // Create a new service for the logged-in doctor
 const createService = async (req, res) => {
   try {
-    const { name, description, price } = req.body;
+    const { name, price } = req.body;
+
+    // Check if name and price are provided
+    if (!name || !price) {
+      return res.status(400).json({ message: "Name and price are required" });
+    }
+
+    // Ensure price is a valid number
+    const parsedPrice = parseFloat(price);
+    if (isNaN(parsedPrice)) {
+      return res.status(400).json({ message: "Price must be a valid number" });
+    }
+
     const doctorId = req.user._id;
 
     // Find the doctor in the database
@@ -13,11 +25,15 @@ const createService = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
+    // Ensure doctor.services is initialized as an array
+    if (!doctor.services) {
+      doctor.services = [];
+    }
+
     // Create a new service object
     const service = await Service.createService(
       name,
-      description,
-      price,
+      parsedPrice, // Pass the parsedPrice variable
       doctor
     );
 
@@ -34,13 +50,17 @@ const createService = async (req, res) => {
   }
 };
 
+
+
+
 // Update an existing service for the logged-in doctor
 const updateService = async (req, res) => {
   try {
     const { serviceId } = req.params;
-    const { name, description, price } = req.body;
+    const { name, price } = req.body;
 
     const doctorId = req.user._id;
+    
     // Find the doctor in the database
     const doctor = await User.findById(doctorId);
     if (!doctor || doctor.type !== "doctor") {
@@ -48,21 +68,34 @@ const updateService = async (req, res) => {
     }
 
     // Find the service to update
-    const service = await Service.updateService(
+    const service = await Service.get(serviceId);
+    
+    // Check if the service exists
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    
+    // Check if the logged-in doctor is authorized to update the service
+    if (service.doctor.toString() !== doctorId.toString()) {
+      return res.status(403).json({ message: "You are not authorized to update this service" });
+    }
+
+    // Update the service
+    const updatedService = await Service.updateService(
       serviceId,
       name,
-      description,
       price,
       doctorId
     );
 
     // Send the updated service as response
-    res.status(200).json({ data: service.transform() });
+    res.status(200).json({ data: updatedService.transform() });
   } catch (error) {
     console.error("Error updating service:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // Delete a service for the logged-in doctor
 const deleteService = async (req, res) => {
@@ -118,6 +151,8 @@ const getServicesByDoctorId = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
 
 module.exports = {
   createService,
