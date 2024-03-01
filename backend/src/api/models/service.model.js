@@ -2,27 +2,9 @@ const mongoose = require("mongoose");
 const httpStatus = require("http-status");
 const { omitBy, isNil } = require("lodash");
 
-/**
- * Service Schema
- *
- * @private
- *
- * @param {String} name - The name of the service
- * @param {String} description - The description of the service
- * @param {Number} price - The price of the service
- *
- * */
-
 const serviceSchema = new mongoose.Schema(
   {
     name: {
-      type: String,
-      maxlength: 128,
-      index: true,
-      trim: true,
-      required: true,
-    },
-    description: {
       type: String,
       maxlength: 128,
       index: true,
@@ -44,16 +26,12 @@ const serviceSchema = new mongoose.Schema(
   }
 );
 
-/**
- * Methods
- */
 serviceSchema.method({
   transform() {
     const transformed = {};
     const fields = [
       "id",
       "name",
-      "description",
       "price",
       "doctor",
       "createdAt",
@@ -67,45 +45,24 @@ serviceSchema.method({
   },
 });
 
-/**
- * Statics
- */
 serviceSchema.statics = {
-  /**
-   * Get service
-   *
-   * @param {ObjectId} id - The objectId of service.
-   * @returns {Promise<Service, APIError>}
-   */
   async get(id) {
     try {
-      let service;
-
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        service = await this.findById(id).exec();
+      const service = await this.findById(id).exec();
+      if (!service) {
+        throw new APIError({
+          message: "Service does not exist",
+          status: httpStatus.NOT_FOUND,
+        });
       }
-      if (service) {
-        return service;
-      }
-
-      throw new APIError({
-        message: "Service does not exist",
-        status: httpStatus.NOT_FOUND,
-      });
+      return service;
     } catch (error) {
       throw error;
     }
   },
 
-  /**
-   * List services in descending order of 'createdAt' timestamp.
-   *
-   * @param {number} skip - Number of services to be skipped.
-   * @param {number} limit - Limit number of services to be returned.
-   * @returns {Promise<Service[]>}
-   */
-  list({ page = 1, perPage = 30, name, description, price, doctor }) {
-    const options = omitBy({ name, description, price, doctor }, isNil);
+  list({ page = 1, perPage = 30, name, price, doctor }) {
+    const options = omitBy({ name, price, doctor }, isNil);
 
     return this.find(options)
       .sort({ createdAt: -1 })
@@ -114,30 +71,16 @@ serviceSchema.statics = {
       .exec();
   },
 
-  /**
-   * Create a service
-   * @param {String} name - The name of the service
-   * @param {String} description - The description of the service
-   * @param {Number} price - The price of the service
-   * @param {ObjectId} doctor - The doctor who created the service
-   */
-  async createService(name, description, price, doctor) {
+  async createService(name, price, doctor) {
     try {
-      const service = await this.create({ name, description, price, doctor });
+      const service = await this.create({ name, price, doctor });
       return service;
     } catch (error) {
       throw error;
     }
   },
 
-  /**
-   * Update a service
-   * @param {ObjectId} serviceId - The objectId of the service.
-   * @param {String} name - The name of the service
-   * @param {String} description - The description of the service
-   * @param {Number} price - The price of the service
-   */
-  async updateService(serviceId, name, description, price, doctorId) {
+  async updateService(serviceId, name, price, doctorId) {
     try {
       const service = await this.findById(serviceId).exec();
       if (!service) {
@@ -155,7 +98,6 @@ serviceSchema.statics = {
       }
 
       service.name = name;
-      service.description = description;
       service.price = price;
 
       return service.save();
@@ -163,6 +105,7 @@ serviceSchema.statics = {
       throw error;
     }
   },
+
   async deleteService(serviceId, doctorId) {
     try {
       const service = await this.findById(serviceId).exec();
