@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { use, useCallback, useEffect, useRef, useState } from "react";
 import styles from "./styles/index.module.scss";
 import Fullcalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -38,6 +38,9 @@ export default function Calendar() {
   const doctorAppointments = useSelector(
     ({ AppointmentData }) => AppointmentData.appointmentsByDoctor
   );
+
+  console.log(doctorAppointments);
+
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
 
   const removeAppointment = useCallback(() => {
@@ -46,7 +49,7 @@ export default function Calendar() {
 
   let events =
     allAppointments.data.length > 0
-      ? allAppointments.data.map((event) => {
+      ? allAppointments?.data?.map((event) => {
           let color;
           switch (event.status) {
             case "scheduled":
@@ -69,7 +72,7 @@ export default function Calendar() {
           }
           return { ...event, backgroundColor: color };
         })
-      : doctorAppointments.data.map((event) => {
+      : doctorAppointments?.data?.map((event) => {
           let color;
           switch (event.status) {
             case "scheduled":
@@ -140,143 +143,150 @@ export default function Calendar() {
     }
   }, [isSelected]);
 
-  return (
-    <main className={styles.container}>
-      {(user?.role === "admin" || user?.role === "secretary") && (
-        <div className={styles.select}>
-          <button
-            onClick={() => setModal(true)}
-            className="btn btn-primary mb-3 w-50"
-          >
-            Create User
-          </button>
-          {isSelected?.id ? (
-            <>
+  if (
+    (user?.role === "doctor" && !doctorAppointments?.loaded) ||
+    ((user?.role === "admin" || user?.role === "secretary") &&
+      !allAppointments?.loaded)
+  ) {
+    return <h1>Loading...</h1>;
+  } else
+    return (
+      <main className={styles.container}>
+        {(user?.role === "admin" || user?.role === "secretary") && (
+          <div className={styles.select}>
+            <button
+              onClick={() => setModal(true)}
+              className="btn btn-primary mb-3 w-50"
+            >
+              Create User
+            </button>
+            {isSelected?.id ? (
+              <>
+                <button
+                  onClick={() => setAppointmentModal(true)}
+                  className="btn btn-primary mb-3 w-50"
+                >
+                  Edit Appointment
+                </button>
+                <button
+                  onClick={() => setStatusModal(true)}
+                  className="btn btn-primary mb-3 w-50"
+                >
+                  Update Status
+                </button>
+                <button
+                  onClick={removeAppointment}
+                  className="btn btn-primary mb-3 w-50"
+                >
+                  Delete Appointment
+                </button>
+              </>
+            ) : (
               <button
                 onClick={() => setAppointmentModal(true)}
                 className="btn btn-primary mb-3 w-50"
               >
-                Edit Appointment
+                Create Appointment
               </button>
-              <button
-                onClick={() => setStatusModal(true)}
-                className="btn btn-primary mb-3 w-50"
-              >
-                Update Status
-              </button>
-              <button
-                onClick={removeAppointment}
-                className="btn btn-primary mb-3 w-50"
-              >
-                Delete Appointment
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setAppointmentModal(true)}
-              className="btn btn-primary mb-3 w-50"
+            )}
+            <select
+              onChange={(e) => setSelectedDoctor(e.target.value)}
+              className="form-select form-select-lg mb-3 w-50 "
             >
-              Create Appointment
-            </button>
-          )}
-          <select
-            onChange={(e) => setSelectedDoctor(e.target.value)}
-            className="form-select form-select-lg mb-3 w-50 "
-          >
-            <option value="all">All</option>
-            {allDoctors.data.map((doctor) => (
-              <option key={doctor.id} value={doctor.id}>
-                {doctor.firstName} {doctor.lastName}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-      <Fullcalendar
-        ref={calendarRef}
-        plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-        // initialView="dayGridMonth"
-        initialView="timeGridWeek"
-        headerToolbar={{
-          start: "today prev,next",
-          center: "title",
-          end: "dayGridMonth,timeGridWeek,timeGridDay",
-        }}
-        height={"90vh"}
-        events={events}
-        editable={user?.role === "admin" || user?.role === "secretary"}
-        droppable={user?.role === "admin" || user?.role === "secretary"}
-        selectable={user?.role === "admin" || user?.role === "secretary"}
-        slotDuration="00:15:00"
-        slotMinTime="08:00:00"
-        slotMaxTime="18:00:00"
-        slotLabelInterval={{ hours: 1 }}
-        eventContent={(e) => {
-          return (
-            <div className={styles.eventContent}>
-              <h1>{e.timeText}</h1>
-              {(user?.role === "admin" || user?.role === "secretary") && (
+              <option value="all">All</option>
+              {allDoctors.data.map((doctor) => (
+                <option key={doctor.id} value={doctor.id}>
+                  {doctor.firstName} {doctor.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        <Fullcalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+          // initialView="dayGridMonth"
+          initialView="timeGridWeek"
+          headerToolbar={{
+            start: "today prev,next",
+            center: "title",
+            end: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+          height={"90vh"}
+          events={events}
+          editable={user?.role === "admin" || user?.role === "secretary"}
+          droppable={user?.role === "admin" || user?.role === "secretary"}
+          selectable={user?.role === "admin" || user?.role === "secretary"}
+          slotDuration="00:15:00"
+          slotMinTime="08:00:00"
+          slotMaxTime="18:00:00"
+          slotLabelInterval={{ hours: 1 }}
+          eventContent={(e) => {
+            return (
+              <div className={styles.eventContent}>
+                <h1>{e.timeText}</h1>
+                {(user?.role === "admin" || user?.role === "secretary") && (
+                  <p>
+                    Doctor: {e?.event?.extendedProps?.doctor?.firstName}{" "}
+                    {e?.event?.extendedProps?.doctor?.lastName}
+                  </p>
+                )}
                 <p>
-                  Doctor: {e?.event?.extendedProps?.doctor?.firstName}{" "}
-                  {e?.event?.extendedProps?.doctor?.lastName}
+                  Patient: {e?.event?.extendedProps?.patient?.firstName}{" "}
+                  {e?.event?.extendedProps?.patient?.lastName}
                 </p>
-              )}
-              <p>
-                Patient: {e?.event?.extendedProps?.patient?.firstName}{" "}
-                {e?.event?.extendedProps?.patient?.lastName}
-              </p>
-              <p>Status: {e?.event?.extendedProps?.status}</p>
-              <p>{e.event.extendedProps.reason}</p>
-            </div>
-          );
-        }}
-        eventBorderColor={(info) => {
-          return info.event.backgroundColor.toString();
-        }}
-        eventBackgroundColor={(info) => {
-          return info.event.backgroundColor.toString();
-        }}
-      />
-      <Modal
-        active={appointmentModal}
-        setActive={setAppointmentModal}
-        title={isSelected?.id ? "Edit Appointment" : "Create Appointment"}
-        children={
-          <CreateAppointmentModal
-            active={appointmentModal}
-            setActive={setAppointmentModal}
-            selectedAppointment={isSelected?.extendedProps}
-            appointmentId={isSelected?.id}
-            appointmentRange={{
-              start: isSelected.startStr,
-              end: isSelected.endStr,
-            }}
-          />
-        }
-      />
-      <Modal
-        active={modal}
-        setActive={setModal}
-        title="Create User"
-        children={<CreateUserModal open={modal} setOpen={setModal} />}
-      />
-      <Modal
-        active={statusModal}
-        setActive={setStatusModal}
-        title="Update Status"
-        children={
-          <AppointmentStatusModal
-            active={statusModal}
-            setActive={setStatusModal}
-            selectedAppointment={isSelected?.extendedProps}
-            appointmentId={isSelected?.id}
-            appointmentRange={{
-              start: isSelected.startStr,
-              end: isSelected.endStr,
-            }}
-          />
-        }
-      />
-    </main>
-  );
+                <p>Status: {e?.event?.extendedProps?.status}</p>
+                <p>{e.event.extendedProps.reason}</p>
+              </div>
+            );
+          }}
+          eventBorderColor={(info) => {
+            return info.event.backgroundColor.toString();
+          }}
+          eventBackgroundColor={(info) => {
+            return info.event.backgroundColor.toString();
+          }}
+        />
+        <Modal
+          active={appointmentModal}
+          setActive={setAppointmentModal}
+          title={isSelected?.id ? "Edit Appointment" : "Create Appointment"}
+          children={
+            <CreateAppointmentModal
+              active={appointmentModal}
+              setActive={setAppointmentModal}
+              selectedAppointment={isSelected?.extendedProps}
+              appointmentId={isSelected?.id}
+              appointmentRange={{
+                start: isSelected.startStr,
+                end: isSelected.endStr,
+              }}
+            />
+          }
+        />
+        <Modal
+          active={modal}
+          setActive={setModal}
+          title="Create User"
+          children={<CreateUserModal open={modal} setOpen={setModal} />}
+        />
+        <Modal
+          active={statusModal}
+          setActive={setStatusModal}
+          title="Update Status"
+          children={
+            <AppointmentStatusModal
+              active={statusModal}
+              setActive={setStatusModal}
+              selectedAppointment={isSelected?.extendedProps}
+              appointmentId={isSelected?.id}
+              appointmentRange={{
+                start: isSelected.startStr,
+                end: isSelected.endStr,
+              }}
+            />
+          }
+        />
+      </main>
+    );
 }
