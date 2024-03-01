@@ -6,8 +6,7 @@ export const ACTIONS = {
   GET_DOCTOR: "/doctor/:id",
   CREATE_DOCTOR: "/doctor",
   UPDATE_DOCTOR: "/doctor/:id",
-  DELETE_DOCTOR: "/doctor/:id"
-
+  DELETE_DOCTOR: "/doctor/:id",
 };
 
 export const getAllDoctors = () => async (dispatch) => {

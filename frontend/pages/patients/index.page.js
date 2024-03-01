@@ -12,7 +12,7 @@ const PatientsTable = () => {
   const [search, setSearch] = useState("");
   const user = useSelector(({ UserData }) => UserData.data);
   const allPatients = useSelector(
-    ({ PatientData }) => PatientData?.allPatients?.data?.data
+    ({ PatientData }) => PatientData?.allPatients?.data
   );
 
   useEffect(() => {

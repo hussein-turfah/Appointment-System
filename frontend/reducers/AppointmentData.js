@@ -93,6 +93,14 @@ const AppointmentData = (state = initialState, { type, data }) => {
           data,
         },
       };
+    case ACTIONS.GET_APPOINTMENTS_BY_LOGGED_IN_DOCTOR:
+      return {
+        ...state,
+        appointmentsByDoctor: {
+          loaded: true,
+          data,
+        },
+      };
     default:
       return state;
   }

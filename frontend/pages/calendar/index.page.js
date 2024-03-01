@@ -9,6 +9,7 @@ import {
   deleteAppointment,
   getAllAppointments,
   getAppointmentsByDoctorId,
+  getAppointmentsByLoggedInDoctor,
   updateAppointment,
 } from "../../actions/AppointmentActions";
 import { getAllDoctors } from "../../actions/DoctorActions";
@@ -98,7 +99,7 @@ export default function Calendar() {
       dispatch(getAllAppointments());
       dispatch(getAllPatients());
     } else if (user.role === "doctor") {
-      dispatch(getAppointmentsByDoctorId(user.id));
+      dispatch(getAppointmentsByLoggedInDoctor());
     }
   }, [dispatch, user.role, user.role, user.id]);
 
@@ -113,8 +114,7 @@ export default function Calendar() {
       if (clickCnt === 1) {
         setTimeout(() => {
           if (clickCnt === 1) {
-            router.push(`/patients/${info.event.extendedProps.patient._id
-            }`);
+            router.push(`/patients/${info.event.extendedProps.patient._id}`);
           }
           clickCnt = 0;
         }, 400);
@@ -203,28 +203,14 @@ export default function Calendar() {
           end: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
         height={"90vh"}
-        events={
-          events
-          // user.role === "doctor"
-          //   ? doctorAppointments.data
-          //   : selectedDoctor === "all"
-          //   ? allAppointments.data
-          //   : allAppointments.data.filter(
-          //       (appointment) => appointment.doctor === selectedDoctor
-          //     )
-        }
+        events={events}
         editable={user?.role === "admin" || user?.role === "secretary"}
-        droppable={user?.role === "admin" || user?.role=== "secretary"}
+        droppable={user?.role === "admin" || user?.role === "secretary"}
         selectable={user?.role === "admin" || user?.role === "secretary"}
         slotDuration="00:15:00"
         slotMinTime="08:00:00"
         slotMaxTime="18:00:00"
         slotLabelInterval={{ hours: 1 }}
-
-        // change slots direction from vertical to horizontal
-        
-
-
         eventContent={(e) => {
           return (
             <div className={styles.eventContent}>

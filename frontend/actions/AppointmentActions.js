@@ -10,6 +10,7 @@ export const ACTIONS = {
   GET_APPOINTMENT_BY_DOCTOR_ID: "/appointment/doctor/:id",
   GET_APPOINTMENT_BY_PATIENT_ID: "/appointment/patient/:id",
   UPDATE_APPOINTMENT_STATUS: "/appointment/:id/:status",
+  GET_APPOINTMENTS_BY_LOGGED_IN_DOCTOR: "/appointment/doctors/myappointments",
 };
 
 export const getAllAppointments = () => async (dispatch) => {
@@ -97,5 +98,15 @@ export const updateAppointmentStatus = (id, status) => async (dispatch) => {
     toast.success("Appointment status updated successfully");
   } catch (error) {
     toast.error("Error while updating appointment status");
+  }
+};
+
+export const getAppointmentsByLoggedInDoctor = () => async (dispatch) => {
+  try {
+    const { data } = await axios.get("/appointment/doctors/myappointments");
+
+    dispatch({ type: ACTIONS.GET_APPOINTMENTS_BY_LOGGED_IN_DOCTOR, data });
+  } catch (error) {
+    toast.error("Error while fetching appointments");
   }
 };

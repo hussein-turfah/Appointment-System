@@ -360,14 +360,13 @@ const getAppointmentsByLoggedInDoctor = async (req, res) => {
       appointment.transform()
     );
 
-    res.status(httpStatus.OK).json(transformedAppointments);
+    res.status(httpStatus.OK).json({ data: transformedAppointments });
   } catch (error) {
     res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
       message: error.message,
     });
   }
 };
-
 
 module.exports = {
   getAppointmentById,
@@ -378,5 +377,5 @@ module.exports = {
   updateAppointmentStatus,
   updateAppointment,
   deleteAppointment,
-  getAppointmentsByLoggedInDoctor
+  getAppointmentsByLoggedInDoctor,
 };
