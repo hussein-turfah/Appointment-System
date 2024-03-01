@@ -85,7 +85,7 @@ const createAppointment = async (req, res) => {
     let existingPatient;
 
     const existingDoctor = await User.get(doctor);
-    if (!existingDoctor || existingDoctor.type !== "doctor") {
+    if (!existingDoctor || existingDoctor.role !== "doctor") {
       throw new Error({
         message: "Doctor does not exist",
         status: httpStatus.NOT_FOUND,
@@ -261,7 +261,7 @@ const updateAppointment = async (req, res) => {
     }
 
     const existingDoctor = await User.get(doctor);
-    if (!existingDoctor || existingDoctor.type !== "doctor") {
+    if (!existingDoctor || existingDoctor.role !== "doctor") {
       throw new Error({
         message: "Doctor does not exist",
         status: httpStatus.NOT_FOUND,

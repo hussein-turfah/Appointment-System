@@ -21,7 +21,7 @@ const createService = async (req, res) => {
 
     // Find the doctor in the database
     const doctor = await User.findById(doctorId);
-    if (!doctor || doctor.type !== "doctor") {
+    if (!doctor || doctor.role !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
@@ -63,7 +63,7 @@ const updateService = async (req, res) => {
     
     // Find the doctor in the database
     const doctor = await User.findById(doctorId);
-    if (!doctor || doctor.type !== "doctor") {
+    if (!doctor || doctor.role !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
@@ -107,7 +107,7 @@ const deleteService = async (req, res) => {
 
     // Find the doctor in the database
     const doctor = await User.findById(doctorId);
-    if (!doctor || doctor.type !== "doctor") {
+    if (!doctor || doctor.role !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
@@ -139,7 +139,7 @@ const getServicesByDoctorId = async (req, res) => {
 
     // Find the doctor in the database
     const doctor = await User.findById(doctorId).populate("services");
-    if (!doctor || doctor.type !== "doctor") {
+    if (!doctor || doctor.role !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 

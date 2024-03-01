@@ -13,7 +13,7 @@ const getDoctorById = async (req, res) => {
     //populate the schedule field
     const user = await User.findById(id).populate('schedule').populate('services');
     
-    if (!user || user.type !== "doctor") {
+    if (!user || user.role !== "doctor") {
       throw new Error({
         message: "Doctor does not exist",
         status: httpStatus.NOT_FOUND,
@@ -83,7 +83,7 @@ const deleteDoctorById = async (req, res) => {
 const addDoctor = async (req, res, next) => {
   try {
     const doctorData = req.body;
-    doctorData.type = "doctor";
+    doctorData.role = "doctor";
 
 
     const doctor = await User.create(doctorData);
@@ -108,7 +108,7 @@ const updateDoctorById = async (req, res, next) => {
 
     // Check if the doctor exists
     const doctor = await User.findById(id);
-    if (!doctor || doctor.type !== "doctor") {
+    if (!doctor || doctor.role !== "doctor") {
       const error = new Error("Doctor not found");
       error.status = httpStatus.NOT_FOUND;
       throw error;

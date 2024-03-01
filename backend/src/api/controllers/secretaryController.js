@@ -4,8 +4,7 @@ const User = require("../models/user.model");
 exports.createSecretary = async (req, res, next) => {
   try {
     const secretaryData = req.body;
-    secretaryData.role = "user";
-    secretaryData.type = "secretary"; 
+    secretaryData.role = "secretary"; 
     
     const secretary = await User.create(secretaryData);
     

@@ -59,7 +59,7 @@ const ScheduleTable = () => {
     console.log(scheduleForm);
   }, [scheduleForm]);
 
-  if (user.type === "secretary")
+  if (user.role === "secretary")
     return (
       <div className={styles.logout}>
         <button

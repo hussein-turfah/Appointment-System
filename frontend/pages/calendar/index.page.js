@@ -93,14 +93,14 @@ export default function Calendar() {
         });
 
   useEffect(() => {
-    if (user.role === "admin" || user.type === "secretary") {
+    if (user.role === "admin" || user.role === "secretary") {
       dispatch(getAllDoctors());
       dispatch(getAllAppointments());
       dispatch(getAllPatients());
-    } else if (user.type === "doctor") {
+    } else if (user.role === "doctor") {
       dispatch(getAppointmentsByDoctorId(user.id));
     }
-  }, [dispatch, user.role, user.type, user.id]);
+  }, [dispatch, user.role, user.role, user.id]);
 
   // useEffect for double click and single click on event
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function Calendar() {
 
   return (
     <main className={styles.container}>
-      {(user?.role === "admin" || user?.type === "secretary") && (
+      {(user?.role === "admin" || user?.role === "secretary") && (
         <div className={styles.select}>
           <button
             onClick={() => setModal(true)}
@@ -205,7 +205,7 @@ export default function Calendar() {
         height={"90vh"}
         events={
           events
-          // user.type === "doctor"
+          // user.role === "doctor"
           //   ? doctorAppointments.data
           //   : selectedDoctor === "all"
           //   ? allAppointments.data
@@ -213,9 +213,9 @@ export default function Calendar() {
           //       (appointment) => appointment.doctor === selectedDoctor
           //     )
         }
-        editable={user?.role === "admin" || user?.type === "secretary"}
-        droppable={user?.role === "admin" || user?.type === "secretary"}
-        selectable={user?.role === "admin" || user?.type === "secretary"}
+        editable={user?.role === "admin" || user?.role === "secretary"}
+        droppable={user?.role === "admin" || user?.role=== "secretary"}
+        selectable={user?.role === "admin" || user?.role === "secretary"}
         slotDuration="00:15:00"
         slotMinTime="08:00:00"
         slotMaxTime="18:00:00"
@@ -229,7 +229,7 @@ export default function Calendar() {
           return (
             <div className={styles.eventContent}>
               <h1>{e.timeText}</h1>
-              {(user?.role === "admin" || user?.type === "secretary") && (
+              {(user?.role === "admin" || user?.role === "secretary") && (
                 <p>
                   Doctor: {e?.event?.extendedProps?.doctor?.firstName}{" "}
                   {e?.event?.extendedProps?.doctor?.lastName}

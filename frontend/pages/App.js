@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 const MyApp = ({ Component, pageProps, domainName }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const authPages = ["/login", "/register", "/forgot-password"];
+  const authPages = ["/login", "/register", "/forgot-password", "/"];
   const isAuthPage = authPages.includes(router.pathname);
   const [token, setToken] = useState(null);
 
@@ -28,13 +28,12 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     if (token && authPages.includes(router.pathname)) {
       dispatch(getUser(token));
       router.push("/calendar");
-    } else if (!token && !authPages.includes(router.pathname)) {
-      // router.push("/login");
+    } else if (!token && !authPages.includes(router.pathname) && !user._id) {
+      router.push("/login");
     } else if (token) {
       dispatch(getUser(token));
     }
-  }, [token, dispatch, router.pathname]);
-
+  }, [token, router.pathname, dispatch, user._id]);
 
   return (
     <div className="page">

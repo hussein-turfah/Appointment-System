@@ -74,7 +74,7 @@ const UsersTable = () => {
                   </td>
                   <td className="px-6 py-4">{mUser.email}</td>
                   <td className="px-6 py-4">{mUser.phone}</td>
-                  <td className="px-6 py-4">{mUser.type}</td>
+                  <td className="px-6 py-4">{mUser.role}</td>
                   <td className="px-6 py-4">{mUser.ratio}</td>
                   <td className="px-6 py-4">
                     {user.role === "admin" && (
