@@ -9,7 +9,7 @@ const createInvoice = async (req, res) => {
 
       // Retrieve doctor's information from the database
       const doctor = await User.findById(doctorId);
-      if (!doctor || doctor.type !== 'doctor') {
+      if (!doctor || doctor.role !== 'doctor') {
           return res.status(404).json({ message: 'Doctor not found' });
       }
 
@@ -59,7 +59,7 @@ const updateInvoice = async (req, res) => {
 
     // Retrieve doctor's information from the database
     const doctor = await User.findById(invoice.doctor);
-    if (!doctor || doctor.type !== 'doctor') {
+    if (!doctor || doctor.role !== 'doctor') {
       return res.status(404).json({ message: 'Doctor not found' });
     }
 
@@ -248,7 +248,7 @@ const getAllInvoicesByDoctor = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
     const doctor = await User.findById(loggedInUserId);
-    if (!doctor || doctor.type !== "doctor") {
+    if (!doctor || doctor.role !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
     const doctorId = doctor._id;
@@ -270,7 +270,7 @@ const makeInvoiceStatement = async (req, res) => {
     const { doctorId, startDate, endDate } = req.body;
 
     const doctor = await User.findById(doctorId);
-    if (!doctor || doctor.type !== 'doctor') {
+    if (!doctor || doctor.role !== 'doctor') {
       return res.status(404).json({ message: 'Doctor not found' });
     }
 

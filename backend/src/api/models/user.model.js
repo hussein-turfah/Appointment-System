@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const httpStatus = require("http-status");
 
-const roles = ["user", "admin"];
-const types = ["doctor", "secretary"]; //we need to add admin here
+const roles = ["secretary", "doctor", "admin"];
 
 /**
  * User Schema
@@ -15,11 +14,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: roles,
       default: "user",
-    },
-    type: {
-      type: String,
-      enum: types,
-      default: "doctor",
     },
     firstName: {
       type: String,
@@ -99,7 +93,6 @@ userSchema.method({
       "email",
       "phone",
       "role",
-      "type",
       "avatar",
       "color",
       "schedule",
@@ -122,7 +115,6 @@ userSchema.method({
  */
 userSchema.statics = {
   roles,
-  types,
 
   /**
    * Get user

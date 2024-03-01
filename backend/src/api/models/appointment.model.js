@@ -108,7 +108,13 @@ appointmentSchema.statics = {
    * @returns {Promise<Appointment[]>}
    */
   list({ skip = 0, limit = 50 } = {}) {
-    return this.find().sort({ createdAt: -1 }).skip(+skip).limit(+limit).populate("doctor").populate("patient").exec();
+    return this.find()
+      .sort({ createdAt: -1 })
+      .skip(+skip)
+      .limit(+limit)
+      .populate("doctor")
+      .populate("patient")
+      .exec();
   },
 
   /**
@@ -119,7 +125,9 @@ appointmentSchema.statics = {
       let appointments;
 
       if (mongoose.Types.ObjectId.isValid(doctorId)) {
-        appointments = await this.find({ doctor: doctorId }).populate("patient").exec();
+        appointments = await this.find({ doctor: doctorId })
+          .populate("patient")
+          .exec();
       }
       if (appointments) {
         return appointments;
@@ -139,7 +147,9 @@ appointmentSchema.statics = {
       let appointments;
 
       if (mongoose.Types.ObjectId.isValid(patientId)) {
-        appointments = await this.find({ patient: patientId }).populate("doctor").exec();
+        appointments = await this.find({ patient: patientId })
+          .populate("doctor")
+          .exec();
       }
       if (appointments) {
         return appointments;

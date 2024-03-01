@@ -4,7 +4,7 @@ const doctorScheduleSchema = new mongoose.Schema(
   {
     doctor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Doctor",
+      ref: "User",
       required: true,
     },
     weekdays: [

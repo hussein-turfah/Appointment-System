@@ -56,16 +56,16 @@ export default function Nav() {
           />
           <Tab
             text={
-              user.type === "doctor"
+              user.role === "doctor"
                 ? "Services"
-                : user.role === "admin" || user.type === "secretary"
+                : user.role === "admin" || user.role === "secretary"
                 ? "Doctors"
                 : null
             }
             icon={
-              user.type === "doctor"
+              user.role === "doctor"
                 ? faBriefcase
-                : user.role === "admin" || user.type === "secretary"
+                : user.role === "admin" || user.role === "secretary"
                 ? faUsers
                 : null
             }

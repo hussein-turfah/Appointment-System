@@ -20,7 +20,7 @@ export default function CreateUserModal({
           lastName: "",
           email: "",
           phone: "",
-          type: "doctor",
+          role: "doctor",
           password: "12345678",
         }
   );
@@ -115,19 +115,19 @@ export default function CreateUserModal({
           </div>
           <div className={styles.dobG}>
             <div className="flex flex-col gap-1 space-x-19 w-full">
-              <h4>Type</h4>
+              <h4>Role</h4>
               <div className={styles.gender}>
                 <div>
                   <input
                     type="radio"
-                    name="type"
+                    name="role"
                     id="secretary"
                     value="secretary"
-                    checked={formData.type === "secretary"}
+                    checked={formData.role === "secretary"}
                     onChange={(e) => {
                       setFormData((prev) => ({
                         ...prev,
-                        type: e.target.value,
+                        role: e.target.value,
                       }));
                     }}
                   />
@@ -136,14 +136,14 @@ export default function CreateUserModal({
                 <div>
                   <input
                     type="radio"
-                    name="type"
+                    name="role"
                     id="doctor"
                     value="doctor"
-                    checked={formData.type === "doctor"}
+                    checked={formData.role === "doctor"}
                     onChange={(e) => {
                       setFormData((prev) => ({
                         ...prev,
-                        type: e.target.value,
+                        role: e.target.value,
                       }));
                     }}
                   />
