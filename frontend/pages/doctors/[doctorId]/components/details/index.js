@@ -1,11 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./styles/index.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPenToSquare,
-  faPlusSquare,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Input from "../../../../../common/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDoctor } from "../../../../../actions/DoctorActions";
@@ -13,6 +9,8 @@ import { updateDoctor } from "../../../../../actions/DoctorActions";
 const DoctorData = () => {
   const dispatch = useDispatch();
   const [editActive, setEditActive] = useState(false);
+
+  const user = useSelector(({ UserData }) => UserData?.data);
 
   const selectedDoctor = useSelector(
     ({ DoctorData }) => DoctorData?.selectedDoctor.data
@@ -208,6 +206,7 @@ const DoctorData = () => {
                       feeRatio: value,
                     }));
                   }}
+                  disabled={user?.role === "doctor"}
                 />
               ) : (
                 selectedDoctor?.feeRatio

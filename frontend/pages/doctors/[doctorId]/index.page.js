@@ -7,7 +7,7 @@ import { getDoctor } from "../../../actions/DoctorActions";
 import Modal from "../../../common/Modal";
 import CreateServiceModal from "../../../common/CreateServiceModal";
 import Services from "./components/Services";
-import { clearSelectedService, deleteService, selectService } from "../../../actions/ServiceActions";
+import { deleteService, selectService } from "../../../actions/ServiceActions";
 
 export default function DoctorInfo() {
   const dispatch = useDispatch();
@@ -16,6 +16,8 @@ export default function DoctorInfo() {
 
   const [serviceModal, setServiceModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+
+  const user = useSelector(({ UserData }) => UserData?.data);
 
   const selectedDoctor = useSelector(
     ({ DoctorData }) => DoctorData?.selectedDoctor.data
@@ -41,7 +43,6 @@ export default function DoctorInfo() {
     if (selectedService) {
       setTimeout(() => {
         setSelectedService(null);
-        dispatch(clearSelectedService());
       }, 5000);
     }
   }, [selectedService]);
@@ -51,27 +52,29 @@ export default function DoctorInfo() {
       <div>
         <DoctorData />
         <div className={styles.bodyContainer}>
-          <div className={styles.btns}>
-            <button
-              onClick={() => {
-                setServiceModal(true);
-              }}
-            >
-              {!selectedService ? "Create Service" : "Edit Service"}
-            </button>
-            {selectedService && (
-              <button onClick={() => setSelectedService(null)}>Cancel</button>
-            )}
-            {selectedService && (
+          {user?.role === "doctor" && (
+            <div className={styles.btns}>
               <button
                 onClick={() => {
-                  handleDeleteService(selectedService._id);
+                  setServiceModal(true);
                 }}
               >
-                Delete
+                {!selectedService ? "Create Service" : "Edit Service"}
               </button>
-            )}
-          </div>
+              {selectedService && (
+                <button onClick={() => setSelectedService(null)}>Cancel</button>
+              )}
+              {selectedService && (
+                <button
+                  onClick={() => {
+                    handleDeleteService(selectedService._id);
+                  }}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          )}
           <div className={styles.infoContainer}>
             {Array.isArray(selectedDoctor?.services) &&
               selectedDoctor?.services.length > 0 && (

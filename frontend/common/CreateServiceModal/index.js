@@ -16,14 +16,13 @@ export default function CreateServiceModal({
 
   const [formData, setFormData] = useState({
     name: selectedServiceData?.name || "",
-    description: selectedServiceData?.description || "",
     price: selectedServiceData?.price || 0,
   });
 
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      if (!formData.name || !formData.description || !formData.price) return;
+      if (!formData.name || !formData.price) return;
 
       if (formData.price < 0) {
         alert("Price cannot be negative");
@@ -40,7 +39,7 @@ export default function CreateServiceModal({
         return;
       }
 
-      if (selectedServiceData) {
+      if (selectedServiceData?._id) {
         await dispatch(
           updateService(selectedServiceData._id, {
             ...formData,
@@ -77,19 +76,6 @@ export default function CreateServiceModal({
             required
           />
         </div>
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="description">Description</label>
-        <Input
-          type="text"
-          id="description"
-          className="border border-gray-300 rounded-lg"
-          value={formData.description}
-          setValue={(value) => {
-            setFormData({ ...formData, description: value });
-          }}
-          required
-        />
       </div>
       <div className="flex flex-col gap-1">
         <label htmlFor="price">Price</label>

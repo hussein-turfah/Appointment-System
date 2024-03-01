@@ -12,28 +12,26 @@ export default function ServicesInfo() {
   const router = useRouter();
   const [activeService, setActiveService] = useState({});
 
-  const services = useSelector(({ ServiceData }) => ServiceData.allServices.data);
-
-  const medicalRecords = useSelector(({ MedicalRecordData }) =>
-    MedicalRecordData?.patientMedicalRecords.slice(0, 5)
+  const services = useSelector(
+    ({ ServiceData }) => ServiceData.allServices.data
   );
-
-  const prescriptions = useSelector(({ PrescriptionData }) =>
-    PrescriptionData?.patientPrescriptions.slice(0, 5)
-  );
-
+  const user = useSelector(({ UserData }) => UserData.data);
   useEffect(() => {
     dispatch(getServices());
-  }
-  , [dispatch]);
+  }, [dispatch]);
+
+  // if the page loads, the user is redirected to doctors/doctorId
+  useEffect(() => {
+    router.push(`/doctors/${user._id}`);
+  }, [services, router]);
 
   return (
     <div className={styles.container}>
       <div>
         <Sidenav
-        services={services}
-        activeService={activeService}
-        setActiveService={setActiveService}
+          services={services}
+          activeService={activeService}
+          setActiveService={setActiveService}
         />
         <Services />
         {/* <div className={styles.bodyContainer}>
