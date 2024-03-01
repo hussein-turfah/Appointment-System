@@ -18,6 +18,7 @@ const {
   updateAppointmentStatus,
   updateAppointment,
   deleteAppointment,
+  getAppointmentsByLoggedInDoctor, // Import the function
 } = require("../../controllers/appointment.controller");
 
 router
@@ -46,5 +47,8 @@ router.put(
   updateAppointmentStatusValidator,
   updateAppointmentStatus
 );
+
+// retrieving appointments by the logged-in doctor
+router.get("/doctors/myappointments", getAppointmentsByLoggedInDoctor);
 
 module.exports = router;
