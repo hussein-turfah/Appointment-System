@@ -49,6 +49,6 @@ router.put(
 );
 
 // retrieving appointments by the logged-in doctor
-router.get("/myappointments", getAppointmentsByLoggedInDoctor);
+router.get("/doctors/myappointments", getAppointmentsByLoggedInDoctor);
 
 module.exports = router;

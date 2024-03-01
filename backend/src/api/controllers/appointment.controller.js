@@ -21,8 +21,6 @@ const getAppointmentById = async (req, res) => {
         status: httpStatus.NOT_FOUND,
       });
     }
-
-    // Transform appointment data before sending response
     const transformedAppointment = appointment.transform();
 
     res.status(httpStatus.OK).json(transformedAppointment);
@@ -337,6 +335,39 @@ const deleteAppointment = async (req, res) => {
     });
   }
 };
+/**
+ * Get appointments by logged in doctor
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<void>}
+ */
+const getAppointmentsByLoggedInDoctor = async (req, res) => {
+  try {
+    // Assuming the doctor's ID is stored in req.user.id after authentication
+    const doctorId = req.user.id;
+
+    const appointments = await Appointment.getByDoctorId(doctorId);
+
+    if (!appointments || appointments.length === 0) {
+      throw new Error({
+        message: "Appointments not found for the logged-in doctor",
+        status: httpStatus.NOT_FOUND,
+      });
+    }
+
+    // Transform appointment data before sending response
+    const transformedAppointments = appointments.map((appointment) =>
+      appointment.transform()
+    );
+
+    res.status(httpStatus.OK).json(transformedAppointments);
+  } catch (error) {
+    res.status(error.status || httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   getAppointmentById,
@@ -347,4 +378,5 @@ module.exports = {
   updateAppointmentStatus,
   updateAppointment,
   deleteAppointment,
+  getAppointmentsByLoggedInDoctor
 };
