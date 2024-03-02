@@ -19,7 +19,7 @@ export const getAllAppointments = () => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_ALL_APPOINTMENTS, data });
   } catch (error) {
-    toast.error("Error while fetching appointments");
+    console.log(error);
   }
 };
 
@@ -30,7 +30,6 @@ export const createAppointment = (appointment) => async (dispatch) => {
     toast.success("Appointment created successfully");
     dispatch(getAllAppointments());
   } catch (error) {
-    toast.error("Error while creating appointment");
     console.log(error);
   }
 };
@@ -66,7 +65,7 @@ export const getAppointmentById = (id) => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_APPOINTMENT_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching appointment");
+    console.log(error);
   }
 };
 
@@ -76,7 +75,7 @@ export const getAppointmentsByDoctorId = (id) => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_APPOINTMENT_BY_DOCTOR_ID, data });
   } catch (error) {
-    toast.error("Error while fetching appointments");
+    console.log(error);
   }
 };
 
@@ -86,7 +85,7 @@ export const getAppointmentsByPatientId = (id) => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_APPOINTMENT_BY_PATIENT_ID, data });
   } catch (error) {
-    toast.error("Error while fetching appointments");
+    console.log(error);
   }
 };
 
@@ -107,6 +106,6 @@ export const getAppointmentsByLoggedInDoctor = () => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_APPOINTMENTS_BY_LOGGED_IN_DOCTOR, data });
   } catch (error) {
-    toast.error("Error while fetching appointments");
+    console.log(error);
   }
 };

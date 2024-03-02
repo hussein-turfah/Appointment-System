@@ -122,7 +122,8 @@
 
 // export default Dropdown;
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import styles from "./styles/index.module.scss";
 
 const Dropdown = ({ value, values, setValue }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -144,8 +145,14 @@ const Dropdown = ({ value, values, setValue }) => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.getElementById("search-input").focus();
+    }
+  }, [isOpen]);
+
   return (
-    <div className="relative z-50">
+    <div className="relative z-50 w-full">
       <div
         className="
         absolute z-50
@@ -207,7 +214,8 @@ const Dropdown = ({ value, values, setValue }) => {
             </svg>
           </div>
         )}
-
+      </div>
+      <div className={styles.dropdownMenu}>
         {isOpen && (
           <div
             id="dropdown-menu"

@@ -19,6 +19,7 @@ import { getAllPatients } from "../../actions/PatientActions";
 import { useRouter } from "next/router";
 import CreateUserModal from "../../common/CreateUserModal";
 import AppointmentStatusModal from "../../common/AppointmentStatusModal";
+import Dropdown from "../../common/Dropdown";
 
 export default function Calendar() {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ export default function Calendar() {
   const [modal, setModal] = useState(false);
   const [isSelected, setIsSelected] = useState({});
   const [statusModal, setStatusModal] = useState(false);
+  const [events, setEvents] = useState([]);
 
   const user = useSelector(({ UserData }) => UserData.data);
   const allAppointments = useSelector(
@@ -39,62 +41,70 @@ export default function Calendar() {
     ({ AppointmentData }) => AppointmentData.appointmentsByDoctor
   );
 
-  console.log(doctorAppointments);
-
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
 
   const removeAppointment = useCallback(() => {
     dispatch(deleteAppointment(isSelected?.id));
   }, [dispatch, isSelected]);
 
-  let events =
-    allAppointments.data.length > 0
-      ? allAppointments?.data?.map((event) => {
-          let color;
-          switch (event.status) {
-            case "scheduled":
-              color = "blue";
-              break;
-            case "cancelled":
-              color = "black";
-              break;
-            case "completed":
-              color = "green";
-              break;
-            case "absent":
-              color = "gray";
-              break;
-            case "rescheduled":
-              color = "orange";
-              break;
-            default:
-              color = "blue";
-          }
-          return { ...event, backgroundColor: color };
-        })
-      : doctorAppointments?.data?.map((event) => {
-          let color;
-          switch (event.status) {
-            case "scheduled":
-              color = "blue";
-              break;
-            case "cancelled":
-              color = "black";
-              break;
-            case "completed":
-              color = "green";
-              break;
-            case "absent":
-              color = "gray";
-              break;
-            case "rescheduled":
-              color = "orange";
-              break;
-            default:
-              color = "blue";
-          }
-          return { ...event, backgroundColor: color };
-        });
+  useEffect(() => {
+    if (
+      allAppointments &&
+      allAppointments.data &&
+      (user.role === "admin" || user.role === "secretary") &&
+      selectedDoctor === 0
+    ) {
+      const mappedEvents = allAppointments.data.map((event) => {
+        let color;
+        switch (event.status) {
+          case "scheduled":
+            color = "blue";
+            break;
+          case "cancelled":
+            color = "black";
+            break;
+          case "completed":
+            color = "green";
+            break;
+          case "absent":
+            color = "gray";
+            break;
+          case "rescheduled":
+            color = "orange";
+            break;
+          default:
+            color = "blue";
+        }
+        return { ...event, backgroundColor: color };
+      });
+      setEvents(mappedEvents);
+    } else if (doctorAppointments && doctorAppointments.data) {
+      const mappedEvents = doctorAppointments.data.map((event) => {
+        let color;
+        switch (event.status) {
+          case "scheduled":
+            color = "blue";
+            break;
+          case "cancelled":
+            color = "black";
+            break;
+          case "completed":
+            color = "green";
+            break;
+          case "absent":
+            color = "gray";
+            break;
+          case "rescheduled":
+            color = "orange";
+            break;
+          default:
+            color = "blue";
+        }
+        return { ...event, backgroundColor: color };
+      });
+      setEvents(mappedEvents);
+    }
+  }, [allAppointments, doctorAppointments]);
 
   useEffect(() => {
     if (user.role === "admin" || user.role === "secretary") {
@@ -143,6 +153,23 @@ export default function Calendar() {
     }
   }, [isSelected]);
 
+  useEffect(() => {
+    console.log(selectedDoctor);
+
+    if (
+      selectedDoctor === 0 &&
+      (user?.role === "admin" || user?.role === "secretary")
+    ) {
+      dispatch(getAllAppointments());
+    } else if (
+      selectedDoctor !== 0 &&
+      user?.role === "admin" &&
+      user?.role !== "secretary"
+    ) {
+      dispatch(getAppointmentsByDoctorId(selectedDoctor));
+    }
+  }, [dispatch, selectedDoctor, user?.role]);
+
   if (
     (user?.role === "doctor" && !doctorAppointments?.loaded) ||
     ((user?.role === "admin" || user?.role === "secretary") &&
@@ -189,8 +216,13 @@ export default function Calendar() {
                 Create Appointment
               </button>
             )}
-            <select
-              onChange={(e) => setSelectedDoctor(e.target.value)}
+            {/* <select
+              onChange={(e) => {
+                setSelectedDoctor(e.target.value);
+                // setSelectedDoctorId(e.target.value);
+                console.log(e.target.value);
+              }}
+              value={selectedDoctor}
               className="form-select form-select-lg mb-3 w-50 "
             >
               <option value="all">All</option>
@@ -199,7 +231,43 @@ export default function Calendar() {
                   {doctor.firstName} {doctor.lastName}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <div className={styles.dropdown}>
+              <Dropdown
+                values={[
+                  {
+                    value: 0,
+                    label: "All",
+                  },
+                  ...allDoctors.data.map((doctor) => ({
+                    value: doctor._id,
+                    label: `${doctor.firstName} ${doctor.lastName}`,
+                  })),
+                ]}
+                value={
+                  selectedDoctor === "all" || selectedDoctor === 0
+                    ? {
+                        value: 0,
+                        label: "All",
+                      }
+                    : selectedDoctor
+                    ? {
+                        value: selectedDoctor,
+                        label:
+                          allDoctors.data.find(
+                            (doctor) => doctor._id === selectedDoctor
+                          )?.firstName +
+                          " " +
+                          allDoctors.data.find(
+                            (doctor) => doctor._id === selectedDoctor
+                          )?.lastName,
+                      }
+                    : null
+                }
+                setValue={(e) => setSelectedDoctor(e.value)}
+                placeholder="Select Doctor"
+              />
+            </div>
           </div>
         )}
         <Fullcalendar

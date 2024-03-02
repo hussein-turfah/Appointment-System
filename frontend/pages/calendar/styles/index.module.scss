@@ -19,11 +19,11 @@
       }
     }
 
-    >select {
-      padding: 0.5rem;
+    .dropdown{
+      width: 200px;
       border-radius: 0.5rem;
-      border: 1px solid #ccc;
-      margin-left: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
     }
   }
 
