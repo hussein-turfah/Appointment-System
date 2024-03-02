@@ -30,7 +30,7 @@ serviceSchema.method({
   transform() {
     const transformed = {};
     const fields = [
-      "id",
+      "_id",
       "name",
       "price",
       "doctor",

@@ -8,7 +8,7 @@ export const ACTIONS = {
   GET_ALL_INVOICES: "/",
   GET_INVOICES_BY_PATIENT_ID: "/invoices/patient/:invoiceId",
   GET_INVOICE_BY_ID: "/invoices/:invoiceId",
-  GET_INVOICES_BY_DOCTOR_ID: "/invoices/doctor/:invoiceId",
+  GET_INVOICES_BY_DOCTOR_ID: "/invoices/doctor/:doctorId",
   GET_INVOICES_BY_DATE: "/invoices/day/:date",
   GET_INVOICES_AND_TOTAL: "/invoices/:date/:doctorId?",
 };
@@ -67,6 +67,7 @@ export const getInvoiceById = (id) => async (dispatch) => {
 export const getInvoicesByDoctorId = (doctorId) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/invoices/doctor/${doctorId}`);
+    console.log(data);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_DOCTOR_ID, data });
   } catch (error) {
     toast.error("Error while fetching invoices");

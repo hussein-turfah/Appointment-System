@@ -8,20 +8,27 @@ import {
 import Modal from "../../common/Modal";
 import InvoiceForm from "../../common/EditInvoiceModal";
 import { getAllPatients } from "../../actions/PatientActions";
-import Link from 'next/link';
-
+import Link from "next/link";
 
 const InvoiceTable = () => {
   const dispatch = useDispatch();
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [invoices, setInvoices] = useState([]);
 
   const user = useSelector(({ UserData }) => UserData.data);
 
-  const invoices = useSelector(
-    ({ InvoiceData }) =>
-      InvoiceData?.allInvoices || InvoiceData?.invoicesByDoctor
+  // const invoices = useSelector(
+  //   ({ InvoiceData }) =>
+  //     InvoiceData?.allInvoices || InvoiceData?.invoicesByDoctor
+  // );
+
+  const allInvoices = useSelector(
+    ({ InvoiceData }) => InvoiceData?.allInvoices?.data
+  );
+  const invoicesByDoctor = useSelector(
+    ({ InvoiceData }) => InvoiceData?.invoicesByDoctor?.data
   );
 
   useEffect(() => {
@@ -31,7 +38,15 @@ const InvoiceTable = () => {
       dispatch(getInvoicesByDoctorId(user._id));
     }
     dispatch(getAllPatients());
-  }, [dispatch]);
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user.role === "admin") {
+      setInvoices(allInvoices);
+    } else {
+      setInvoices(invoicesByDoctor);
+    }
+  }, [allInvoices, invoicesByDoctor, user]);
 
   // Function to handle opening edit modal
   const openEditModal = (invoice) => {
@@ -55,13 +70,14 @@ const InvoiceTable = () => {
     setIsDeleteModalOpen(false);
   };
 
-
   return (
     <div className="relative overflow-x-auto  sm:rounded-lg mt-20">
       <Link href="/invoice/statment">
-        <button className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-4
-            text-nowrap">
-           Statement
+        <button
+          className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-4
+            text-nowrap"
+        >
+          Statement
         </button>
       </Link>
       <table className="w-full shadow-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -77,7 +93,7 @@ const InvoiceTable = () => {
               Date
             </th>
             <th scope="col" className="px-6 py-3">
-                Doctor Amount
+              Doctor Amount
             </th>
             <th scope="col" className="px-6 py-3">
               Clinic Amount
@@ -99,7 +115,7 @@ const InvoiceTable = () => {
           </tr>
         </thead>
         <tbody>
-          {invoices.data.map((invoice, index) => (
+          {invoices?.map((invoice, index) => (
             <tr
               key={index}
               className={`${
@@ -113,7 +129,9 @@ const InvoiceTable = () => {
                 {" "}
                 {`${invoice.doctor.firstName} ${invoice.doctor.lastName}`}
               </td>
-              <td className="px-6 py-4">{invoice.date}</td>
+              <td className="px-6 py-4">
+                {new Date(invoice.date).toLocaleDateString()}
+              </td>
               <td className="px-6 py-4">{invoice.doctorAmount}</td>
               <td className="px-6 py-4">{invoice.clinicAmount}</td>
               <td className="px-6 py-4">{invoice.amount}</td>

@@ -51,7 +51,7 @@ appointmentSchema.method({
   transform() {
     const transformed = {};
     const fields = [
-      "id",
+      "_id",
       "doctor",
       "patient",
       "invoice",

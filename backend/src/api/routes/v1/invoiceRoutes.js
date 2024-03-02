@@ -28,6 +28,6 @@ router.get('/patient/:patientId', getInvoicesByPatientId);
 router.get('/:invoiceId', getInvoiceValidator, getInvoiceById);
 router.get('/day/:date', getInvoicesByDate);
 router.get('/', getAllInvoices);
-router.get('/doctor/all', getAllInvoicesByDoctor);
+router.get('/doctor/:doctorId', getAllInvoicesByDoctor);
 module.exports = router;
 

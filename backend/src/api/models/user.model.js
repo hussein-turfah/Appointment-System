@@ -87,7 +87,7 @@ userSchema.method({
   transform() {
     const transformed = {};
     const fields = [
-      "id",
+      "_id",
       "firstName",
       "lastName",
       "email",
