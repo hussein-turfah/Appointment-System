@@ -76,7 +76,7 @@ const PatientsTable = () => {
                 className={`${
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-b dark:bg-gray-800 dark:border-gray-700`}
-                onClick={() => router.push(`/patients/${patient.id}`)}
+                onClick={() => router.push(`/patients/${patient._id}`)}
               >
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {patient.firstName} {patient.lastName}
@@ -84,7 +84,7 @@ const PatientsTable = () => {
                 <td className="px-6 py-4">{patient.email}</td>
                 <td className="px-6 py-4">{patient.phone}</td>
                 <td className="px-6 py-4">{patient.gender}</td>
-                <td className="px-6 py-4">{patient.city}</td>
+                <td className="px-6 py-4">{patient.city}</td>                
                 <td className="px-6 py-4"></td>
               </tr>
             ))}

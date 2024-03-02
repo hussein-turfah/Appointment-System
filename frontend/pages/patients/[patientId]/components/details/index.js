@@ -27,6 +27,7 @@ const Patients = () => {
       phone: "",
       dob: "",
       city: "",
+      allergies: "",
       notes: "",
     }
   );
@@ -38,32 +39,32 @@ const Patients = () => {
     [addActive, newPatientData]
   );
 
-  const age = (newPatientData) => {
-    const dob = new Date(newPatientData.dob);
-    const now = new Date();
-    const ageInYears = now.getFullYear() - dob.getFullYear();
-    const ageInMonths = now.getMonth() - dob.getMonth();
-    const ageInDays = now.getDate() - dob.getDate();
-    const ageInHours = Math.floor((now - dob) / (1000 * 60 * 60));
-    const ageInWeeks = Math.floor(ageInDays / 7);
+  // const age = (newPatientData) => {
+  //   const dob = new Date(newPatientData.dob);
+  //   const now = new Date();
+  //   const ageInYears = now.getFullYear() - dob.getFullYear();
+  //   const ageInMonths = now.getMonth() - dob.getMonth();
+  //   const ageInDays = now.getDate() - dob.getDate();
+  //   const ageInHours = Math.floor((now - dob) / (1000 * 60 * 60));
+  //   const ageInWeeks = Math.floor(ageInDays / 7);
 
-    // Condition for years
-    if (ageInYears > 1) {
-      return `${ageInYears} years`;
-    } else if (ageInYears === 1) {
-      return `${ageInYears} year`;
-    } else if (ageInMonths > 0) {
-      return `${ageInMonths} months`;
-    } else if (ageInDays > 0) {
-      return `${ageInDays} days`;
-    } else if (ageInHours > 0) {
-      return `${ageInHours} hours`;
-    } else if (ageInWeeks > 0) {
-      return `${ageInWeeks} weeks`;
-    } else {
-      return "";
-    }
-  };
+  //   // Condition for years
+  //   if (ageInYears > 1) {
+  //     return `${ageInYears} years`;
+  //   } else if (ageInYears === 1) {
+  //     return `${ageInYears} year`;
+  //   } else if (ageInMonths > 0) {
+  //     return `${ageInMonths} months`;
+  //   } else if (ageInDays > 0) {
+  //     return `${ageInDays} days`;
+  //   } else if (ageInHours > 0) {
+  //     return `${ageInHours} hours`;
+  //   } else if (ageInWeeks > 0) {
+  //     return `${ageInWeeks} weeks`;
+  //   } else {
+  //     return "";
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -293,11 +294,11 @@ const Patients = () => {
           <div className={styles.row}>
             <div className={styles.dob}>
               <h4>Date of Birth</h4>
-              {age(newPatientData) === "" ? null : (
+              {/* {age(newPatientData) === "" ? null : (
                 <h6>
                   <span>Age:</span> {age(newPatientData)}
                 </h6>
-              )}
+              )} */}
             </div>
             <p>
               {addActive || editActive ? (
@@ -340,6 +341,33 @@ const Patients = () => {
               )}
             </p>
           </div>
+          <div className={styles.row}>
+            <h4>Allergies</h4>
+            <p>
+              {addActive || editActive ? (
+                <Input
+                  type="text"
+                  value={newPatientData?.allergies || selectedPatient?.allergies}
+                  placeholder=""
+                  setValue={(value) => {
+                    setNewPatientData((prev) => ({
+                      ...prev,
+                      allergies: value,
+                    }));
+                  }}
+                />
+              ) : (
+                selectedPatient?.allergies.map((allergy, index) =>
+                  index === selectedPatient?.allergies.length - 1
+                    ? allergy
+                    : allergy + ", "
+                )
+              )}
+            </p>
+          </div>
+
+
+
           <div className={styles.row}>
             <h4>Notes</h4>
             <p>
