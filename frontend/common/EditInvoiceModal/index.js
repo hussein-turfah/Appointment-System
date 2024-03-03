@@ -5,8 +5,6 @@ import { getAllDoctors } from "../../actions/DoctorActions";
 import { getAllPatients } from "../../actions/PatientActions";
 
 const InvoiceForm = ({
-  onSubmit,
-  isAddForm = false,
   editing = false,
   initialValues = {
     id: "",

@@ -9,12 +9,12 @@ const Prescription = require('../models/prescriptionSchema');
 const createMedicalRecord = async (req, res) => {
     try {
       const { patientId } = req.params;
-      const { title, notes } = req.body;
+      const { title, description } = req.body;
       const { doctorId } = req.body;
   
-      // Check if title and notes are provided
-      if (!title || !notes) {
-        return res.status(400).json({ message: 'Title and notes are required' });
+      // Check if title and description are provided
+      if (!title || !description) {
+        return res.status(400).json({ message: 'Title and description are required' });
       }
   
       // Create a new PDF document
@@ -32,17 +32,17 @@ const createMedicalRecord = async (req, res) => {
       doc.fontSize(16).text('TabibClinic Medical Record', { align: 'center' });
       doc.moveDown();
       doc.fontSize(12).text(`Title: ${title}`);
-      doc.fontSize(10).text(`Notes: ${notes}`);
+      doc.fontSize(10).text(`Description: ${description}`);
       doc.fontSize(8).text(`Doctor ID: ${doctorId}`);
       doc.end();
   
       // Save medical record data to the database
       const newMedicalRecord = await MedicalRecord.create({
         patient: patientId,
-        title: title,
+        title,
         doctor: doctorId,
         attachment: filePath,
-        notes: notes
+        description,
       });
   
       // Respond with a success message

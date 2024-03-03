@@ -37,13 +37,13 @@ const uploadRecordAttach = upload.single('attachment');
 // Function to create a medical record
 const createMedicalRecord = async (req, res) => {
   try {
-    const { title, notes } = req.body; 
+    const { title, description } = req.body; 
     const {patientId} = req.params;
 
     const medicalRecordData = {
       patient: patientId,
-      title: title,
-      notes: notes,
+      title,
+      description,
       date: Date.now(),
     };
 
@@ -165,11 +165,11 @@ const deleteMedicalRecord = async (req, res) => {
 const updateMedicalRecord = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
-    const { patient, title, notes } = req.body;
+    const { patient, title, description } = req.body;
     
     const updatedRecord = await MedicalRecord.findByIdAndUpdate(
       medicalRecordId,
-      { patient, title, notes },
+      { patient, title, description },
       { new: true }
     );
     

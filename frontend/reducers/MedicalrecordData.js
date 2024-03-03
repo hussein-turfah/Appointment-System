@@ -4,7 +4,7 @@ const initialState = {
   loaded: false,
   medicalRecords: [],
   patientMedicalRecords: [],
-  medicalRecord: {},
+  selectedMedicalRecord: {},
 };
 
 const MedicalRecordData = (state = initialState, { type, data }) => {
@@ -20,25 +20,25 @@ const MedicalRecordData = (state = initialState, { type, data }) => {
       return {
         ...state,
         loaded: true,
-        medicalRecord: data,
+        selectedMedicalRecord: data,
       };
     case ACTIONS.CREATE_MEDICAL_RECORD:
       return {
         ...state,
         loaded: true,
-        medicalRecord: data,
+        selectedMedicalRecord: data,
       };
     case ACTIONS.UPDATE_MEDICAL_RECORD:
       return {
         ...state,
         loaded: true,
-        medicalRecord: data,
+        selectedMedicalRecord: data,
       };
     case ACTIONS.DELETE_MEDICAL_RECORD:
       return {
         ...state,
         loaded: true,
-        medicalRecord: data,
+        selectedMedicalRecord: data,
       };
     default:
       return state;
