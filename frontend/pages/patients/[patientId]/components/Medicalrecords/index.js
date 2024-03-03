@@ -46,7 +46,7 @@ const Medicalrecords = ({ data }) => {
             </div>
             <hr className="my-4" />
             <div className="flex items-center justify-between">
-              <button className="border border-black text-black font-bold py-1 px-2 rounded mr-2">Fees</button>
+              <button className="border border-black text-black font-bold py-1 px-2 rounded mr-2">Fees*****</button>
               <button onClick={handleInvoiceModal} className="border border-black text-black font-bold py-1 px-2 rounded">Create Invoice</button>
             </div>
             <p className="mt-4 text-gray-700">{record?.notes}</p>

@@ -268,8 +268,7 @@ export default function Calendar() {
         <Fullcalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-          // initialView="dayGridMonth"
-          initialView="timeGridWeek"
+          initialView="dayGridMonth"
           headerToolbar={{
             start: "today prev,next",
             center: "title",
@@ -279,7 +278,7 @@ export default function Calendar() {
           events={events}
           editable={user?.role === "admin" || user?.role === "secretary"}
           droppable={user?.role === "admin" || user?.role === "secretary"}
-          selectable={user?.role === "admin" || user?.role === "secretary"}
+          // selectable={user?.role === "admin" || user?.role === "secretary"}
           slotDuration="00:15:00"
           slotMinTime="08:00:00"
           slotMaxTime="18:00:00"
