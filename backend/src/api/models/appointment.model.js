@@ -126,6 +126,7 @@ appointmentSchema.statics = {
 
       if (mongoose.Types.ObjectId.isValid(doctorId)) {
         appointments = await this.find({ doctor: doctorId })
+          .populate("doctor")
           .populate("patient")
           .exec();
       }
