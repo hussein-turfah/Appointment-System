@@ -26,12 +26,13 @@ export const createMedicalRecord =
   };
 
 export const updateMedicalRecord =
-  (id, { title, description }) =>
+  (id, { title, description, fees }) =>
   async (dispatch) => {
     try {
       const { data } = await axios.put(`/record/${id}`, {
         title,
         description,
+        fees,
       });
       toast.success("Medical record updated successfully");
       dispatch({ type: ACTIONS.UPDATE_MEDICAL_RECORD, data });
