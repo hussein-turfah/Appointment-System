@@ -30,9 +30,7 @@ const InvoiceStatement = () => {
   });
   const { selectedDoctor, startDate, endDate } = formData;
 
-  const handlePrint = () => {
-    console.log("Print");
-  };
+
 
   const handleGetInvoices = useCallback(
     async () =>
@@ -60,6 +58,82 @@ const InvoiceStatement = () => {
       setUserLoaded(true);
     }
   }, [user]);
+
+  const handlePrint = () => {
+    // Create a printable document
+    const printDocument = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Invoice</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px; 
+          h2 {
+            margin-top: 20; 
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 50px;
+          }
+          th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+          tr:nth-child(even) {
+            background-color: #f2f2f2;
+          }
+        </style>
+      </head>
+      <body>
+        <table>
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Doctor</th>
+              <th>Date</th>
+              <th>Doctor Amount</th>
+              <th>Clinic Amount</th>
+              <th>Amount</th>
+              <th>Currency</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${statementData?.invoices?.map(invoice => `
+              <tr>
+                <td>${invoice?.patient?.firstName} ${invoice?.patient?.lastName}</td>
+                <td>${invoice?.doctor?.firstName} ${invoice?.doctor?.lastName}</td>
+                <td>${new Date(invoice?.date).toLocaleDateString()}</td>
+                <td>${invoice?.doctorAmount}</td>
+                <td>${invoice?.clinicAmount}</td>
+                <td>${invoice?.amount}</td>
+                <td>${invoice?.currency}</td>
+                <td>${invoice?.paymentStatus}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+  
+    // Open a new window with the printable document
+    const win = window.open("", "_blank");
+    win.document.write(printDocument);
+    win.document.close();
+  
+    // Directly open print dialog
+    win.print();
+  };
+  
 
   return (
     <div
