@@ -44,7 +44,7 @@ export default function Calendar() {
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
 
   const removeAppointment = useCallback(() => {
-    dispatch(deleteAppointment(isSelected?.id));
+    dispatch(deleteAppointment(isSelected?._id));
   }, [dispatch, isSelected]);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function Calendar() {
     } else if (user.role === "doctor") {
       dispatch(getAppointmentsByLoggedInDoctor());
     }
-  }, [dispatch, user.role, user.role, user.id]);
+  }, [dispatch, user.role, user.role, user._id]);
 
   // useEffect for double click and single click on event
   useEffect(() => {
@@ -189,7 +189,7 @@ export default function Calendar() {
             >
               Create User
             </button>
-            {isSelected?.id ? (
+            {isSelected?.extendedProps?._id ? (
               <>
                 <button
                   onClick={() => setAppointmentModal(true)}
@@ -278,7 +278,8 @@ export default function Calendar() {
           events={events}
           editable={user?.role === "admin" || user?.role === "secretary"}
           droppable={user?.role === "admin" || user?.role === "secretary"}
-          // selectable={user?.role === "admin" || user?.role === "secretary"}
+          selectable
+          // ={user?.role === "admin" || user?.role === "secretary"}
           slotDuration="00:15:00"
           slotMinTime="08:00:00"
           slotMaxTime="18:00:00"
@@ -314,13 +315,13 @@ export default function Calendar() {
         <Modal
           active={appointmentModal}
           setActive={setAppointmentModal}
-          title={isSelected?.id ? "Edit Appointment" : "Create Appointment"}
+          title={isSelected?.extendedProps?._id ? "Edit Appointment" : "Create Appointment"}
           children={
             <CreateAppointmentModal
               active={appointmentModal}
               setActive={setAppointmentModal}
               selectedAppointment={isSelected?.extendedProps}
-              appointmentId={isSelected?.id}
+              appointmentId={isSelected?.extendedProps?._id}
               appointmentRange={{
                 start: isSelected.startStr,
                 end: isSelected.endStr,
@@ -343,7 +344,7 @@ export default function Calendar() {
               active={statusModal}
               setActive={setStatusModal}
               selectedAppointment={isSelected?.extendedProps}
-              appointmentId={isSelected?.id}
+              appointmentId={isSelected?.extendedProps?._id}
               appointmentRange={{
                 start: isSelected.startStr,
                 end: isSelected.endStr,

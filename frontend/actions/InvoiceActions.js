@@ -2,20 +2,21 @@ import axios from "../utils/Http";
 import { toast } from "react-toastify";
 
 export const ACTIONS = {
-  CREATE_INVOICE: "/invoices",
-  UPDATE_INVOICE: "/invoices/:invoiceId",
-  DELETE_INVOICE: "/invoices/:invoiceId",
+  CREATE_INVOICE: "/invoice",
+  UPDATE_INVOICE: "/invoice/:invoiceId",
+  DELETE_INVOICE: "/invoice/:invoiceId",
   GET_ALL_INVOICES: "/",
-  GET_INVOICES_BY_PATIENT_ID: "/invoices/patient/:invoiceId",
-  GET_INVOICE_BY_ID: "/invoices/:invoiceId",
-  GET_INVOICES_BY_DOCTOR_ID: "/invoices/doctor/:doctorId",
-  GET_INVOICES_BY_DATE: "/invoices/day/:date",
-  GET_INVOICES_AND_TOTAL: "/invoices/:date/:doctorId?",
+  GET_INVOICES_BY_PATIENT_ID: "/invoice/patient/:invoiceId",
+  GET_INVOICE_BY_ID: "/invoice/:invoiceId",
+  GET_INVOICES_BY_DOCTOR_ID: "/invoice/doctor/:doctorId",
+  GET_INVOICES_BY_DATE: "/invoice/day/:date",
+  GET_INVOICES_AND_TOTAL: "/invoice/:date/:doctorId",
+  INVOICE_STATEMENT: "/invoice/invoice/statement/",
 };
 
 export const createInvoice = (patientId, invoice) => async (dispatch) => {
   try {
-    const { data } = await axios.post(`/invoices/${patientId}`, invoice);
+    const { data } = await axios.post(`/invoice/${patientId}`, invoice);
     toast.success("Invoice created successfully");
     dispatch({ type: ACTIONS.CREATE_INVOICE, data });
   } catch (error) {
@@ -26,7 +27,7 @@ export const createInvoice = (patientId, invoice) => async (dispatch) => {
 
 export const updateInvoice = (id, invoice) => async (dispatch) => {
   try {
-    const { data } = await axios.put(`/invoices/${id}`, {
+    const { data } = await axios.put(`/invoice/${id}`, {
       ...invoice,
     });
     dispatch({ type: ACTIONS.UPDATE_INVOICE, data });
@@ -38,7 +39,7 @@ export const updateInvoice = (id, invoice) => async (dispatch) => {
 
 export const deleteInvoice = (id) => async (dispatch) => {
   try {
-    await axios.delete(`/invoices/${id}`);
+    await axios.delete(`/invoice/${id}`);
     toast.success("Invoice deleted successfully");
     dispatch({ type: ACTIONS.DELETE_INVOICE, id });
   } catch (error) {
@@ -48,7 +49,7 @@ export const deleteInvoice = (id) => async (dispatch) => {
 
 export const getInvoicesByPatientId = (patientId) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/invoices/patient/${patientId}`);
+    const { data } = await axios.get(`/invoice/patient/${patientId}`);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_PATIENT_ID, data });
   } catch (error) {
     toast.error("Error while fetching invoices");
@@ -57,7 +58,7 @@ export const getInvoicesByPatientId = (patientId) => async (dispatch) => {
 
 export const getInvoiceById = (id) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/invoices/${id}`);
+    const { data } = await axios.get(`/invoice/${id}`);
     dispatch({ type: ACTIONS.GET_INVOICE_BY_ID, data });
   } catch (error) {
     toast.error("Error while fetching invoice");
@@ -66,7 +67,7 @@ export const getInvoiceById = (id) => async (dispatch) => {
 
 export const getInvoicesByDoctorId = (doctorId) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/invoices/doctor/${doctorId}`);
+    const { data } = await axios.get(`/invoice/doctor/${doctorId}`);
     console.log(data);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_DOCTOR_ID, data });
   } catch (error) {
@@ -76,7 +77,7 @@ export const getInvoicesByDoctorId = (doctorId) => async (dispatch) => {
 
 export const getInvoicesByDate = (date) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/invoices/day/${date}`);
+    const { data } = await axios.get(`/invoice/day/${date}`);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_DATE, data });
   } catch (error) {
     toast.error("Error while fetching invoices");
@@ -85,7 +86,7 @@ export const getInvoicesByDate = (date) => async (dispatch) => {
 
 export const getAllInvoices = () => async (dispatch) => {
   try {
-    const { data } = await axios.get("/invoices");
+    const { data } = await axios.get("/invoice");
     dispatch({ type: ACTIONS.GET_ALL_INVOICES, data });
   } catch (error) {
     toast.error("Error while fetching invoices");
@@ -94,7 +95,7 @@ export const getAllInvoices = () => async (dispatch) => {
 
 export const getInvoicesAndTotal = (date, doctorId) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/invoices/${date}/${doctorId || ""}`);
+    const { data } = await axios.get(`/invoice/${date}/${doctorId || ""}`);
     // Handle data as needed
     dispatch({ type: ACTIONS.GET_INVOICES_AND_TOTAL, data });
   } catch (error) {
@@ -102,3 +103,20 @@ export const getInvoicesAndTotal = (date, doctorId) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const getInvoiceStatement =
+  ({ doctorId, startDate, endDate }) =>
+  async (dispatch) => {
+    try {
+      const { data } = await axios.post(`/invoice/invoice/statement`, {
+        doctorId,
+        startDate,
+        endDate,
+      });
+      console.log(data);
+
+      dispatch({ type: ACTIONS.INVOICE_STATEMENT, data });
+    } catch (error) {
+      toast.error("Error while fetching invoice statement");
+    }
+  };

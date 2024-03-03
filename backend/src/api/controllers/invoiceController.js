@@ -316,7 +316,7 @@ const makeInvoiceStatement = async (req, res) => {
     const invoices = await Invoice.find({
       doctor: doctorId,
       date: { $gte: startDate, $lte: endDate },
-    });
+    }).populate("patient doctor");
 
     if (!invoices || invoices.length === 0) {
       return res

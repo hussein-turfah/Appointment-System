@@ -357,7 +357,7 @@ const Patients = () => {
                   }}
                 />
               ) : (
-                selectedPatient?.allergies.map((allergy, index) =>
+                selectedPatient?.allergies?.map((allergy, index) =>
                   index === selectedPatient?.allergies.length - 1
                     ? allergy
                     : allergy + ", "

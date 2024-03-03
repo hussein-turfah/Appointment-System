@@ -21,6 +21,10 @@ const initialState = {
     loaded: false,
     data: {},
   },
+  invoiceStatement: {
+    loaded: false,
+    data: {},
+  },
 };
 
 const InvoiceData = (state = initialState, { type, data }) => {
@@ -87,6 +91,14 @@ const InvoiceData = (state = initialState, { type, data }) => {
       return {
         ...state,
         allInvoices: {
+          loaded: true,
+          data,
+        },
+      };
+    case ACTIONS.INVOICE_STATEMENT:
+      return {
+        ...state,
+        invoiceStatement: {
           loaded: true,
           data,
         },

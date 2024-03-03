@@ -27,7 +27,7 @@ router.use("/patient", protect, patientRoute);
 router.use("/doctor", protect, doctorRoute);
 router.use("/record",  RecordRoute);
 router.use("/prescription", protect, PrescriptionsRoute);
-router.use("/invoices",  InvoiceRoute);
+router.use("/invoice",  InvoiceRoute);
 router.use("/secretary", protect, SecretaryRoute);
 router.use("/appointment", protect, appointmentRoutes);
 router.use("/schedule", protect, scheduleRoutes);

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import styles from "./styles/index.module.scss";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDoctors } from "../../../actions/DoctorActions";
 import Modal from "../../../common/Modal";
@@ -6,6 +7,7 @@ import InvoiceForm from "../../../common/EditInvoiceModal";
 import { getAllPatients } from "../../../actions/PatientActions";
 import { useRouter } from "next/router";
 import Dropdown from "../../../common/Dropdown";
+import { getInvoiceStatement } from "../../../actions/InvoiceActions";
 
 const InvoiceStatement = () => {
   const dispatch = useDispatch();
@@ -18,7 +20,9 @@ const InvoiceStatement = () => {
   const doctors = useSelector(({ DoctorData }) => DoctorData.allDoctors?.data);
 
   const user = useSelector(({ UserData }) => UserData.data);
-
+  const statementData = useSelector(
+    ({ InvoiceData }) => InvoiceData.invoiceStatement?.data
+  );
   const [formData, setFormData] = useState({
     selectedDoctor: "",
     startDate: "",
@@ -30,9 +34,13 @@ const InvoiceStatement = () => {
     console.log("Print");
   };
 
-  const handleGetInvoices = () => {
-    console.log("Get Invoices");
-  };
+  const handleGetInvoices = useCallback(
+    async () =>
+      await dispatch(
+        getInvoiceStatement({ ...formData, doctorId: selectedDoctor._id })
+      ),
+    [formData]
+  );
 
   useEffect(() => {
     dispatch(getAllDoctors());
@@ -54,8 +62,12 @@ const InvoiceStatement = () => {
   }, [user]);
 
   return (
-    <div className="relative shadow-md sm:rounded-lg mt-20">
-      <div className="flex justify-between mb-4">
+    <div
+      className="sm:rounded-lg mt-20  p-4 flex flex-col  
+    align-items-center justify-center w-full  
+    "
+    >
+      <div className="flex justify-between align-items-center mb-4">
         <div className="flex items-center">
           <label className="mr-2">Doctor:</label>
           <Dropdown
@@ -121,7 +133,7 @@ const InvoiceStatement = () => {
           Print
         </button>
       </div>
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
         {/* Table Headers */}
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -149,16 +161,56 @@ const InvoiceStatement = () => {
             <th scope="col" className="px-6 py-3">
               Status
             </th>
-            {user.role === "admin" && (
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            )}
           </tr>
         </thead>
         {/* Table Body */}
-        <tbody>{/* Render Table Rows Here */}</tbody>
+        <tbody>
+          {statementData?.invoices?.map((invoice, index) => (
+            <tr
+              key={index}
+              className={`${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50"
+              } border-b dark:bg-gray-800 dark:border-gray-700`}
+            >
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {`${invoice?.patient?.firstName} ${invoice?.patient?.lastName}`}
+              </td>
+              <td className="px-6 py-4">
+                {" "}
+                {`${invoice?.doctor?.firstName} ${invoice?.doctor?.lastName}`}
+              </td>
+              <td className="px-6 py-4">
+                {new Date(invoice?.date).toLocaleDateString()}
+              </td>
+              <td className="px-6 py-4">{invoice?.doctorAmount}</td>
+              <td className="px-6 py-4">{invoice?.clinicAmount}</td>
+              <td className="px-6 py-4">{invoice?.amount}</td>
+              <td className="px-6 py-4">{invoice?.currency}</td>
+              <td
+                className={`px-6 py-4 ${
+                  invoice?.paymentStatus === "Unpaid" ? "text-red-500" : ""
+                }`}
+              >
+                {invoice?.paymentStatus}
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
+      <div className={styles.total}>
+        <div>
+          <span className={styles.totalLabel}>Total Doctor Amount:</span>{" "}
+          <span>${statementData?.doctorAmountTotal}</span>
+        </div>
+        <div>
+          <span className={styles.totalLabel}>Total Clinic Amount:</span>{" "}
+          <span>${statementData?.clinicAmountTotal}</span>
+        </div>
+        <div>
+          <span className={styles.totalLabel}>Total Amount:</span>{" "}
+          <span>${statementData?.overallTotal}</span>
+        </div>
+      </div>
     </div>
   );
 };
