@@ -125,6 +125,8 @@ const InvoiceForm = ({
           value={paymentStatus}
           onChange={(e) => setPaymentStatus(e.target.value)}
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
+          defaultValue={initialValues.paymentStatus ? initialValues.paymentStatus : "Paid"}
+          
         >
           <option value="Paid">Paid</option>
           <option value="Unpaid">Unpaid</option>

@@ -4,41 +4,85 @@ import { getAllDoctors } from "../../../actions/DoctorActions";
 import Modal from "../../../common/Modal";
 import InvoiceForm from "../../../common/EditInvoiceModal";
 import { getAllPatients } from "../../../actions/PatientActions";
-
+import { useRouter } from "next/router";
+import Dropdown from "../../../common/Dropdown";
 
 const InvoiceStatement = () => {
   const dispatch = useDispatch();
-  const [selectedDoctor, setSelectedDoctor] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const router = useRouter();
+
+  const [userLoaded, setUserLoaded] = useState(false);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const doctors = useSelector(({ DoctorData }) => DoctorData.allDoctors?.data);
 
   const user = useSelector(({ UserData }) => UserData.data);
-  const doctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
+
+  const [formData, setFormData] = useState({
+    selectedDoctor: "",
+    startDate: "",
+    endDate: "",
+  });
+  const { selectedDoctor, startDate, endDate } = formData;
+
+  const handlePrint = () => {
+    console.log("Print");
+  };
+
+  const handleGetInvoices = () => {
+    console.log("Get Invoices");
+  };
 
   useEffect(() => {
     dispatch(getAllDoctors());
     dispatch(getAllPatients());
   }, [dispatch]);
 
-  const handlePrint = () => {
-    
-  };
+  useEffect(() => {
+    if (userLoaded) {
+      if (user?.role !== "admin" && user?.role !== "secretary") {
+        router.push("/404");
+      }
+    }
+  }, [userLoaded]);
+
+  useEffect(() => {
+    if (user?._id) {
+      setUserLoaded(true);
+    }
+  }, [user]);
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
+    <div className="relative shadow-md sm:rounded-lg mt-20">
       <div className="flex justify-between mb-4">
         <div className="flex items-center">
-          <label className="mr-2">Select Doctor:</label>
-          <select
-            className="border rounded-md px-2 py-1"
-            value={selectedDoctor}
-            onChange={(e) => setSelectedDoctor(e.target.value)}
-          >
-            <option value="">Select Doctor</option>
-          
-          </select>
+          <label className="mr-2">Doctor:</label>
+          <Dropdown
+            values={[
+              ...doctors.map((doctor) => ({
+                value: doctor._id,
+                label: `${doctor.firstName} ${doctor.lastName}`,
+              })),
+            ]}
+            value={
+              selectedDoctor
+                ? {
+                    value: selectedDoctor,
+                    label:
+                      doctors.find((doctor) => doctor === selectedDoctor)
+                        ?.firstName +
+                      " " +
+                      doctors.find((doctor) => doctor === selectedDoctor)
+                        ?.lastName,
+                  }
+                : null
+            }
+            setValue={(selectedDoctor) => {
+              const doctor = doctors.find((doc) => doc._id === selectedDoctor);
+              setFormData({ ...formData, selectedDoctor: doctor });
+            }}
+          />
         </div>
         <div className="flex items-center">
           <label className="mr-2">Start Date:</label>
@@ -46,7 +90,9 @@ const InvoiceStatement = () => {
             type="date"
             className="border rounded-md px-2 py-1"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={(e) =>
+              setFormData({ ...formData, startDate: e.target.value })
+            }
           />
         </div>
         <div className="flex items-center">
@@ -55,14 +101,25 @@ const InvoiceStatement = () => {
             type="date"
             className="border rounded-md px-2 py-1"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={(e) =>
+              setFormData({ ...formData, endDate: e.target.value })
+            }
           />
         </div>
-        <button className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-md px-5 py-1
-            text-nowrap"  onClick={handlePrint}>
-           Print
+        <button
+          className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-md px-5 py-1
+            text-nowrap"
+          onClick={handleGetInvoices}
+        >
+          Get All Invoices
         </button>
-        
+        <button
+          className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-md px-5 py-1
+            text-nowrap"
+          onClick={handlePrint}
+        >
+          Print
+        </button>
       </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         {/* Table Headers */}
@@ -100,11 +157,8 @@ const InvoiceStatement = () => {
           </tr>
         </thead>
         {/* Table Body */}
-        <tbody>
-          {/* Render Table Rows Here */}
-        </tbody>
+        <tbody>{/* Render Table Rows Here */}</tbody>
       </table>
-
     </div>
   );
 };

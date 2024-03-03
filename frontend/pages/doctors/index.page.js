@@ -14,14 +14,12 @@ const UsersTable = () => {
   const user = useSelector(({ UserData }) => UserData.data);
   const [selectedUser, setSelectedUser] = useState({});
 
-  const data = useSelector(({ AdminData }) => AdminData.allUsers);
+  const data = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
 
   useEffect(() => {
     if (user.role === "admin") dispatch(getAllUsers());
     else if (user.role === "secretary") dispatch(getAllDoctors());
   }, [dispatch, user.role]);
-
-  console.log("data", data); // Debug: Log data to console
 
   return (
     <div className="flex flex-col w-full justify-end overflow-x-auto shadow-md sm:rounded-lg mt-20">
@@ -55,20 +53,19 @@ const UsersTable = () => {
           {/* Map over data to render table rows */}
           {Array.isArray(data) &&
             data.map((mUser, index) => {
-              console.log("mUser", mUser); // Debug: Log mUser to console
               return (
                 <tr
                   key={index}
                   className={`${
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } border-b dark:bg-gray-800 dark:border-gray-700`}
-                  // onClick={() => router.push(`/patients/${user.id}`)}
+                  } border-b dark:bg-gray-800 dark:border-gray-700 cursor-pointer transition duration-300 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-900
+                  `}
+                  onClick={() => router.push(`/doctors/${mUser._id}`)}
                 >
                   {/* Table cells */}
                   <td
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white
                     hover:text-indigo-600 cursor-pointer transition duration-300 ease-in-out"
-                    onClick={() => router.push(`/doctors/${mUser.id}`)}
                   >
                     {mUser.firstName} {mUser.lastName}
                   </td>

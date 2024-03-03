@@ -14,7 +14,8 @@ if (token) {
 }
 
 export const login =
-  ({ email, password }) =>
+  ({ email, password }, router
+    ) =>
   async (dispatch) => {
     try {
       const { data } = await axios.post("/auth/login", {
@@ -22,23 +23,29 @@ export const login =
         password,
       });
 
+      console.log(data, "data");
+
       if (data.success) {
         toast.success("You have successfully logged in!");
+
+        if (data.token) {
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${data.token}`;
+          localStorage.setItem("token", data.token);
+        }
+        if (data.token.refreshToken) {
+          localStorage.setItem("refreshToken", data.token.refreshToken);
+        }
+
+        dispatch({
+          type: ACTIONS.LOGIN_USER,
+          data: data.data,
+        });
+        router.push("/calendar");
       } else {
         toast.error("Invalid email or password!");
       }
-      if (data.token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-        localStorage.setItem("token", data.token);
-      }
-      if (data.token.refreshToken) {
-        localStorage.setItem("refreshToken", data.token.refreshToken);
-      }
-
-      dispatch({
-        type: ACTIONS.LOGIN_USER,
-        data: data.data,
-      });
     } catch (error) {
       console.log(error, "error");
       toast.error("Invalid email or password!");

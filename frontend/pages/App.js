@@ -6,34 +6,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../actions/UserActions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const MyApp = ({ Component, pageProps, domainName }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const authPages = ["/login", "/register", "/forgot-password", "/"];
   const isAuthPage = authPages.includes(router.pathname);
   const [token, setToken] = useState(null);
-
-  const user = useSelector(({ UserData }) => UserData.data);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
-  }, [router.pathname, dispatch, token, user]);
+  const user = useSelector(({ UserData }) => UserData?.data);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   useEffect(() => {
-    dispatch(getUser(token));
-  }, [token, dispatch]);
-
-  useEffect(() => {
-    if (token && authPages.includes(router.pathname)) {
-      dispatch(getUser(token));
-      router.push("/calendar");
-    } else if (!token && !authPages.includes(router.pathname) && !user._id) {
-      router.push("/login");
-    } else if (token) {
-      dispatch(getUser(token));
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      dispatch(getUser(storedToken));
     }
-  }, [token, router.pathname, dispatch, user._id]);
+    setIsLoadingUser(false);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isLoadingUser) {
+      if (token) {
+        if (!user._id && !isAuthPage) {
+          // router.push("/login");
+        } else if (user._id && isAuthPage) {
+          // router.push("/calendar");
+        }
+      }
+    }
+  }, [token, isAuthPage, router, user._id, isLoadingUser]);
 
   return (
     <div className="page">

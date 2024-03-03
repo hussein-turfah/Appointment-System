@@ -9,23 +9,18 @@ import { updateDoctor } from "../../../../../actions/DoctorActions";
 const DoctorData = () => {
   const dispatch = useDispatch();
   const [editActive, setEditActive] = useState(false);
-
+  const [selectedDoctor, setSelectedDoctor] = useState({});
   const user = useSelector(({ UserData }) => UserData?.data);
 
-  const selectedDoctor = useSelector(
+  const doctor = useSelector(
     ({ DoctorData }) => DoctorData?.selectedDoctor.data
   );
 
-  const [newDoctorData, setNewDoctorData] = useState(
-    selectedDoctor || {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      specialty: "",
-      feeRatio: "",
-    }
-  );
+  const [newDoctorData, setNewDoctorData] = useState(selectedDoctor || {});
+
+  useEffect(() => {
+    setSelectedDoctor(doctor);
+  }, [doctor]);
 
   const update = useCallback(
     (id) => {
@@ -43,7 +38,7 @@ const DoctorData = () => {
               className={styles.saveBtn}
               onClick={() => {
                 setEditActive(false);
-                editActive ? update(selectedDoctor.id) : null;
+                editActive ? update(selectedDoctor._id) : null;
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
@@ -206,7 +201,9 @@ const DoctorData = () => {
                       feeRatio: value,
                     }));
                   }}
-                  disabled={user?.role === "doctor"}
+                  disabled={
+                    user?.role !== "secretary" && user?.role !== "admin"
+                  }
                 />
               ) : (
                 selectedDoctor?.feeRatio

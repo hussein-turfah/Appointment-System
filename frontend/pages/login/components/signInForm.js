@@ -1,23 +1,28 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../../actions/UserActions";
+import { useRouter } from "next/router";
 
 const SignInForm = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [formData, setForomData] = useState({
     email: "",
     password: "",
   });
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     dispatch(
-      login({
-        email: formData.email,
-        password: formData.password,
-      })
+      login(
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        router
+      )
     );
-  }, [dispatch, formData]);
+  }, [formData, dispatch, router]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">

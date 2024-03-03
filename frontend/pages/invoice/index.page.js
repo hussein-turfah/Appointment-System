@@ -32,54 +32,34 @@ const InvoiceTable = () => {
   );
 
   useEffect(() => {
-    if (user.role === "admin") {
+    if (user.role === "admin" || user.role === "secretary") {
       dispatch(getAllInvoices());
     } else {
       dispatch(getInvoicesByDoctorId(user._id));
     }
     dispatch(getAllPatients());
-  }, [dispatch, user]);
+  }, [user]);
 
   useEffect(() => {
-    if (user.role === "admin") {
+    if (user.role === "admin" || user.role === "secretary") {
       setInvoices(allInvoices);
     } else {
       setInvoices(invoicesByDoctor);
     }
   }, [allInvoices, invoicesByDoctor, user]);
 
-  // Function to handle opening edit modal
-  const openEditModal = (invoice) => {
-    setSelectedInvoice(invoice);
-    setIsEditModalOpen(true);
-  };
-
-  // Function to handle closing edit modal
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-  };
-
-  // Function to handle opening delete modal
-  const openDeleteModal = (invoice) => {
-    setSelectedInvoice(invoice);
-    setIsDeleteModalOpen(true);
-  };
-
-  // Function to handle closing delete modal
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
-
   return (
     <div className="relative overflow-x-auto  sm:rounded-lg mt-20">
-      <Link href="/invoice/statment">
-        <button
-          className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-4
+      {(user.role === "admin" || user.role === "secretary") && (
+        <Link href="/invoice/statment">
+          <button
+            className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-4
             text-nowrap"
-        >
-          Statement
-        </button>
-      </Link>
+          >
+            Statement
+          </button>
+        </Link>
+      )}
       <table className="w-full shadow-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>

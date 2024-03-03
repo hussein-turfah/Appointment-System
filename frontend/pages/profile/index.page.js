@@ -7,6 +7,7 @@ import {
   updateDoctorSchedule,
 } from "../../actions/ScheduleActions";
 import styles from "./styles/index.module.scss";
+import { signOut } from "next-auth/react";
 
 const ScheduleTable = () => {
   const router = useRouter();
@@ -63,9 +64,10 @@ const ScheduleTable = () => {
     return (
       <div className={styles.logout}>
         <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            router.push("/login");
+          onClick={async() => {
+            // await localStorage.removeItem("token");
+            // router.push("/login");
+            signOut();
           }}
         >
           Logout
@@ -78,8 +80,9 @@ const ScheduleTable = () => {
         <div className={styles.logout}>
           <button
             onClick={() => {
-              localStorage.removeItem("token");
-              router.push("/login");
+              // localStorage.removeItem("token");
+              // router.push("/login");
+              signOut();
             }}
           >
             Logout

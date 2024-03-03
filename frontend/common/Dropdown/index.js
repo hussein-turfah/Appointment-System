@@ -122,12 +122,13 @@
 
 // export default Dropdown;
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./styles/index.module.scss";
 
 const Dropdown = ({ value, values, setValue }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const divRef = useRef();
 
   const toggleDropdown = () => {
     setIsOpen((prevState) => !prevState);
@@ -151,8 +152,23 @@ const Dropdown = ({ value, values, setValue }) => {
     }
   }, [isOpen]);
 
+  // check if clicked on outside of the dropdown
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      if (isOpen && divRef.current && !divRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", checkIfClickedOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", checkIfClickedOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="relative z-50 w-full">
+    <div className="relative z-50 w-full" ref={divRef}>
       <div
         className="
         absolute z-50
@@ -188,7 +204,6 @@ const Dropdown = ({ value, values, setValue }) => {
             value={searchTerm}
             onChange={handleInputChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
           />
         ) : (
           <div
@@ -214,38 +229,41 @@ const Dropdown = ({ value, values, setValue }) => {
             </svg>
           </div>
         )}
-      </div>
-      <div className={styles.dropdownMenu}>
-        {isOpen && (
-          <div
-            id="dropdown-menu"
-            className={`absolute top-full right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 z-50`}
-          >
-            {values?.length > 0 &&
-              values
-                .filter((value) => {
-                  if (searchTerm === "") {
-                    return value;
-                  } else if (
-                    value.label.toLowerCase().includes(searchTerm.toLowerCase())
-                  ) {
-                    return value;
-                  }
-                })
-                .map((value, index) => (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      setValue(value);
-                      handleBlur();
-                    }}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                  >
-                    {value.label}
-                  </div>
-                ))}
-          </div>
-        )}
+        <div className={styles.dropdownMenu}>
+          {isOpen && (
+            <div
+              id="dropdown-menu"
+              className={`absolute top-full right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 z-50`}
+            >
+              {values?.length > 0 &&
+                values
+                  .filter((value) => {
+                    if (searchTerm === "") {
+                      return value;
+                    } else if (
+                      value.label
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    ) {
+                      return value;
+                    }
+                  })
+                  .map((value, index) => (
+                    <div
+                      key={index}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setValue(value.value);
+                        handleBlur();
+                      }}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                    >
+                      {value.label}
+                    </div>
+                  ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

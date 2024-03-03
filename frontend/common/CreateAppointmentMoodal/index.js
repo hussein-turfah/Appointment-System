@@ -134,7 +134,7 @@ export default function CreateAppointmentModal({
           setValue={(selectedValue) =>
             setFormData({
               ...formData,
-              doctor: selectedValue.value,
+              doctor: selectedValue,
             })
           }
         />
@@ -264,7 +264,7 @@ export default function CreateAppointmentModal({
             setValue={(selectedValue) =>
               setFormData({
                 ...formData,
-                patient: selectedValue.value,
+                patient: selectedValue,
               })
             }
           />

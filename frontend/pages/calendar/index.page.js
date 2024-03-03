@@ -52,7 +52,7 @@ export default function Calendar() {
       allAppointments &&
       allAppointments.data &&
       (user.role === "admin" || user.role === "secretary") &&
-      selectedDoctor === 0
+      (selectedDoctor === 0 || !selectedDoctor || selectedDoctor === "all")
     ) {
       const mappedEvents = allAppointments.data.map((event) => {
         let color;
@@ -104,7 +104,7 @@ export default function Calendar() {
       });
       setEvents(mappedEvents);
     }
-  }, [allAppointments, doctorAppointments]);
+  }, [allAppointments, doctorAppointments, selectedDoctor, user.role]);
 
   useEffect(() => {
     if (user.role === "admin" || user.role === "secretary") {
@@ -118,31 +118,33 @@ export default function Calendar() {
 
   // useEffect for double click and single click on event
   useEffect(() => {
-    const calendarApi = calendarRef.current.getApi();
-    let clickCnt = 0;
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+      let clickCnt = 0;
 
-    const handleEventClick = (info) => {
-      clickCnt++;
+      const handleEventClick = (info) => {
+        clickCnt++;
 
-      if (clickCnt === 1) {
-        setTimeout(() => {
-          if (clickCnt === 1) {
-            router.push(`/patients/${info.event.extendedProps.patient._id}`);
-          }
+        if (clickCnt === 1) {
+          setTimeout(() => {
+            if (clickCnt === 1) {
+              router.push(`/patients/${info.event.extendedProps.patient._id}`);
+            }
+            clickCnt = 0;
+          }, 400);
+        } else if (clickCnt === 2) {
+          setIsSelected(info.event);
           clickCnt = 0;
-        }, 400);
-      } else if (clickCnt === 2) {
-        setIsSelected(info.event);
-        clickCnt = 0;
-      }
-    };
+        }
+      };
 
-    calendarApi.on("eventClick", handleEventClick);
+      calendarApi.on("eventClick", handleEventClick);
 
-    return () => {
-      calendarApi.off("eventClick", handleEventClick);
-    };
-  }, []);
+      return () => {
+        calendarApi.off("eventClick", handleEventClick);
+      };
+    }
+  }, [calendarRef]);
 
   // useEffect for setting isSelected to empty object after 2 seconds
   useEffect(() => {
@@ -154,17 +156,17 @@ export default function Calendar() {
   }, [isSelected]);
 
   useEffect(() => {
-    console.log(selectedDoctor);
-
     if (
-      selectedDoctor === 0 &&
+      selectedDoctor === 0 
+      // 
+      &&
       (user?.role === "admin" || user?.role === "secretary")
     ) {
       dispatch(getAllAppointments());
     } else if (
       selectedDoctor !== 0 &&
-      user?.role === "admin" &&
-      user?.role !== "secretary"
+      (user?.role === "admin" ||
+      user?.role === "secretary")
     ) {
       dispatch(getAppointmentsByDoctorId(selectedDoctor));
     }
@@ -216,22 +218,6 @@ export default function Calendar() {
                 Create Appointment
               </button>
             )}
-            {/* <select
-              onChange={(e) => {
-                setSelectedDoctor(e.target.value);
-                // setSelectedDoctorId(e.target.value);
-                console.log(e.target.value);
-              }}
-              value={selectedDoctor}
-              className="form-select form-select-lg mb-3 w-50 "
-            >
-              <option value="all">All</option>
-              {allDoctors.data.map((doctor) => (
-                <option key={doctor.id} value={doctor.id}>
-                  {doctor.firstName} {doctor.lastName}
-                </option>
-              ))}
-            </select> */}
             <div className={styles.dropdown}>
               <Dropdown
                 values={[
@@ -252,7 +238,7 @@ export default function Calendar() {
                       }
                     : selectedDoctor
                     ? {
-                        value: selectedDoctor,
+                        value: selectedDoctor._id,
                         label:
                           allDoctors.data.find(
                             (doctor) => doctor._id === selectedDoctor
@@ -264,7 +250,16 @@ export default function Calendar() {
                       }
                     : null
                 }
-                setValue={(e) => setSelectedDoctor(e.value)}
+                setValue={(selectedDoctor) => {
+                  if (selectedDoctor === 0) {
+                    setSelectedDoctor("all");
+                  } else {
+                    const doctor = allDoctors.data.find(
+                      (doc) => doc._id === selectedDoctor
+                    );
+                    setSelectedDoctor(doctor?._id);
+                  }
+                }}
                 placeholder="Select Doctor"
               />
             </div>
@@ -293,7 +288,9 @@ export default function Calendar() {
             return (
               <div className={styles.eventContent}>
                 <h1>{e.timeText}</h1>
-                {(user?.role === "admin" || user?.role === "secretary") && (
+                {(user?.role === "admin" ||
+                  user?.role === "secretary" ||
+                  user?.role === "doctor") && (
                   <p>
                     Doctor: {e?.event?.extendedProps?.doctor?.firstName}{" "}
                     {e?.event?.extendedProps?.doctor?.lastName}
