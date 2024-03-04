@@ -261,4 +261,5 @@ module.exports = {
   getMedicalRecordById,
   addFeesToMedicalRecord,
   addPrescriptionsToMedicalRecord,
+  uploadAttachmentToMedicalRecord,
 };
