@@ -8,9 +8,7 @@ function MedicalRecordsForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission, e.g., saving data to a database
     console.log('Form submitted:', { doctorName, patientName, date, notes });
-    // Clear form fields after submission
     setDoctorName('');
     setPatientName('');
     setDate('');
@@ -18,60 +16,77 @@ function MedicalRecordsForm() {
   };
 
   const handlePrint = () => {
-    // Open a new window with the content formatted for printing
-    const win = window.open("");
-    win.document.write(`
+    // Create a printable document
+    const printDocument = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=148mm, height=210mm">
         <title>Medical Record</title>
         <style>
           body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
           }
+  
+          @page {
+            size: A5;
+            margin: 20mm; /* Set margin for A5 paper */
+          }
+  
           .container {
-            max-width: 760px;
-            margin: 20px auto;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+           
           }
+  
+          .header {
+            text-align: center;
+            margin-bottom: 150px; 
+          }
+  
           h2 {
             margin-top: 0;
             font-size: 1.5rem;
             text-align: center;
           }
+  
           label {
             font-weight: bold;
           }
+  
           p {
             margin-bottom: 10px;
           }
         </style>
       </head>
       <body>
+        <div class="header">
+        </div>
         <div class="container">
-          <h2>Medical Record</h2>
-          <p><strong>Doctor Name:</strong> ${doctorName}</p>
-          <p><strong>Patient Name:</strong> ${patientName}</p>
-          <p><strong>Date:</strong> ${date}</p>
-          <p><strong>Info:</strong></p>
           <p>${notes}</p>
         </div>
       </body>
       </html>
-    `);
+    `;
+  
+    // Open a new window with the printable document
+    const win = window.open("", "_blank");
+    win.document.write(printDocument);
     win.document.close();
+  
+    // Directly open print dialog
+    win.print();
   };
+  
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 my-4">
       <h2 className="text-lg font-semibold text-gray-900 text-center">Medical Records</h2>
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-700">Doctor Name:</label>
             <input
               type="text"
@@ -79,8 +94,8 @@ function MedicalRecordsForm() {
               value={doctorName}
               onChange={(event) => setDoctorName(event.target.value)}
             />
-          </div>
-          <div className="flex flex-col">
+          </div> */}
+          {/* <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-700">Patient Name:</label>
             <input
               type="text"
@@ -88,9 +103,9 @@ function MedicalRecordsForm() {
               value={patientName}
               onChange={(event) => setPatientName(event.target.value)}
             />
-          </div>
+          </div> */}
         </div>
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <label className="mb-2 text-sm font-medium text-gray-700">Date:</label>
           <input
             type="date"
@@ -98,7 +113,7 @@ function MedicalRecordsForm() {
             value={date}
             onChange={(event) => setDate(event.target.value)}
           />
-        </div>
+        </div> */}
         <div className="mt-4">
           <label className="mb-2 text-sm font-medium text-gray-700">Info:</label>
           <textarea
