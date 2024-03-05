@@ -1,5 +1,6 @@
-import styles from "./styles/index.module.scss";
 import Patients from "./components/details";
+import React from "react";
+import styles from "./styles/index.module.scss";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,13 +27,15 @@ export default function PatientInfo() {
   const [recordModal, setRecordModal] = useState(false);
   const [prescriptionModal, setPrescriptionModal] = useState(false);
   const [mRModal, setMRModal] = useState(false);
+  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   const selectedPatient = useSelector(
     ({ PatientData }) => PatientData?.selectedPatient.data
   );
 
-  const medicalRecords = useSelector(({ MedicalRecordData }) =>
-    MedicalRecordData?.patientMedicalRecords
+  const medicalRecords = useSelector(
+    ({ MedicalRecordData }) => MedicalRecordData?.patientMedicalRecords
   );
 
   const prescriptions = useSelector(({ PrescriptionData }) =>
@@ -63,11 +66,9 @@ export default function PatientInfo() {
                 router.push(`/patients/${router.query.patientId}/printmed`)
               }
               className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 
-            text-nowrap
-
-            "
+            text-nowrap"
             >
-              Print Medial Record
+              Print Detailed M.Record
             </button>
             <button
               onClick={() =>
@@ -84,19 +85,14 @@ export default function PatientInfo() {
             >
               create MR
             </button>{" "}
-            <button
-              onClick={() => ""}
-              className="p-4 ml-5 bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg mb-10 text-nowrap"
-            >
-              Print
-            </button>{" "}
           </div>
           <div className={styles.infoContainer}>
-            {/* {Array.isArray(prescriptions) && prescriptions.length > 0 && (
-              <Prescriptions data={prescriptions || []} />
-            )} */}
             {Array.isArray(medicalRecords) && medicalRecords.length > 0 && (
-              <Medicalrecords data={medicalRecords || []} />
+              <Medicalrecords
+                data={medicalRecords || []}
+                setSelectedRecords={setSelectedRecords}
+                selectedRecords={selectedRecords}
+              />
             )}
           </div>
         </div>
@@ -116,13 +112,13 @@ export default function PatientInfo() {
         active={recordModal}
         setActive={setRecordModal}
         title="Create Medical Record"
-        children={<CreateRecordModal />}
+        children={<CreateRecordModal selectedPatient={selectedPatient} />}
       />
       <Modal
         active={prescriptionModal}
         setActive={setPrescriptionModal}
         title="Create Prescription"
-        children={<CreatePrescriptionModal />}
+        children={<CreatePrescriptionModal />} //maybe this is not being used
       />
       <Modal
         active={mRModal}

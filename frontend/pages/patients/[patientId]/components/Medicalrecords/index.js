@@ -4,29 +4,61 @@ import Modal from "../../../../../common/Modal";
 import CreateInvoiceModal from "../../../../../common/EditInvoiceModal";
 import { useRouter } from "next/router";
 
-const Medicalrecords = ({ data }) => {
+import React, { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import MedicalRecordsPrintComponent from "./components/mrprint";
+
+const Medicalrecords = ({
+  data,
+  selectedRecords,
+  setSelectedRecords = () => {},
+}) => {
   const router = useRouter();
+  const componentRef = useRef();
 
   const [prescriptionModal, setPrescriptionModal] = useState(false);
   const [attachModal, setAttachModal] = useState(false);
   const [invoiceModal, setInvoiceModal] = useState(false);
-  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const handlePrescriptionModal = () => {
+  useEffect(() => {
+  console.log(selectedRecords)
+  }, [selectedRecords]);
+  
+  const handlePrescriptionModal = (record) => {
     setPrescriptionModal(true);
+    setSelectedRecord(record);
+    console.log(record);
   };
 
-  const handleAttachModal = () => {
+  const handleAttachModal = (record) => {
     setAttachModal(true);
+    setSelectedRecord(record);
   };
 
-  const handleInvoiceModal = () => {
+  const handleInvoiceModal = (record) => {
     setInvoiceModal(true);
+    setSelectedRecord(record);
   };
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   return (
     <div className=" mx-auto w-11/12">
+      <div style={{ display: "none" }}>
+        <MedicalRecordsPrintComponent
+          ref={componentRef}
+          medicalRecords={selectedRecords}
+        />
+      </div>
       <div className="flex items-center justify-between mb-4">
+        <button
+          onClick={handlePrint}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Print Medical Records
+        </button>
         <h1 className="mb-2 text">Medical Records</h1>
         <input
           type="checkbox"
@@ -35,7 +67,7 @@ const Medicalrecords = ({ data }) => {
             if (selectedRecords.length === data.length) {
               setSelectedRecords([]);
             } else {
-              setSelectedRecords(data.map((record) => record._id));
+              setSelectedRecords(data.map((record) => record));
             }
           }}
           checked={selectedRecords.length === data.length}
@@ -57,7 +89,7 @@ const Medicalrecords = ({ data }) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handlePrescriptionModal();
+                    handlePrescriptionModal(record._id);
                   }}
                   className="border border-black text-black font-bold py-1 px-2 rounded mr-2"
                 >
@@ -66,7 +98,7 @@ const Medicalrecords = ({ data }) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleAttachModal();
+                    handleAttachModal(record._id);
                   }}
                   className="border border-black text-black font-bold py-1 px-2 rounded"
                 >
@@ -81,13 +113,13 @@ const Medicalrecords = ({ data }) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecords((prev) => {
-                      if (prev.includes(record._id)) {
-                        return prev.filter((id) => id !== record._id);
+                      if (prev.includes(record)) {
+                        return prev.filter((item) => item !== record);
                       }
-                      return [...prev, record._id];
+                      return [...prev, record];
                     });
                   }}
-                  checked={selectedRecords?.includes(record._id)}
+                  checked={selectedRecords?.includes(record)}
                 />
               </div>
             </div>
@@ -116,7 +148,7 @@ const Medicalrecords = ({ data }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleInvoiceModal();
+                  handleInvoiceModal(record._id);
                 }}
                 className="border border-black text-black font-bold py-1 px-2 rounded"
               >
@@ -134,7 +166,12 @@ const Medicalrecords = ({ data }) => {
         active={prescriptionModal}
         setActive={setPrescriptionModal}
         title="Create Prescription"
-        children={<CreatePrescriptionModal />}
+        children={
+          <CreatePrescriptionModal
+            selectedRecord={selectedRecord}
+            setPrescriptionModal={setPrescriptionModal}
+          />
+        }
       />
       <Modal active={attachModal} setActive={setAttachModal} />
       <Modal

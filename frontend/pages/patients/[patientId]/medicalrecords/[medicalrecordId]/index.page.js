@@ -5,6 +5,9 @@ import {
   getMedicalRecordById,
   updateMedicalRecord,
 } from "../../../../../actions/MedicalRecordActions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { deletePrescription } from "../../../../../actions/PrescriptionActions";
 
 const MedicalRecordDetails = () => {
   const router = useRouter();
@@ -18,21 +21,32 @@ const MedicalRecordDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [medicalRecord, setMedicalRecord] = useState();
 
-  const handleFeesChange = (e) => {
-    setFees(e.target.value);
-  };
-
   const handleSave = useCallback(async () => {
     await dispatch(updateMedicalRecord(medicalrecordId, { ...medicalRecord }));
     setIsEditing(false);
   }, [dispatch, medicalrecordId, medicalRecord]);
+
+  useEffect(() => {
+    console.log(medicalRecord);
+  }, [medicalRecord]);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handlePrint = () => {
-    const { doctorName, patientName, date, notes, prescriptions, attachments, description, fees } = medicalRecord;
+    const {
+      doctorName,
+      patientName,
+      date,
+      notes,
+      prescriptions,
+      attachments,
+      description,
+      fees,
+    } = medicalRecord;
+
+    console.log(data);
 
     const printDocument = `
       <!DOCTYPE html>
@@ -101,13 +115,21 @@ const MedicalRecordDetails = () => {
           <div class="prescriptions">
             <p><strong>Prescriptions:</strong></p>
             <ul>
-              ${prescriptions.map(prescription => `<li>${prescription.title}</li>`).join('')}
+              ${prescriptions
+                .map((prescription) => `<li>${prescription.title}</li>`)
+                .join("")}
             </ul>
           </div>
           <div class="attachments">
             <p><strong>Attachments:</strong></p>
             <ul>
-              ${attachments ? attachments.map(attachment => `<li>${attachment.title}</li>`).join('') : ''}
+              ${
+                attachments
+                  ? attachments
+                      .map((attachment) => `<li>${attachment.title}</li>`)
+                      .join("")
+                  : ""
+              }
             </ul>
           </div>
         </div>
@@ -119,11 +141,7 @@ const MedicalRecordDetails = () => {
     win.document.write(printDocument);
     win.document.close();
     win.print();
-};
-
-
-
-
+  };
 
   useEffect(() => {
     dispatch(getMedicalRecordById(medicalrecordId));
@@ -137,19 +155,17 @@ const MedicalRecordDetails = () => {
     setMedicalRecord({
       ...medicalRecord,
       attachments: medicalRecord.attachments.filter(
-        (attachment) => attachment.id !== attachmentId
+        (attachment) => attachment._id !== attachmentId
       ),
     });
   };
 
-  const handleDeletePrescription = (prescriptionId) => {
-    setMedicalRecord({
-      ...medicalRecord,
-      prescriptions: medicalRecord.prescriptions.filter(
-        (prescription) => prescription.id !== prescriptionId
-      ),
-    });
-  };
+  const handleDeletePrescription = useCallback(
+    async (prescriptionId) => {
+      dispatch(deletePrescription(prescriptionId));
+    },
+    [dispatch]
+  );
 
   if (!medicalRecord) return null;
   else
@@ -188,17 +204,24 @@ const MedicalRecordDetails = () => {
               <ul className="list-disc pl-6">
                 {medicalRecord?.attachments.map((attachment) => (
                   <li
-                    key={attachment.id}
+                    key={attachment._id}
                     className="text-blue-500 hover:underline"
+                    onClick={() =>
+                      window.open(
+                        attachment.attachment,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
                   >
                     {attachment.fileName}
                     {isEditing && (
-                      <button
+                      <div
                         className="ml-2 text-red-500 hover:text-red-700"
-                        onClick={() => handleDeleteAttachment(attachment.id)}
+                        onClick={() => handleDeleteAttachment(attachment._id)}
                       >
-                        Delete
-                      </button>
+                        <FontAwesomeIcon icon={faTrash} />
+                      </div>
                     )}
                   </li>
                 ))}
@@ -212,19 +235,29 @@ const MedicalRecordDetails = () => {
                 Prescriptions:
               </h3>
               <ul className="list-disc pl-6">
-                {medicalRecord?.prescriptions?.map((prescription) => (
+                {medicalRecord?.prescriptions?.map((prescription, index) => (
                   <li
                     key={prescription.id}
-                    className="text-blue-500 hover:underline"
+                    className="text-blue-500 hover:underline cursor-pointer hover:underline flex items-center"
+                    onClick={() =>
+                      window.open(
+                        prescription.attachment,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
                   >
-                    {prescription?.title}
+                    {index + 1}- {prescription?.title}
                     {isEditing && (
-                      <button
+                      <div
                         className="ml-2 text-red-500 hover:text-red-700"
-                        onClick={() => handleDeletePrescription(prescription.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePrescription(prescription._id);
+                        }}
                       >
-                        Delete
-                      </button>
+                        <FontAwesomeIcon icon={faTrash} />
+                      </div>
                     )}
                   </li>
                 ))}

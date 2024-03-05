@@ -125,6 +125,7 @@ const addPrescriptionsToMedicalRecord = async (req, res) => {
 const uploadAttachmentToMedicalRecord = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
+    const { attachment } = req.body;
 
     // Check if medical record exists
     const medicalRecord = await MedicalRecord.findById(medicalRecordId);
@@ -132,25 +133,16 @@ const uploadAttachmentToMedicalRecord = async (req, res) => {
       return res.status(404).json({ message: "Medical record not found" });
     }
 
-    // Middleware to handle file upload
-    uploadRecordAttach(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ message: err.message });
-      }
+    // Check if attachment is provided
+    if (!attachment) {
+      return res.status(400).json({ message: "Attachment is required" });
+    }
 
-      if (!req.file) {
-        return res.status(400).json({ message: "Attachment is required" });
-      }
-
-      // Update attachment path in the medical record
-      medicalRecord.attachment = req.file.path;
-      await medicalRecord.save();
-
-      res.status(200).json({
-        message: "Attachment uploaded successfully",
-        attachmentPath: medicalRecord.attachment,
-      });
-    });
+    // Add attachment to the medical record
+    medicalRecord.attachments.push(attachment);
+    await medicalRecord.save();
+    
+    res.status(200).json(medicalRecord);  
   } catch (error) {
     console.error("Error uploading attachment:", error);
     res.status(500).json({ message: "Server Error" });
@@ -169,7 +161,6 @@ const deleteMedicalRecord = async (req, res) => {
       return res.status(404).json({ message: "Medical record not found" });
     }
 
-    console.log("Medical record deleted successfully:", deletedRecord);
     res.status(200).json({ message: "Medical record deleted successfully" });
   } catch (error) {
     console.error("Error deleting medical record:", error);
@@ -236,7 +227,9 @@ const getMedicalRecordByPatientId = async (req, res) => {
   try {
     const { patientId } = req.params;
 
-    const medicalRecords = await MedicalRecord.find({ patient: patientId });
+    const medicalRecords = await MedicalRecord.find({
+      patient: patientId,
+    }).populate("prescriptions patient doctor");
 
     if (!medicalRecords || medicalRecords.length === 0) {
       return res

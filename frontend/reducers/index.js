@@ -11,16 +11,16 @@ import AdminData from "./AdminData";
 import ServiceData from "./ServiceData";
 
 const combinedReducers = combineReducers({
-  UserData,
-  DoctorData,
+  AdminData,
   AppointmentData,
+  DoctorData,
   InvoiceData,
   MedicalRecordData,
   PatientData,
   PrescriptionData,
   ScheduleData,
-  AdminData,
   ServiceData,
+  UserData,
 });
 
 export default combinedReducers;
