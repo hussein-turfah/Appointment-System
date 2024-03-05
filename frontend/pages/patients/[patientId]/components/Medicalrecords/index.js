@@ -21,10 +21,6 @@ const Medicalrecords = ({
   const [invoiceModal, setInvoiceModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  useEffect(() => {
-  console.log(selectedRecords)
-  }, [selectedRecords]);
-  
   const handlePrescriptionModal = (record) => {
     setPrescriptionModal(true);
     setSelectedRecord(record);
@@ -53,25 +49,27 @@ const Medicalrecords = ({
         />
       </div>
       <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <input
+            type="checkbox"
+            className="form-checkbox h-5 w-5"
+            onClick={(e) => {
+              if (selectedRecords.length === data.length) {
+                setSelectedRecords([]);
+              } else {
+                setSelectedRecords(data.map((record) => record));
+              }
+            }}
+            checked={selectedRecords.length === data.length}
+          />
+          <h1 className="text-3xl font-semibold">Medical Records</h1>
+        </div>
         <button
           onClick={handlePrint}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Print Medical Records
         </button>
-        <h1 className="mb-2 text">Medical Records</h1>
-        <input
-          type="checkbox"
-          className="form-checkbox h-5 w-5"
-          onClick={(e) => {
-            if (selectedRecords.length === data.length) {
-              setSelectedRecords([]);
-            } else {
-              setSelectedRecords(data.map((record) => record));
-            }
-          }}
-          checked={selectedRecords.length === data.length}
-        />
       </div>
       <div>
         {data.map((record, index) => (
