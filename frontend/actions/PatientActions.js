@@ -14,7 +14,7 @@ export const getAllPatients = (search) => async (dispatch) => {
     const { data } = await axios.get(`/patient?search=${search ? search : ""}`);
     dispatch({ type: ACTIONS.GET_ALL_PATIENTS, data });
   } catch (error) {
-    toast.error("Error while fetching patients");
+    console.log(error);
   }
 };
 
@@ -57,6 +57,6 @@ export const getPatientById = (id) => async (dispatch) => {
     const { data } = await axios.get(`/patient/${id}`);
     dispatch({ type: ACTIONS.GET_PATIENT_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching patient");
+    console.log(error);
   }
 };

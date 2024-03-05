@@ -7,14 +7,13 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { createPrescription } from "../../actions/PrescriptionActions";
 import axios from "../../utils/Http";
 
-export default function CreatePrescriptionModal({
+export default function AddAttachementModal({
   selectedRecord,
-  setPrescriptionModal,
+  setAttachmentModal,
 }) {
   const dispatch = useDispatch();
   const doctors = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
   const [file, setFile] = useState(null);
-  const [uploaded, setUploaded] = useState(false);
   const patient = useSelector(
     ({ PatientData }) => PatientData?.selectedPatient?.data
   );
@@ -29,13 +28,6 @@ export default function CreatePrescriptionModal({
   const handleSetFile = (file) => {
     setFile(file);
   };
-
-  const handleFileUpload = async () => {
-    const fileData = new FormData();
-    fileData.append("file", file);
-    const { data } = await axios.post("/upload/file", fileData);
-    return data;
-  }
 
   const handleCreatePrescription = useCallback(async () => {
     const fileData = new FormData();
@@ -53,7 +45,7 @@ export default function CreatePrescriptionModal({
       console.log("Error while uploading file");
     }
 
-    setPrescriptionModal(false);
+    setAttachmentModal(false);
   }, [dispatch, formData, file, patient._id]);
 
   useEffect(() => {

@@ -52,7 +52,7 @@ export const getInvoicesByPatientId = (patientId) => async (dispatch) => {
     const { data } = await axios.get(`/invoice/patient/${patientId}`);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_PATIENT_ID, data });
   } catch (error) {
-    toast.error("Error while fetching invoices");
+    console.log(error);
   }
 };
 
@@ -61,7 +61,7 @@ export const getInvoiceById = (id) => async (dispatch) => {
     const { data } = await axios.get(`/invoice/${id}`);
     dispatch({ type: ACTIONS.GET_INVOICE_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching invoice");
+    console.log(error);
   }
 };
 
@@ -71,7 +71,7 @@ export const getInvoicesByDoctorId = (doctorId) => async (dispatch) => {
     console.log(data);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_DOCTOR_ID, data });
   } catch (error) {
-    toast.error("Error while fetching invoices");
+    console.log(error);
   }
 };
 
@@ -80,7 +80,7 @@ export const getInvoicesByDate = (date) => async (dispatch) => {
     const { data } = await axios.get(`/invoice/day/${date}`);
     dispatch({ type: ACTIONS.GET_INVOICES_BY_DATE, data });
   } catch (error) {
-    toast.error("Error while fetching invoices");
+    console.log(error);
   }
 };
 
@@ -89,7 +89,7 @@ export const getAllInvoices = () => async (dispatch) => {
     const { data } = await axios.get("/invoice");
     dispatch({ type: ACTIONS.GET_ALL_INVOICES, data });
   } catch (error) {
-    toast.error("Error while fetching invoices");
+    console.log(error);
   }
 };
 
@@ -99,7 +99,6 @@ export const getInvoicesAndTotal = (date, doctorId) => async (dispatch) => {
     // Handle data as needed
     dispatch({ type: ACTIONS.GET_INVOICES_AND_TOTAL, data });
   } catch (error) {
-    toast.error("Error while fetching invoices and totals");
     console.log(error);
   }
 };
@@ -117,6 +116,6 @@ export const getInvoiceStatement =
 
       dispatch({ type: ACTIONS.INVOICE_STATEMENT, data });
     } catch (error) {
-      toast.error("Error while fetching invoice statement");
+      console.log(error);
     }
   };

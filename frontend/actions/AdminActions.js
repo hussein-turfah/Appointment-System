@@ -15,7 +15,7 @@ export const getAllUsers = () => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_ALL_USERS, data });
   } catch (error) {
-    toast.error("Error while fetching users");
+    console.log(error);
   }
 };
 
@@ -57,6 +57,6 @@ export const getUserById = (userId) => async (dispatch) => {
     const { data } = await axios.get(`/admin/users/${userId}`);
     dispatch({ type: ACTIONS.GET_USER_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching user");
+    console.log(error);
   }
 };

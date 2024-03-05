@@ -15,7 +15,7 @@ export const getAllDoctors = () => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_ALL_DOCTORS, data });
   } catch (error) {
-    toast.error("Error while fetching doctors");
+    console.log(error);
   }
 };
 
@@ -25,7 +25,7 @@ export const getDoctor = (id) => async (dispatch) => {
 
     dispatch({ type: ACTIONS.GET_DOCTOR, data });
   } catch (error) {
-    toast.error("Error while fetching doctor");
+    console.log(error);
   }
 };
 

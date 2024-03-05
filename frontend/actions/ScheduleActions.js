@@ -25,7 +25,7 @@ export const getDoctorSchedule = (doctorId) => async (dispatch) => {
     const { data } = await axios.get(`/schedule/${doctorId}`);
     dispatch({ type: ACTIONS.GET_DOCTOR_SCHEDULE, data });
   } catch (error) {
-    toast.error("Error while fetching doctor schedules");
+    console.log(error);
   }
 };
 

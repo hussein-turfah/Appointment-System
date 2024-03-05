@@ -40,6 +40,6 @@ export const getSecretaryById = (id) => async (dispatch) => {
     const { data } = await axios.get(`/secretaries/${id}`);
     dispatch({ type: ACTIONS.GET_SECRETARY_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching secretary");
+    console.log(error);
   }
 };

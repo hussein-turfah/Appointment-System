@@ -16,6 +16,7 @@ export const createPrescription =
         `/prescription/${patientId}`,
         prescriptionData
       );
+      toast.success("Prescription created successfully");
       dispatch({ type: ACTIONS.CREATE_PRESCRIPTION, data });
     } catch (error) {
       toast.error("Error while creating prescription");
@@ -25,6 +26,8 @@ export const createPrescription =
 export const deletePrescription = (prescriptionId) => async (dispatch) => {
   try {
     await axios.delete(`/prescription/${prescriptionId}`);
+
+    toast.success("Prescription deleted successfully");
     dispatch({ type: ACTIONS.DELETE_PRESCRIPTION, prescriptionId });
   } catch (error) {
     toast.error("Error while deleting prescription");
@@ -36,7 +39,7 @@ export const getPrescriptionById = (prescriptionId) => async (dispatch) => {
     const { data } = await axios.get(`/prescription/${prescriptionId}`);
     dispatch({ type: ACTIONS.GET_PRESCRIPTION_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching prescription");
+    console.log(error);
   }
 };
 
@@ -58,6 +61,6 @@ export const getPrescriptionsByPatientId = (patientId) => async (dispatch) => {
     const { data } = await axios.get(`/prescription/patient/${patientId}`);
     dispatch({ type: ACTIONS.GET_PRESCRIPTIONS_BY_PATIENT_ID, data });
   } catch (error) {
-    toast.error("Error while fetching prescriptions");
+    console.log(error);
   }
 };
