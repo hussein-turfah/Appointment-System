@@ -11,6 +11,12 @@ const medicalRecordSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    prescriptions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Prescription",
+      },
+    ],
     date: {
       type: Date,
       default: Date.now,
@@ -23,8 +29,8 @@ const medicalRecordSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    attachment: {
-      type: String,
+    attachments: {
+      type: [String],
     },
     description: {
       type: String,

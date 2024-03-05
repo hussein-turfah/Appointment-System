@@ -56,7 +56,7 @@ export const getMedicalRecordById = (id) => async (dispatch) => {
     const { data } = await axios.get(`/record/${id}`);
     dispatch({ type: ACTIONS.GET_MEDICAL_RECORD_BY_ID, data });
   } catch (error) {
-    toast.error("Error while fetching medical record");
+    console.log(error);
   }
 };
 
@@ -65,6 +65,6 @@ export const getMedicalRecordsByPatientId = (patientId) => async (dispatch) => {
     const { data } = await axios.get(`/record/patient/${patientId}`);
     dispatch({ type: ACTIONS.GET_MEDICAL_RECORDS_BY_PATIENT_ID, data });
   } catch (error) {
-    toast.error("Error while fetching medical records");
+    console.log(error);
   }
 };

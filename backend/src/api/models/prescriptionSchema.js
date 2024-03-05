@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const prescriptionSchema = new mongoose.Schema(
   {
-
     title: {
       type: String,
     },
@@ -12,7 +11,7 @@ const prescriptionSchema = new mongoose.Schema(
     },
     medicalRecord: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "MedicalRecord", 
+      ref: "MedicalRecord",
     },
   },
   {
