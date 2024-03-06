@@ -147,13 +147,13 @@ export default function Calendar() {
   }, [calendarRef]);
 
   // useEffect for setting isSelected to empty object after 2 seconds
-  useEffect(() => {
-    if (Object.keys(isSelected).length > 0) {
-      setTimeout(() => {
-        setIsSelected({});
-      }, 3000);
-    }
-  }, [isSelected]);
+  // useEffect(() => {
+  //   if (Object.keys(isSelected).length > 0) {
+  //     setTimeout(() => {
+  //       setIsSelected({});
+  //     }, 20000);
+  //   }
+  // }, [isSelected]);
 
   useEffect(() => {
     if (

@@ -125,7 +125,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles/index.module.scss";
 
-const Dropdown = ({ value, values, setValue }) => {
+const Dropdown = ({ value, values, setValue, type }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const divRef = useRef();
@@ -166,7 +166,6 @@ const Dropdown = ({ value, values, setValue }) => {
       document.removeEventListener("mousedown", checkIfClickedOutside);
     };
   }, [isOpen]);
-
   return (
     <div className="relative z-50 w-full" ref={divRef}>
       <div
@@ -213,7 +212,7 @@ const Dropdown = ({ value, values, setValue }) => {
             }}
             className="flex items-center justify-between w-full px-4 py-2 text-gray-800 border rounded-md border-gray-300 focus:outline-none w-full cursor-pointer"
           >
-            <span className="mr-2">{value.label}</span>
+            <span className="mr-2">{value?.label ? value.label : value}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5 ml-2 -mr-1"
@@ -253,7 +252,16 @@ const Dropdown = ({ value, values, setValue }) => {
                       key={index}
                       onClick={(e) => {
                         e.preventDefault();
-                        setValue(value.value);
+                        // () => {
+                        if (type === "text") {
+                          // console.log("value", value.value);
+                          setValue(value.value);
+                        } else {
+                          console.log("value.value", value.value);
+                        }
+                        // ? setValue(value)
+                        // : setValue(value.value);
+                        // };
                         handleBlur();
                       }}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
