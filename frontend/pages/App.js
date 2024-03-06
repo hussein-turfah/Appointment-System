@@ -27,11 +27,20 @@ const MyApp = ({ Component, pageProps, domainName }) => {
 
   useEffect(() => {
     if (!isLoadingUser) {
+      console.log("1")
       if (token) {
+        console.log("2")
         if (!user._id && !isAuthPage) {
+          console.log("3")
           router.push("/login");
         } else if (user._id && isAuthPage) {
+          console.log("4")
           router.push("/calendar");
+        }
+      } else {
+        console.log("5")
+        if (!isAuthPage) {
+          router.push("/login");
         }
       }
     }
