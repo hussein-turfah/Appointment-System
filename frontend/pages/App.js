@@ -32,7 +32,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
         console.log("2")
         if (!user._id && !isAuthPage) {
           console.log("3")
-          router.push("/login");
+          // router.push("/login");
         } else if (user._id && isAuthPage) {
           console.log("4")
           router.push("/calendar");
@@ -40,7 +40,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
       } else {
         console.log("5")
         if (!isAuthPage) {
-          router.push("/login");
+          // router.push("/login");
         }
       }
     }

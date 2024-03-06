@@ -13,7 +13,7 @@ const SignInForm = () => {
   });
 
   const handleSubmit = useCallback(async () => {
-    dispatch(
+    await dispatch(
       login(
         {
           email: formData.email,
