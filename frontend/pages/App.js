@@ -29,9 +29,9 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     if (!isLoadingUser) {
       if (token) {
         if (!user._id && !isAuthPage) {
-          // router.push("/login");
+          router.push("/login");
         } else if (user._id && isAuthPage) {
-          // router.push("/calendar");
+          router.push("/calendar");
         }
       }
     }
