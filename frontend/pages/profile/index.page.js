@@ -65,9 +65,9 @@ const ScheduleTable = () => {
       <div className={styles.logout}>
         <button
           onClick={async() => {
-            // await localStorage.removeItem("token");
-            // router.push("/login");
-            signOut();
+            await localStorage.removeItem("token");
+            router.push("/login");
+            // signOut();
           }}
         >
           Logout
@@ -80,9 +80,9 @@ const ScheduleTable = () => {
         <div className={styles.logout}>
           <button
             onClick={() => {
-              // localStorage.removeItem("token");
-              // router.push("/login");
-              signOut();
+              localStorage.removeItem("token");
+              router.push("/login");
+              // signOut();
             }}
           >
             Logout
