@@ -1,5 +1,4 @@
 import React from "react";
-import { useReactToPrint } from "react-to-print";
 import styles from "./styles/index.module.scss";
 
 const MedicalRecordsPrintComponent = React.forwardRef(

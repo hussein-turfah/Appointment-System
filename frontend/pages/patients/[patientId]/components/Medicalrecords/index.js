@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import MedicalRecordsPrintComponent from "./components/mrprint";
+import FullMedicalRecordsPrintComponent from "./components/detailedmrprint/index.page";
 
 const Medicalrecords = ({
   data,
@@ -15,6 +16,7 @@ const Medicalrecords = ({
 }) => {
   const router = useRouter();
   const componentRef = useRef();
+  const fullRef = useRef();
 
   const [prescriptionModal, setPrescriptionModal] = useState(false);
   const [attachModal, setAttachModal] = useState(false);
@@ -40,11 +42,21 @@ const Medicalrecords = ({
     content: () => componentRef.current,
   });
 
+  const handleFullPrint = useReactToPrint({
+    content: () => fullRef.current,
+  });
+
   return (
     <div className=" mx-auto w-11/12">
       <div style={{ display: "none" }}>
         <MedicalRecordsPrintComponent
           ref={componentRef}
+          medicalRecords={selectedRecords}
+        />
+      </div>
+      <div style={{ display: "none" }}>
+        <FullMedicalRecordsPrintComponent
+          ref={fullRef}
           medicalRecords={selectedRecords}
         />
       </div>
@@ -64,12 +76,24 @@ const Medicalrecords = ({
           />
           <h1 className="text-3xl font-semibold">Medical Records</h1>
         </div>
-        <button
-          onClick={handlePrint}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Print Medical Records
-        </button>
+        <div className="flex items-center gap-4">
+          {selectedRecords.length > 0 && (
+            <button
+              onClick={handlePrint}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Print Medical Records
+            </button>
+          )}
+          {selectedRecords.length > 0 && (
+            <button
+              onClick={handleFullPrint}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Print Detailed Medical Records
+            </button>
+          )}
+        </div>
       </div>
       <div>
         {data.map((record, index) => (

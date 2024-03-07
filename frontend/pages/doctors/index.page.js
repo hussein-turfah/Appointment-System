@@ -17,8 +17,10 @@ const UsersTable = () => {
   const data = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
 
   useEffect(() => {
-    if (user.role === "admin") dispatch(getAllUsers());
-    else if (user.role === "secretary") dispatch(getAllDoctors());
+    if (user.role === "admin") {
+      dispatch(getAllUsers());
+      dispatch(getAllDoctors());
+    } else if (user.role === "secretary") dispatch(getAllDoctors());
   }, [dispatch, user.role]);
 
   return (

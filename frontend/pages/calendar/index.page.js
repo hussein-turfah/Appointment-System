@@ -30,6 +30,7 @@ export default function Calendar() {
   const [appointmentModal, setAppointmentModal] = useState(false);
   const [modal, setModal] = useState(false);
   const [isSelected, setIsSelected] = useState({});
+  const [selectedSession, setSelectedSession] = useState({});
   const [statusModal, setStatusModal] = useState(false);
   const [events, setEvents] = useState([]);
 
@@ -61,13 +62,13 @@ export default function Calendar() {
             color = "blue";
             break;
           case "cancelled":
-            color = "black";
+            color = "red";
             break;
           case "completed":
             color = "green";
             break;
           case "absent":
-            color = "gray";
+            color = "black";
             break;
           case "rescheduled":
             color = "orange";
@@ -86,13 +87,13 @@ export default function Calendar() {
             color = "blue";
             break;
           case "cancelled":
-            color = "black";
+            color = "red";
             break;
           case "completed":
             color = "green";
             break;
           case "absent":
-            color = "gray";
+            color = "black";
             break;
           case "rescheduled":
             color = "orange";
@@ -147,26 +148,24 @@ export default function Calendar() {
   }, [calendarRef]);
 
   // useEffect for setting isSelected to empty object after 2 seconds
-  // useEffect(() => {
-  //   if (Object.keys(isSelected).length > 0) {
-  //     setTimeout(() => {
-  //       setIsSelected({});
-  //     }, 20000);
-  //   }
-  // }, [isSelected]);
+  useEffect(() => {
+    if (Object.keys(isSelected).length > 0) {
+      setTimeout(() => {
+        setIsSelected({});
+      }, 20000);
+    }
+  }, [isSelected]);
 
   useEffect(() => {
     if (
-      selectedDoctor === 0 
-      // 
-      &&
+      selectedDoctor === 0 &&
+      //
       (user?.role === "admin" || user?.role === "secretary")
     ) {
       dispatch(getAllAppointments());
     } else if (
       selectedDoctor !== 0 &&
-      (user?.role === "admin" ||
-      user?.role === "secretary")
+      (user?.role === "admin" || user?.role === "secretary")
     ) {
       dispatch(getAppointmentsByDoctorId(selectedDoctor));
     }
@@ -279,8 +278,7 @@ export default function Calendar() {
           editable={user?.role === "admin" || user?.role === "secretary"}
           droppable={user?.role === "admin" || user?.role === "secretary"}
           selectable
-          // ={user?.role === "admin" || user?.role === "secretary"}
-          slotDuration="00:15:00"
+          slotDuration="00:10:00"
           slotMinTime="08:00:00"
           slotMaxTime="18:00:00"
           slotLabelInterval={{ hours: 1 }}
@@ -311,11 +309,21 @@ export default function Calendar() {
           eventBackgroundColor={(info) => {
             return info.event.backgroundColor.toString();
           }}
+          select={(info) => {
+            if (info.view.type === "dayGridMonth") return;
+            if (user.role === "doctor") return;
+            setSelectedSession(info);
+            setAppointmentModal(true);
+          }}
         />
         <Modal
           active={appointmentModal}
           setActive={setAppointmentModal}
-          title={isSelected?.extendedProps?._id ? "Edit Appointment" : "Create Appointment"}
+          title={
+            isSelected?.extendedProps?._id
+              ? "Edit Appointment"
+              : "Create Appointment"
+          }
           children={
             <CreateAppointmentModal
               active={appointmentModal}
@@ -323,8 +331,12 @@ export default function Calendar() {
               selectedAppointment={isSelected?.extendedProps}
               appointmentId={isSelected?.extendedProps?._id}
               appointmentRange={{
-                start: isSelected.startStr,
-                end: isSelected.endStr,
+                start: selectedSession.startStr
+                  ? selectedSession.startStr
+                  : isSelected.startStr,
+                end: selectedSession.endStr
+                  ? selectedSession.endStr
+                  : isSelected.endStr,
               }}
             />
           }

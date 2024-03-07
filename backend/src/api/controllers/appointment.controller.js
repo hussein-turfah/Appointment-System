@@ -248,6 +248,9 @@ const updateAppointment = async (req, res) => {
       dob,
       city,
       gender,
+      reschedulingPurpose,
+      newStart,
+      newEnd,
     } = req.body;
     let existingPatient;
 
@@ -296,6 +299,9 @@ const updateAppointment = async (req, res) => {
       start,
       end,
       reason,
+      reschedulingPurpose,
+      newStart,
+      newEnd,
     });
 
     // Transform appointment data before sending response

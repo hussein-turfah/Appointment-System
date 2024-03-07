@@ -237,7 +237,7 @@ const MedicalRecordDetails = () => {
               <ul className="list-disc pl-6">
                 {medicalRecord?.prescriptions?.map((prescription, index) => (
                   <li
-                    key={prescription.id}
+                    key={prescription._id}
                     className="text-blue-500 hover:underline cursor-pointer hover:underline flex items-center"
                     onClick={() =>
                       window.open(

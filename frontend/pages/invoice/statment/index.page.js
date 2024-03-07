@@ -30,8 +30,6 @@ const InvoiceStatement = () => {
   });
   const { selectedDoctor, startDate, endDate } = formData;
 
-
-
   const handleGetInvoices = useCallback(
     async () =>
       await dispatch(
@@ -108,32 +106,39 @@ const InvoiceStatement = () => {
             </tr>
           </thead>
           <tbody>
-            ${statementData?.invoices?.map(invoice => `
+            ${statementData?.invoices
+              ?.map(
+                (invoice) => `
               <tr>
-                <td>${invoice?.patient?.firstName} ${invoice?.patient?.lastName}</td>
-                <td>${invoice?.doctor?.firstName} ${invoice?.doctor?.lastName}</td>
+                <td>${invoice?.patient?.firstName} ${
+                  invoice?.patient?.lastName
+                }</td>
+                <td>${invoice?.doctor?.firstName} ${
+                  invoice?.doctor?.lastName
+                }</td>
                 <td>${new Date(invoice?.date).toLocaleDateString()}</td>
                 <td>${invoice?.doctorAmount}</td>
                 <td>${invoice?.clinicAmount}</td>
                 <td>${invoice?.amount}</td>
                 <td>${invoice?.currency}</td>
                 <td>${invoice?.paymentStatus}</td>
-              </tr>`).join('')}
+              </tr>`
+              )
+              .join("")}
           </tbody>
         </table>
       </body>
       </html>
     `;
-  
+
     // Open a new window with the printable document
     const win = window.open("", "_blank");
     win.document.write(printDocument);
     win.document.close();
-  
+
     // Directly open print dialog
     win.print();
   };
-  
 
   return (
     <div

@@ -29,8 +29,14 @@ export default function CreateAppointmentModal({
     doctor: `${allDoctors?.data[0]?._id}`,
     patient: "",
     date: "",
-    start: new Date().toISOString().slice(0, 16),
-    end: new Date(new Date().getTime() + 15 * 60000).toISOString().slice(0, 16),
+    start:
+      appointmentRange?.start?.toString().slice(0, 16) ||
+      new Date(new Date().getTime()).toISOString().slice(0, 16),
+
+    end:
+      appointmentRange?.end?.toString().slice(0, 16) ||
+      new Date(new Date().getTime() + 13.5 * 600000).toISOString().slice(0, 16),
+
     reason: "",
     newPatient: !oldPatient,
   });

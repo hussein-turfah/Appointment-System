@@ -15,8 +15,9 @@ export default function AppointmentStatusModal({
   console.log(selectedAppointment);
 
   const update = useCallback(async () => {
-    await dispatch(updateAppointmentStatus(appointment, status.value));
+    await dispatch(updateAppointmentStatus(appointment, status));
   }, [dispatch, appointment, status]);
+
 
   useEffect(() => {
     setAppointment(appointmentId);
