@@ -60,55 +60,133 @@ const InvoiceStatement = () => {
   }, [user]);
 
   const handlePrint = () => {
-    // Create a printable document
+    // Create a printable document with modern design elements
     const printDocument = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Invoice</title>
+        <title>Invoice Statement</title>
         <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 20px; 
-          h2 {
-            margin-top: 20; 
-          }
-          table {
+        /* Add CSS for ensuring content display on all pages */
+        @page {
+          size: A4; /* Set A4 paper size */
+          margin: 0; /* Remove default margins for centering */
+        }
+      
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+        }
+      
+        .invoice-container {
+          width: 100%; /* Adjust for preferred width within A4 */
+          padding: 20px;
+          box-sizing: border-box; /* Ensure padding is included in width calculation */
+        }
+      
+        /* Add your existing styles here */
+        /* Invoice header styles */
+        .invoice-container header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+      
+        .invoice-container h1 {
+          font-size: 24px;
+          margin-bottom: 10px;
+        }
+      
+        .invoice-info {
+          margin: 0;
+          font-size: 14px;
+        }
+      
+        /* Invoice table styles */
+        .invoice-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+        }
+      
+        .invoice-table th,
+        .invoice-table td {
+          padding: 8px 10px;
+          border: 1px solid #ddd;
+          text-align: left;
+        }
+      
+        .invoice-table th {
+          background-color: #f2f2f2;
+          font-weight: 600;
+        }
+      
+        .invoice-table tr:nth-child(even) {
+          background-color: #f5f5f5;
+        }
+      
+        .invoice-table .text-red-500 {
+          color: #f54a4a;
+        }
+      
+        /* Invoice totals styles */
+        .invoice-totals {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          margin-top: 20px;
+        }
+      
+        .total-item {
+          margin-bottom: 10px;
+          display: flex;
+          justify-content: space-between;
+        }
+      
+        .total-label {
+          font-weight: 600;
+        }
+      
+        .total-value {
+          font-size: 18px;
+          font-weight: bold;
+        }
+      
+        @media print {
+          .invoice-container {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 50px;
+            border: none;
           }
-          th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-          }
-          th {
-            background-color: #f2f2f2;
-          }
-          tr:nth-child(even) {
-            background-color: #f2f2f2;
-          }
-        </style>
-      </head>
+        }
+      </style>
+            </head>
       <body>
-        <table>
-          <thead>
-            <tr>
-              <th>Patient Name</th>
-              <th>Doctor</th>
-              <th>Date</th>
-              <th>Doctor Amount</th>
-              <th>Clinic Amount</th>
-              <th>Amount</th>
-              <th>Currency</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${statementData?.invoices?.map(invoice => `
+        <div class="invoice-container">
+          <header>
+            <h1>Invoice Statement</h1>
+            <p class="invoice-info">
+              <span>Doctor:</span> <span class="doctor-name">${selectedDoctor.firstName} ${selectedDoctor.lastName}</span>
+              <span>Date Range:</span> <span class="date-range">${startDate} - ${endDate}</span>
+            </p>
+          </header>
+  
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>Patient Name</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Doctor Amount</th>
+                <th>Clinic Amount</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${statementData?.invoices?.map(invoice => `
               <tr>
                 <td>${invoice?.patient?.firstName} ${invoice?.patient?.lastName}</td>
                 <td>${invoice?.doctor?.firstName} ${invoice?.doctor?.lastName}</td>
@@ -117,10 +195,28 @@ const InvoiceStatement = () => {
                 <td>${invoice?.clinicAmount}</td>
                 <td>${invoice?.amount}</td>
                 <td>${invoice?.currency}</td>
-                <td>${invoice?.paymentStatus}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
+                <td class="${invoice?.paymentStatus === "Unpaid" ? "text-red-500" : ""}">
+                  ${invoice?.paymentStatus}
+                </td>
+              </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="total">
+            <div>
+              <span class="total-label">Total Doctor Amount:</span>
+              <span class="total-value">${statementData?.doctorAmountTotal}</span>
+            </div>
+            <div>
+              <span class="total-label">Total Clinic Amount:</span>
+              <span class="total-value">${statementData?.clinicAmountTotal}</span>
+            </div>
+            <div>
+              <span class="total-label">Total Amount:</span>
+              <span class="total-value">${statementData?.overallTotal}</span>
+            </div>
+          </div>
+        </div>
       </body>
       </html>
     `;
@@ -134,6 +230,7 @@ const InvoiceStatement = () => {
     win.print();
   };
   
+    
 
   return (
     <div

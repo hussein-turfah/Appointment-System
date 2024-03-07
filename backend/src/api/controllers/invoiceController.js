@@ -7,20 +7,17 @@ const createInvoice = async (req, res) => {
     const { patientId } = req.params;
     const { doctorId, amount, currency, paymentStatus } = req.body;
 
-    // Retrieve doctor's information from the database
     const doctor = await User.findById(doctorId);
     if (!doctor || doctor.role !== "doctor") {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Calculate the doctor's amount considering the doctor's fee ratio
-    const feeRatio = doctor.feeRatio;
-    const clinicAmount = amount * (1 - feeRatio / 100); // Calculate the doctor's amount
 
-    // Calculate the clinic's amount (original amount minus doctor's amount)
+    const feeRatio = doctor.feeRatio;
+    const clinicAmount = amount * (1 - feeRatio / 100); 
+
     const doctorAmount = amount - clinicAmount;
 
-    // Check if doctorAmount and clinicAmount are valid numbers
     if (
       isNaN(doctorAmount) ||
       isNaN(clinicAmount) ||
@@ -351,6 +348,47 @@ const makeInvoiceStatement = async (req, res) => {
   }
 };
 
+const makeClinicStatement = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.body;
+
+    const invoices = await Invoice.find({
+      date: { $gte: startDate, $lte: endDate },
+    }).populate("doctor");
+
+    if (!invoices || invoices.length === 0) {
+      return res
+        .status(404)
+        .json({
+          message: "No invoices found for the specified date range.",
+        });
+    }
+
+    let totalClinicAmount = 0; 
+
+    const clinicStatement = {};
+
+    invoices.forEach(invoice => {
+      const doctorId = invoice.doctor._id.toString();
+      const clinicAmount = invoice.clinicAmount;
+
+      if (!clinicStatement[doctorId]) {
+        clinicStatement[doctorId] = 0;
+      }
+
+      clinicStatement[doctorId] += clinicAmount;
+      totalClinicAmount += clinicAmount;
+    });
+
+    res.status(200).json({ clinicStatement, totalClinicAmount });
+  } catch (error) {
+    console.error("Error generating clinic statement:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
 module.exports = {
   createInvoice,
   updateInvoice,
@@ -363,4 +401,5 @@ module.exports = {
   getInvoicesAndTotal,
   getAllInvoicesByDoctor,
   makeInvoiceStatement,
+  makeClinicStatement
 };
