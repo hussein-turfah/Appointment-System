@@ -34,114 +34,26 @@ const MedicalRecordDetails = () => {
     setIsEditing(true);
   };
 
-  const handlePrint = () => {
-    const {
-      doctorName,
-      patientName,
-      date,
-      notes,
-      prescriptions,
-      attachments,
-      description,
-      fees,
-    } = medicalRecord;
+  // const handlePrint = () => {
+  //   const {
+  //     doctorName,
+  //     patientName,
+  //     date,
+  //     notes,
+  //     prescriptions,
+  //     attachments,
+  //     description,
+  //     fees,
+  //   } = medicalRecord;
+  //   console.log(data);
 
-    console.log(data);
 
-    const printDocument = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Medical Record</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-          }
-          .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-          }
-          label {
-            font-weight: bold;
-            color: #555;
-          }
-          p {
-            margin-bottom: 10px;
-          }
-          .details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-          }
-          .details p {
-            margin: 0;
-          }
-          .prescriptions {
-            margin-bottom: 20px;
-          }
-          .attachments {
-            margin-bottom: 20px;
-          }
-          ul {
-            list-style: none;
-            padding: 0;
-          }
-          li {
-            margin-bottom: 5px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="details">
-            <div>
-            <p><strong>Medical Record</strong></p>
-            </div>
-            <p><strong>Date:</strong> ${date}</p>
-          </div>
-          <div class="details">
-          <div>
-            <p><strong>Doctor Name:</strong> ${doctorName}</p>
-          </div>
-          <p><strong>Patient Name:</strong> ${patientName}</p>
-        </div>
-          <p><strong>Description:</strong> ${description}</p>
-          <p><strong>Fees:</strong> ${fees}</p>
-          <div class="prescriptions">
-            <p><strong>Prescriptions:</strong></p>
-            <ul>
-              ${prescriptions
-                .map((prescription) => `<li>${prescription.title}</li>`)
-                .join("")}
-            </ul>
-          </div>
-          <div class="attachments">
-            <p><strong>Attachments:</strong></p>
-            <ul>
-              ${
-                attachments
-                  ? attachments
-                      .map((attachment) => `<li>${attachment.title}</li>`)
-                      .join("")
-                  : ""
-              }
-            </ul>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
 
-    const win = window.open("", "_blank");
-    win.document.write(printDocument);
-    win.document.close();
-    win.print();
-  };
+  //   const win = window.open("", "_blank");
+  //   win.document.write(printDocument);
+  //   win.document.close();
+  //   win.print();
+  // };
 
   useEffect(() => {
     dispatch(getMedicalRecordById(medicalrecordId));
@@ -301,12 +213,12 @@ const MedicalRecordDetails = () => {
                 </button>
               </>
             )}
-            <button
+            {/* <button
               className="bg-gray-500 text-white font-semibold py-2 px-4 rounded hover:bg-gray-600 mr-2"
               onClick={handlePrint}
             >
               Print
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

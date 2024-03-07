@@ -11,7 +11,8 @@ const {
   getInvoicesByDate,
   getAllInvoices,
   makeInvoiceStatement,
-  getAllInvoicesByDoctor
+  getAllInvoicesByDoctor,
+  makeClinicStatement
 } = require('../../controllers/invoiceController');
 
 const {
@@ -22,6 +23,7 @@ const {
 
 router.post('/:patientId', createInvoiceValidator, createInvoice);
 router.post('/invoice/statement', makeInvoiceStatement);
+router.post('/clinic/statement', makeClinicStatement);
 router.put('/:invoiceId', updateInvoiceValidator, updateInvoice);
 router.delete('/:invoiceId', deleteInvoice);
 router.get('/patient/:patientId', getInvoicesByPatientId);
