@@ -25,6 +25,9 @@ export default function Calendar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const calendarRef = useRef(null);
+  const statusRef = useRef(null);
+  const updateRef = useRef(null);
+  const deleteRef = useRef(null);
 
   const [selectedDoctor, setSelectedDoctor] = useState("all");
   const [appointmentModal, setAppointmentModal] = useState(false);
@@ -117,49 +120,9 @@ export default function Calendar() {
     }
   }, [dispatch, user.role, user.role, user._id]);
 
-  // useEffect for double click and single click on event
-  useEffect(() => {
-    if (calendarRef.current) {
-      const calendarApi = calendarRef.current.getApi();
-      let clickCnt = 0;
-
-      const handleEventClick = (info) => {
-        clickCnt++;
-
-        if (clickCnt === 1) {
-          setTimeout(() => {
-            if (clickCnt === 1) {
-              router.push(`/patients/${info.event.extendedProps.patient._id}`);
-            }
-            clickCnt = 0;
-          }, 400);
-        } else if (clickCnt === 2) {
-          setIsSelected(info.event);
-          clickCnt = 0;
-        }
-      };
-
-      calendarApi.on("eventClick", handleEventClick);
-
-      return () => {
-        calendarApi.off("eventClick", handleEventClick);
-      };
-    }
-  }, [calendarRef]);
-
-  // useEffect for setting isSelected to empty object after 2 seconds
-  useEffect(() => {
-    if (Object.keys(isSelected).length > 0) {
-      setTimeout(() => {
-        setIsSelected({});
-      }, 20000);
-    }
-  }, [isSelected]);
-
   useEffect(() => {
     if (
       selectedDoctor === 0 &&
-      //
       (user?.role === "admin" || user?.role === "secretary")
     ) {
       dispatch(getAllAppointments());
@@ -193,18 +156,21 @@ export default function Calendar() {
                 <button
                   onClick={() => setAppointmentModal(true)}
                   className="btn btn-primary mb-3 w-50"
+                  ref={updateRef}
                 >
                   Edit Appointment
                 </button>
                 <button
                   onClick={() => setStatusModal(true)}
                   className="btn btn-primary mb-3 w-50"
+                  ref={statusRef}
                 >
                   Update Status
                 </button>
                 <button
                   onClick={removeAppointment}
                   className="btn btn-primary mb-3 w-50"
+                  ref={deleteRef}
                 >
                   Delete Appointment
                 </button>
@@ -284,7 +250,19 @@ export default function Calendar() {
           slotLabelInterval={{ hours: 1 }}
           eventContent={(e) => {
             return (
-              <div className={styles.eventContent}>
+              <div
+                className={styles.eventContent}
+                onClick={() => {
+                  router.push(`/patients/${e.event.extendedProps.patient._id}`);
+                }}
+                onContextMenu={(i) => {
+                  i.preventDefault();
+                  setIsSelected(e.event);
+                  setTimeout(() => {
+                    setIsSelected({});
+                  }, 20000);
+                }}
+              >
                 <h1>{e.timeText}</h1>
                 {(user?.role === "admin" ||
                   user?.role === "secretary" ||
@@ -310,10 +288,18 @@ export default function Calendar() {
             return info.event.backgroundColor.toString();
           }}
           select={(info) => {
-            if (info.view.type === "dayGridMonth") return;
+            if (info.view.type === "dayGridMonth") {
+              calendarRef.current
+                .getApi()
+                .changeView("timeGridDay", info.start);
+              return;
+            }
             if (user.role === "doctor") return;
             setSelectedSession(info);
             setAppointmentModal(true);
+          }}
+          unselect={() => {
+            setSelectedSession({});
           }}
         />
         <Modal

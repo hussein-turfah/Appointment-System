@@ -10,7 +10,6 @@ import styles from "./styles/index.module.scss";
 import classNames from "classnames";
 import Input from "../Input";
 import { getAllPatients } from "../../actions/PatientActions";
-import { all } from "axios";
 
 export default function CreateAppointmentModal({
   active,
@@ -20,7 +19,7 @@ export default function CreateAppointmentModal({
   appointmentRange,
 }) {
   const dispatch = useDispatch();
-  const [oldPatient, setOldPatient] = useState(false);
+  const [oldPatient, setOldPatient] = useState(true);
   const [search, setSearch] = useState("");
 
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
@@ -39,6 +38,8 @@ export default function CreateAppointmentModal({
 
     reason: "",
     newPatient: !oldPatient,
+    newStart: "",
+    newEnd: "",
   });
 
   const [newPatientData, setNewPatientData] = useState({
@@ -61,48 +62,39 @@ export default function CreateAppointmentModal({
     }
   }, [dispatch, formData, newPatientData, appointmentId, selectedAppointment]);
 
-  const age = (newPatientData) => {
-    const dob = new Date(newPatientData.dob);
-    const now = new Date();
-    const ageInYears = now.getFullYear() - dob.getFullYear();
-    const ageInMonths = now.getMonth() - dob.getMonth();
-    const ageInDays = now.getDate() - dob.getDate();
-    const ageInHours = Math.floor((now - dob) / (1000 * 60 * 60));
-    const ageInWeeks = Math.floor(ageInDays / 7);
-
-    if (ageInYears > 1) {
-      return `${ageInYears} years`;
-    } else if (ageInYears === 1) {
-      return `${ageInYears} year`;
-    } else if (ageInMonths > 0) {
-      return `${ageInMonths} months`;
-    } else if (ageInDays > 0) {
-      return `${ageInDays} days`;
-    } else if (ageInHours > 0) {
-      return `${ageInHours} hours`;
-    } else if (ageInWeeks > 0) {
-      return `${ageInWeeks} weeks`;
-    } else {
-      return "";
-    }
-  };
-
   useEffect(() => {
     if (selectedAppointment && appointmentId && appointmentRange) {
       setFormData({
-        doctor: `${selectedAppointment.doctor}`,
-        patient: `${selectedAppointment.patient}`,
+        doctor: `${selectedAppointment.doctor._id}`,
+        patient: `${selectedAppointment.patient._id}`,
         start: appointmentRange?.start?.toString().slice(0, 16),
         end: appointmentRange?.end?.toString().slice(0, 16),
         reason: selectedAppointment.reason,
       });
       setOldPatient(true);
     }
-  }, []);
+  }, [selectedAppointment, appointmentId, appointmentRange]);
 
   useEffect(() => {
     dispatch(getAllPatients(search));
   }, [search]);
+
+  // if the selected appointment's status is rescheduled, then the start and end time will be updated to today's date one hour from now
+  useEffect(() => {
+    if (selectedAppointment?.status === "rescheduled") {
+      setFormData({
+        ...formData,
+        newStart: new Date(new Date().getTime() + 3600000)
+          .toISOString()
+          .slice(0, 16),
+        newEnd: new Date(new Date().getTime() + 13.5 * 600000)
+          .toISOString()
+          .slice(0, 16),
+      });
+    }
+  }, [selectedAppointment]);
+
+
 
   return (
     <form
@@ -114,68 +106,100 @@ export default function CreateAppointmentModal({
     >
       <h3 className="mb-3 font-semibold">Appointment Details</h3>
       <div className="mb-3">
-        <label htmlFor="exampleFormControlInput1" className="form-label">
+        <label htmlFor="exampleFormControlInput1" className="form-label mb-3">
           Doctor
         </label>
-        <Dropdown
-          value={
-            formData.doctor
-              ? {
-                  label:
-                    allDoctors.data.find(
-                      (doctor) => doctor._id === formData.doctor
-                    )?.firstName +
-                    " " +
-                    allDoctors.data.find(
-                      (doctor) => doctor._id === formData.doctor
-                    )?.lastName,
-                  value: formData.doctor,
-                }
-              : null
-          }
-          values={allDoctors.data.map((doctor) => ({
-            label: doctor.firstName + " " + doctor.lastName,
-            value: doctor._id,
-          }))}
-          setValue={(selectedValue) =>
-            setFormData({
-              ...formData,
-              doctor: selectedValue,
-            })
-          }
-        />
-        <div className="mb-3">
-          <label htmlFor="exampleFormControlInput1" className="form-label">
-            Start Time
-          </label>
-          <input
-            type="datetime-local"
-            className="form-control text-center w-50 mx-auto mb-3 w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-            id="exampleFormControlInput1"
-            value={formData.start}
-            onChange={(e) =>
+        <div className="flex justify-center w-50 mx-auto mb-3 ">
+          <Dropdown
+            value={
+              formData.doctor
+                ? {
+                    label:
+                      allDoctors.data.find(
+                        (doctor) => doctor._id === formData.doctor
+                      )?.firstName +
+                      " " +
+                      allDoctors.data.find(
+                        (doctor) => doctor._id === formData.doctor
+                      )?.lastName,
+                    value: formData.doctor,
+                  }
+                : null
+            }
+            values={allDoctors.data.map((doctor) => ({
+              label: doctor.firstName + " " + doctor.lastName,
+              value: doctor._id,
+            }))}
+            setValue={(selectedValue) =>
               setFormData({
                 ...formData,
-                start: e.target.value,
-                end: new Date(
-                  new Date(e.target.value).getTime() + 13.5 * 600000
-                )
-                  .toISOString()
-                  .slice(0, 16),
+                doctor: selectedValue,
               })
             }
           />
         </div>
         <div className="mb-3">
           <label htmlFor="exampleFormControlInput1" className="form-label">
-            End Time
+            {selectedAppointment?.status === "rescheduled"
+              ? "New Start Time"
+              : "Start Time"}
           </label>
           <input
             type="datetime-local"
             className="form-control text-center w-50 mx-auto mb-3 w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             id="exampleFormControlInput1"
-            value={formData.end}
-            onChange={(e) => setFormData({ ...formData, end: e.target.value })}
+            value={
+              selectedAppointment?.status === "rescheduled"
+                ? formData.newStart
+                : formData.start
+            }
+            onChange={(e) => {
+              if (selectedAppointment?.status === "rescheduled") {
+                setFormData({
+                  ...formData,
+                  newStart: e.target.value,
+                  newEnd: new Date(
+                    new Date(e.target.value).getTime() + 13.5 * 600000
+                  )
+                    .toISOString()
+                    .slice(0, 16),
+                });
+              } else {
+                setFormData({
+                  ...formData,
+                  start: e.target.value,
+                  end: new Date(
+                    new Date(e.target.value).getTime() + 11 * 600000
+                  )
+                    .toISOString()
+                    .slice(0, 16),
+                });
+              }
+            }}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="exampleFormControlInput1" className="form-label">
+            {selectedAppointment?.status === "rescheduled"
+              ? "New End Time"
+              : "End Time"}
+          </label>
+          <input
+            type="datetime-local"
+            className="form-control text-center w-50 mx-auto mb-3 w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            id="exampleFormControlInput1"
+            value={
+              selectedAppointment?.status === "rescheduled"
+                ? formData.newEnd
+                : formData.end
+            }
+            onChange={(e) => {
+              if (selectedAppointment?.status === "rescheduled") {
+                setFormData({ ...formData, newEnd: e.target.value });
+              } else {
+                setFormData({ ...formData, end: e.target.value });
+              }
+            }}
           />
         </div>
       </div>
@@ -351,11 +375,6 @@ export default function CreateAppointmentModal({
                 <div className={styles.row}>
                   <div className={styles.dob}>
                     <h4>Date of Birth</h4>
-                    {age(newPatientData) === "" ? null : (
-                      <h6>
-                        <span>Age:</span> {age(newPatientData)}
-                      </h6>
-                    )}
                   </div>
                   <p>
                     <Input
