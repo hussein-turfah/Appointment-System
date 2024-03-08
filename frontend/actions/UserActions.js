@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 export const ACTIONS = {
   LOGIN_USER: "/auth/login",
   GET_USER: "/user",
+  LOGOUT_USER: "/auth/logout",
 };
 
 const token = global.window?.localStorage?.getItem("token");
@@ -14,8 +15,7 @@ if (token) {
 }
 
 export const login =
-  ({ email, password }, router
-    ) =>
+  ({ email, password }, router) =>
   async (dispatch) => {
     try {
       const { data } = await axios.post("/auth/login", {
@@ -59,6 +59,15 @@ export const getUser = (token) => async (dispatch) => {
       type: ACTIONS.GET_USER,
       data,
     });
+  } catch (error) {
+    console.log(error, "error");
+  }
+};
+
+export const logout = () => async (dispatch) => {
+  try {
+    await localStorage.removeItem("token");
+    await delete axios.defaults.headers.common["Authorization"];
   } catch (error) {
     console.log(error, "error");
   }

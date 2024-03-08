@@ -7,7 +7,7 @@ import {
   updateDoctorSchedule,
 } from "../../actions/ScheduleActions";
 import styles from "./styles/index.module.scss";
-import { signOut } from "next-auth/react";
+import { logout } from "../../actions/UserActions";
 
 const ScheduleTable = () => {
   const router = useRouter();
@@ -46,28 +46,17 @@ const ScheduleTable = () => {
 
   const createSchedule = useCallback(async () => {
     await dispatch(
-      updateDoctorSchedule(
-        doctorId,
-        user?.schedule?._id,
-        scheduleForm
-      )
+      updateDoctorSchedule(doctorId, user?.schedule?._id, scheduleForm)
     );
   }, [dispatch, doctorId, scheduleForm, user.schedule?._id]);
-
-
-  useEffect(() => {
-    console.log("useEffect");
-    console.log(scheduleForm);
-  }, [scheduleForm]);
 
   if (user.role === "secretary")
     return (
       <div className={styles.logout}>
         <button
-          onClick={async() => {
-            await localStorage.removeItem("token");
-            router.push("/login");
-            // signOut();
+          onClick={async () => {
+            await dispatch(logout());
+            router.push("/");
           }}
         >
           Logout
@@ -79,10 +68,9 @@ const ScheduleTable = () => {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
         <div className={styles.logout}>
           <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              router.push("/login");
-              // signOut();
+            onClick={async () => {
+              await dispatch(logout());
+              router.push("/");
             }}
           >
             Logout
