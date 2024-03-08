@@ -27,7 +27,6 @@ export default function CreateAppointmentModal({
   const [formData, setFormData] = useState({
     doctor: `${allDoctors?.data[0]?._id}`,
     patient: "",
-    date: "",
     start:
       appointmentRange?.start?.toString().slice(0, 16) ||
       new Date(new Date().getTime()).toISOString().slice(0, 16),
@@ -40,6 +39,7 @@ export default function CreateAppointmentModal({
     newPatient: !oldPatient,
     newStart: "",
     newEnd: "",
+    reschedulingPurpose: "",
   });
 
   const [newPatientData, setNewPatientData] = useState({
@@ -93,8 +93,6 @@ export default function CreateAppointmentModal({
       });
     }
   }, [selectedAppointment]);
-
-
 
   return (
     <form
@@ -205,11 +203,24 @@ export default function CreateAppointmentModal({
       </div>
       <div className="mb-3">
         <label htmlFor="exampleFormControlInput1" className="form-label">
-          Description
+          {selectedAppointment?.status === "rescheduled"
+            ? "Rescheduling Purpose"
+            : "Reason"}
         </label>
         <textarea
-          value={formData.reason}
-          onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+          value={
+            selectedAppointment?.status === "rescheduled"
+              ? formData.reschedulingPurpose
+              : formData.reason
+          }
+          onChange={(e) =>
+            selectedAppointment?.status === "rescheduled"
+              ? setFormData({
+                  ...formData,
+                  reschedulingPurpose: e.target.value,
+                })
+              : setFormData({ ...formData, reason: e.target.value })
+          }
           className="form-control w-50 mx-auto mb-3 w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
           id="exampleFormControlTextarea1"
           rows="3"

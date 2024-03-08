@@ -296,12 +296,12 @@ const updateAppointment = async (req, res) => {
     const updatedAppointment = await Appointment.update(id, {
       doctor,
       patient: newPatient ? existingPatient._id : patient,
-      start,
-      end,
+      oldStart: appointment.start,
+      oldEnd: appointment.end,
       reason,
       reschedulingPurpose,
-      newStart,
-      newEnd,
+      start: newStart,
+      end: newEnd,
     });
 
     // Transform appointment data before sending response

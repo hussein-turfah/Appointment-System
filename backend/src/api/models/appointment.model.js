@@ -41,10 +41,10 @@ const appointmentSchema = new mongoose.Schema(
     reschedulingPurpose: {
       type: String,
     },
-    newStart: {
+    oldStart: {
       type: Date,
     },
-    newEnd: {
+    oldEnd: {
       type: Date,
     },
   },
@@ -70,8 +70,8 @@ appointmentSchema.method({
       "allDay",
       "title",
       "reschedulingPurpose",
-      "newStart",
-      "newEnd",
+      "oldStart",
+      "oldEnd",
       "status",
       "createdAt",
       "updatedAt",

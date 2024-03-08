@@ -258,9 +258,9 @@ export default function Calendar() {
                 onContextMenu={(i) => {
                   i.preventDefault();
                   setIsSelected(e.event);
-                  setTimeout(() => {
-                    setIsSelected({});
-                  }, 20000);
+                  // setTimeout(() => {
+                  //   setIsSelected({});
+                  // }, 20000);
                 }}
               >
                 <h1>{e.timeText}</h1>
