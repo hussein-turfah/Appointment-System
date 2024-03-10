@@ -20,9 +20,6 @@ export default function Prescriptions({ data }) {
             </p>
           </div>
         ))}
-        <div className={styles.btn}>
-          <button href="#">View all</button>
-        </div>
       </div>
     </div>
   );

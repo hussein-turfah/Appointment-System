@@ -12,6 +12,7 @@ export const ACTIONS = {
   GET_INVOICES_BY_DATE: "/invoice/day/:date",
   GET_INVOICES_AND_TOTAL: "/invoice/:date/:doctorId",
   INVOICE_STATEMENT: "/invoice/invoice/statement/",
+  CLINIC_STATEMENT: "/invoice/clinic/statement/",
 };
 
 export const createInvoice = (patientId, invoice) => async (dispatch) => {
@@ -31,6 +32,7 @@ export const updateInvoice = (id, invoice) => async (dispatch) => {
       ...invoice,
     });
     dispatch({ type: ACTIONS.UPDATE_INVOICE, data });
+    toast.success("Invoice updated successfully");
   } catch (error) {
     toast.error("Error while updating invoice");
     console.log(error);
@@ -41,7 +43,7 @@ export const deleteInvoice = (id) => async (dispatch) => {
   try {
     await axios.delete(`/invoice/${id}`);
     toast.success("Invoice deleted successfully");
-    dispatch({ type: ACTIONS.DELETE_INVOICE, id });
+    dispatch({ type: ACTIONS.DELETE_INVOICE, data: id });
   } catch (error) {
     console.log(error);
   }
@@ -96,7 +98,6 @@ export const getAllInvoices = () => async (dispatch) => {
 export const getInvoicesAndTotal = (date, doctorId) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/invoice/${date}/${doctorId || ""}`);
-    // Handle data as needed
     dispatch({ type: ACTIONS.GET_INVOICES_AND_TOTAL, data });
   } catch (error) {
     console.log(error);
@@ -112,9 +113,23 @@ export const getInvoiceStatement =
         startDate,
         endDate,
       });
-      console.log(data);
 
       dispatch({ type: ACTIONS.INVOICE_STATEMENT, data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+export const getClinicStatement =
+  ({ startDate, endDate }) =>
+  async (dispatch) => {
+    try {
+      const { data } = await axios.post(`/invoice/clinic/statement`, {
+        startDate,
+        endDate,
+      });
+
+      dispatch({ type: ACTIONS.CLINIC_STATEMENT, data });
     } catch (error) {
       console.log(error);
     }

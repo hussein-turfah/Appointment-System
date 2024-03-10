@@ -223,6 +223,7 @@ const getMedicalRecordById = async (req, res) => {
 };
 
 
+<<<<<<< HEAD
   const getMedicalRecordByPatientId = async (req, res) => {
     try {
       const { patientId } = req.params;
@@ -249,6 +250,24 @@ const getMedicalRecordById = async (req, res) => {
   
   module.exports = getMedicalRecordByPatientId;
   
+=======
+    const medicalRecords = await MedicalRecord.find({
+      patient: patientId,
+    }).populate("prescriptions patient doctor").sort({ createdAt: -1 });
+
+    if (!medicalRecords || medicalRecords.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Medical records not found for the patient." });
+    }
+
+    res.status(200).json(medicalRecords);
+  } catch (error) {
+    console.error("Error retrieving medical records:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+>>>>>>> 56d2c497242671b848eedfd0c0f40c98df462c4a
 
 module.exports = {
   createMedicalRecord,

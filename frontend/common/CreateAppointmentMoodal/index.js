@@ -26,14 +26,14 @@ export default function CreateAppointmentModal({
   const allPatients = useSelector(({ PatientData }) => PatientData.allPatients);
   const [formData, setFormData] = useState({
     doctor: `${allDoctors?.data[0]?._id}`,
-    patient: "",
+    patient: `${allPatients?.data[0]?._id}`,
     start:
       appointmentRange?.start?.toString().slice(0, 16) ||
       new Date(new Date().getTime()).toISOString().slice(0, 16),
 
     end:
       appointmentRange?.end?.toString().slice(0, 16) ||
-      new Date(new Date().getTime() + 13.5 * 600000).toISOString().slice(0, 16),
+      new Date(new Date().getTime() + 13 * 60000).toISOString().slice(0, 16),
 
     reason: "",
     newPatient: !oldPatient,
@@ -56,14 +56,18 @@ export default function CreateAppointmentModal({
       await dispatch(
         updateAppointment(appointmentId, { ...formData, ...newPatientData })
       );
-      console.log({ ...formData, ...newPatientData });
     } else {
       await dispatch(createAppointment({ ...formData, ...newPatientData }));
     }
   }, [dispatch, formData, newPatientData, appointmentId, selectedAppointment]);
 
   useEffect(() => {
-    if (selectedAppointment && appointmentId && appointmentRange) {
+    if (
+      selectedAppointment &&
+      appointmentId &&
+      appointmentRange &&
+      selectedAppointment?.status !== "rescheduled"
+    ) {
       setFormData({
         doctor: `${selectedAppointment.doctor._id}`,
         patient: `${selectedAppointment.patient._id}`,
@@ -72,27 +76,25 @@ export default function CreateAppointmentModal({
         reason: selectedAppointment.reason,
       });
       setOldPatient(true);
+    } else if (
+      selectedAppointment &&
+      appointmentId &&
+      appointmentRange &&
+      selectedAppointment?.status === "rescheduled"
+    ) {
+      setFormData({
+        doctor: `${selectedAppointment.doctor._id}`,
+        patient: `${selectedAppointment.patient._id}`,
+        newStart: appointmentRange?.start?.toString().slice(0, 16),
+        newEnd: appointmentRange?.end?.toString().slice(0, 16),
+      });
+      setOldPatient(true);
     }
   }, [selectedAppointment, appointmentId, appointmentRange]);
 
   useEffect(() => {
     dispatch(getAllPatients(search));
   }, [search]);
-
-  // if the selected appointment's status is rescheduled, then the start and end time will be updated to today's date one hour from now
-  useEffect(() => {
-    if (selectedAppointment?.status === "rescheduled") {
-      setFormData({
-        ...formData,
-        newStart: new Date(new Date().getTime() + 3600000)
-          .toISOString()
-          .slice(0, 16),
-        newEnd: new Date(new Date().getTime() + 13.5 * 600000)
-          .toISOString()
-          .slice(0, 16),
-      });
-    }
-  }, [selectedAppointment]);
 
   return (
     <form
@@ -157,7 +159,7 @@ export default function CreateAppointmentModal({
                   ...formData,
                   newStart: e.target.value,
                   newEnd: new Date(
-                    new Date(e.target.value).getTime() + 13.5 * 600000
+                    new Date(e.target.value).getTime() + 13 * 600000
                   )
                     .toISOString()
                     .slice(0, 16),
@@ -167,7 +169,7 @@ export default function CreateAppointmentModal({
                   ...formData,
                   start: e.target.value,
                   end: new Date(
-                    new Date(e.target.value).getTime() + 11 * 600000
+                    new Date(e.target.value).getTime() + 13 * 600000
                   )
                     .toISOString()
                     .slice(0, 16),
@@ -227,39 +229,42 @@ export default function CreateAppointmentModal({
         ></textarea>
       </div>
       <h4 className="mb-3 font-semibold">Patient Details</h4>
-      <div className={styles.selector}>
-        <div
-          className={classNames({
-            [styles.item]: true,
-            [styles.active]: oldPatient,
-          })}
-          onClick={() => {
-            setOldPatient(true);
 
-            setFormData({
-              ...formData,
-              newPatient: false,
-            });
-          }}
-        >
-          Old Patient
+      {!(appointmentId && selectedAppointment) && (
+        <div className={styles.selector}>
+          <div
+            className={classNames({
+              [styles.item]: true,
+              [styles.active]: oldPatient,
+            })}
+            onClick={() => {
+              setOldPatient(true);
+
+              setFormData({
+                ...formData,
+                newPatient: false,
+              });
+            }}
+          >
+            Old Patient
+          </div>
+          <div
+            className={classNames({
+              [styles.item]: true,
+              [styles.active]: !oldPatient,
+            })}
+            onClick={() => {
+              setOldPatient(false);
+              setFormData({
+                ...formData,
+                newPatient: true,
+              });
+            }}
+          >
+            New Patient
+          </div>
         </div>
-        <div
-          className={classNames({
-            [styles.item]: true,
-            [styles.active]: !oldPatient,
-          })}
-          onClick={() => {
-            setOldPatient(false);
-            setFormData({
-              ...formData,
-              newPatient: true,
-            });
-          }}
-        >
-          New Patient
-        </div>
-      </div>
+      )}
 
       {oldPatient ? (
         <div className="mb-3 mt-3">

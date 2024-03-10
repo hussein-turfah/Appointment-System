@@ -9,42 +9,15 @@ export default function CreatePatientModal({ open, setOpen }) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
     phone: "",
     dob: "",
     city: "",
-    gender: "",
+    gender: "male",
   });
 
-  const create = useCallback(() => {
-    dispatch(createPatient(formData));
+  const create = useCallback(async () => {
+    await dispatch(createPatient(formData));
   }, [dispatch, formData]);
-
-  const age = (newPatientData) => {
-    const dob = new Date(newPatientData.dob);
-    const now = new Date();
-    const ageInYears = now.getFullYear() - dob.getFullYear();
-    const ageInMonths = now.getMonth() - dob.getMonth();
-    const ageInDays = now.getDate() - dob.getDate();
-    const ageInHours = Math.floor((now - dob) / (1000 * 60 * 60));
-    const ageInWeeks = Math.floor(ageInDays / 7);
-
-    if (ageInYears > 1) {
-      return `${ageInYears} years`;
-    } else if (ageInYears === 1) {
-      return `${ageInYears} year`;
-    } else if (ageInMonths > 0) {
-      return `${ageInMonths} months`;
-    } else if (ageInDays > 0) {
-      return `${ageInDays} days`;
-    } else if (ageInHours > 0) {
-      return `${ageInHours} hours`;
-    } else if (ageInWeeks > 0) {
-      return `${ageInWeeks} weeks`;
-    } else {
-      return "";
-    }
-  };
 
   return (
     <form
@@ -52,7 +25,7 @@ export default function CreatePatientModal({ open, setOpen }) {
       onSubmit={(e) => {
         e.preventDefault();
         create();
-        setOpen(false);
+        // setOpen(false);
       }}
     >
       <div className="flex flex-col gap-4">
@@ -71,7 +44,6 @@ export default function CreatePatientModal({ open, setOpen }) {
                     firstName: value,
                   }));
                 }}
-                required
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -87,41 +59,6 @@ export default function CreatePatientModal({ open, setOpen }) {
                     lastName: value,
                   }));
                 }}
-                required
-              />
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="title">Email</label>
-              <Input
-                type="text"
-                id="title"
-                className="border border-gray-300 rounded-lg"
-                value={formData.email}
-                setValue={(value) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    email: value,
-                  }));
-                }}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="title">Phone</label>
-              <Input
-                type="number"
-                id="title"
-                className="border border-gray-300 rounded-lg"
-                value={formData.phone}
-                setValue={(value) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    phone: value,
-                  }));
-                }}
-                required
               />
             </div>
           </div>
@@ -130,11 +67,6 @@ export default function CreatePatientModal({ open, setOpen }) {
               <div className={styles.row}>
                 <div className={styles.dob}>
                   <h4>Date of Birth</h4>
-                  {age(formData) === "" ? null : (
-                    <h6>
-                      <span>Age:</span> {age(formData)}
-                    </h6>
-                  )}
                 </div>
                 <p>
                   <Input
@@ -190,6 +122,23 @@ export default function CreatePatientModal({ open, setOpen }) {
                   <label htmlFor="female">Female</label>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="flex w-full">
+            <div className="flex flex-col gap-1 w-full">
+              <label htmlFor="title">Phone</label>
+              <Input
+                type="number"
+                id="title"
+                className="border border-gray-300 rounded-lg"
+                value={formData.phone}
+                setValue={(value) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    phone: value,
+                  }));
+                }}
+              />
             </div>
           </div>
           <div>

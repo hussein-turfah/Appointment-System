@@ -7,21 +7,25 @@ import { getAllPatients } from "../../actions/PatientActions";
 const InvoiceForm = ({
   editing = false,
   initialValues = {
-    id: "",
+    _id: "",
     doctor: "",
     paymentStatus: "Paid",
     amount: "",
-    currency: "",
+    currency: "$",
     date: new Date(),
     patient: "",
   },
+<<<<<<< HEAD
   setInvoiceModal=()=>{},
+=======
+  setInvoiceModal = () => {},
+>>>>>>> 56d2c497242671b848eedfd0c0f40c98df462c4a
 }) => {
   const dispatch = useDispatch();
   const [doctor, setDoctor] = useState(
     editing
       ? initialValues.doctor
-      : useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data[0]?.id)
+      : useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data[0]?._id)
   );
 
   const [paymentStatus, setPaymentStatus] = useState(
@@ -37,43 +41,40 @@ const InvoiceForm = ({
   );
   const doctors = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      editing
-        ? dispatch(
-            updateInvoice(initialValues._id, {
-              doctorId: doctor,
-              paymentStatus,
-              amount,
-              currency,
-              date,
-            })
-          )
-        : dispatch(
-            createInvoice(patient.id, {
-              doctorId: doctor,
-              paymentStatus,
-              amount,
-              currency,
-              patient,
-              date,
-            })
-          );
-    },
-    [
-      doctor,
-      paymentStatus,
-      amount,
-      currency,
-      patient,
-      date,
-      dispatch,
-      initialValues.id,
-      editing,
-      patient.id,
-    ]
-  );
+  const handleSubmit = useCallback(async () => {
+    editing
+      ? dispatch(
+          updateInvoice(initialValues._id, {
+            id: initialValues._id,
+            doctorId: doctor,
+            paymentStatus,
+            amount,
+            currency,
+            date,
+          })
+        )
+      : dispatch(
+          createInvoice(patient._id, {
+            doctorId: doctor,
+            paymentStatus,
+            amount,
+            currency,
+            patient,
+            date,
+          })
+        );
+  }, [
+    doctor,
+    paymentStatus,
+    amount,
+    currency,
+    patient,
+    date,
+    dispatch,
+    initialValues._id,
+    editing,
+    patient._id,
+  ]);
 
   useEffect(() => {
     dispatch(getAllDoctors());
@@ -84,7 +85,8 @@ const InvoiceForm = ({
     <form
       className="invoice-form gap-4"
       onSubmit={(e) => {
-        handleSubmit(e);
+        e.preventDefault();
+        handleSubmit();
         setInvoiceModal(false);
       }}
     >
@@ -98,7 +100,7 @@ const InvoiceForm = ({
           className="w-full border  border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
         >
           {doctors.map((doctor) => (
-            <option value={doctor.id}>
+            <option value={doctor._id}>
               {doctor.firstName} {doctor.lastName}
             </option>
           ))}
@@ -109,7 +111,11 @@ const InvoiceForm = ({
         <input
           id="patient"
           value={
-            patient?.firstName + " " + patient?.lastName
+            initialValues.patient?.firstName
+              ? initialValues.patient?.firstName +
+                " " +
+                initialValues.patient?.lastName
+              : patient?.firstName + " " + patient?.lastName
           }
           required
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
@@ -142,15 +148,17 @@ const InvoiceForm = ({
       </div>
       <div className="form-group">
         <label htmlFor="currency">Currency:</label>
-        <input
-          type="text"
+        <select
           id="currency"
           value={currency}
-          onChange={(e) => setCurrency(e.target.value)}
-          maxLength={3}
-          required
+          onChange={(e) => {
+            setCurrency(e.target.value);
+          }}
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
-        />
+        >
+          <option value="$"> $</option>
+          <option value="L.L">L.L</option>
+        </select>
       </div>
       <div className="form-group">
         <label htmlFor="date">Invoice Date:</label>

@@ -12,9 +12,8 @@ const createInvoice = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-
     const feeRatio = doctor.feeRatio;
-    const clinicAmount = amount * (1 - feeRatio / 100); 
+    const clinicAmount = amount * (1 - feeRatio / 100);
 
     const doctorAmount = amount - clinicAmount;
 
@@ -88,10 +87,13 @@ const updateInvoice = async (req, res) => {
     invoice.currency = currency;
     invoice.paymentStatus = paymentStatus;
 
-    // Save the updated invoice
-    invoice = await invoice.save();
+    // Save the updated invoice and populate the doctor and patient fields
+    await invoice.save();
+    invoice = await Invoice.findById(invoice._id).populate([
+      "doctor",
+      "patient",
+    ]);
 
-    console.log("Invoice updated successfully:", invoice);
     res.status(200).json(invoice);
   } catch (error) {
     console.error("Error updating invoice:", error);
@@ -110,7 +112,6 @@ const deleteInvoice = async (req, res) => {
       return res.status(404).json({ message: "Invoice not found" });
     }
 
-    console.log("Invoice deleted successfully:", deletedInvoice);
     res.status(200).json({ message: "Invoice deleted successfully" });
   } catch (error) {
     console.error("Error deleting invoice:", error);
@@ -131,7 +132,6 @@ const getInvoicesByPatientId = async (req, res) => {
         .json({ message: "Invoices not found for the patient." });
     }
 
-    console.log("Invoices retrieved successfully:", invoices);
     res.status(200).json(invoices);
   } catch (error) {
     console.error("Error retrieving invoices:", error);
@@ -287,7 +287,9 @@ const getAllInvoicesByDoctor = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
     // const doctorId = doctor._id;
-    const data = await Invoice.find({ doctor: doctorId }).populate("patient doctor");
+    const data = await Invoice.find({ doctor: doctorId }).populate(
+      "patient doctor"
+    );
     if (!data || data.length === 0) {
       return res
         .status(404)
@@ -316,11 +318,9 @@ const makeInvoiceStatement = async (req, res) => {
     }).populate("patient doctor");
 
     if (!invoices || invoices.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message: "No invoices found for the specified doctor and date range.",
-        });
+      return res.status(404).json({
+        message: "No invoices found for the specified doctor and date range.",
+      });
     }
 
     const doctorAmountTotal = invoices.reduce(
@@ -357,18 +357,16 @@ const makeClinicStatement = async (req, res) => {
     }).populate("doctor");
 
     if (!invoices || invoices.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message: "No invoices found for the specified date range.",
-        });
+      return res.status(404).json({
+        message: "No invoices found for the specified date range.",
+      });
     }
 
-    let totalClinicAmount = 0; 
+    let clinicAmountTotal = 0;
 
     const clinicStatement = {};
 
-    invoices.forEach(invoice => {
+    invoices.forEach((invoice) => {
       const doctorId = invoice.doctor._id.toString();
       const clinicAmount = invoice.clinicAmount;
 
@@ -377,17 +375,15 @@ const makeClinicStatement = async (req, res) => {
       }
 
       clinicStatement[doctorId] += clinicAmount;
-      totalClinicAmount += clinicAmount;
+      clinicAmountTotal += clinicAmount;
     });
 
-    res.status(200).json({ clinicStatement, totalClinicAmount });
+    res.status(200).json({ clinicStatement, clinicAmountTotal });
   } catch (error) {
     console.error("Error generating clinic statement:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
-
-
 
 module.exports = {
   createInvoice,
@@ -401,5 +397,5 @@ module.exports = {
   getInvoicesAndTotal,
   getAllInvoicesByDoctor,
   makeInvoiceStatement,
-  makeClinicStatement
+  makeClinicStatement,
 };

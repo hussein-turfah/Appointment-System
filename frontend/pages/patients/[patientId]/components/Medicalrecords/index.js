@@ -181,9 +181,6 @@ const Medicalrecords = ({
           </div>
         ))}
       </div>
-      <div className="text-center">
-        <button className="text-blue-500 hover:text-blue-700">View all</button>
-      </div>
       <Modal
         active={prescriptionModal}
         setActive={setPrescriptionModal}

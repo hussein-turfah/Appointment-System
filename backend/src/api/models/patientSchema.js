@@ -12,15 +12,10 @@ const patientSchema = new mongoose.Schema(
     },
     dob: {
       type: Date,
-      required: true,
     },
     gender: {
       type: String,
       enum: ["male", "female"],
-      required: true,
-    },
-    email: {
-      type: String,
     },
     phone: {
       type: String,
@@ -32,7 +27,6 @@ const patientSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: true,
     },
     doctors: [
       {
@@ -81,7 +75,6 @@ patientSchema.method({
       "lastName",
       "dob",
       "gender",
-      "email",
       "phone",
       "allergies",
       "city",
@@ -109,8 +102,8 @@ patientSchema.statics = {
    */
   async createPatient(patientData) {
     try {
-      const patient = new this(patientData);
-      return await patient.save();
+      const patient = await this.create(patientData);
+      return patient;
     } catch (error) {
       throw error;
     }

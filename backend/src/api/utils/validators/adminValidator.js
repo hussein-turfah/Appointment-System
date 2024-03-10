@@ -16,18 +16,18 @@ exports.createUserValidator = [
     .isLength({ min: 3 })
     .withMessage('Last name must be at least 3 characters'),
 
-  check('email')
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Invalid email address')
-    .custom((val) =>
-      User.findOne({ email: val }).then((user) => {
-        if (user) {
-          return Promise.reject(new Error('Email already exists'));
-        }
-      })
-    ),
+  // check('email')
+  //   .notEmpty()
+  //   .withMessage('Email is required')
+  //   .isEmail()
+  //   .withMessage('Invalid email address')
+  //   .custom((val) =>
+  //     User.findOne({ email: val }).then((user) => {
+  //       if (user) {
+  //         return Promise.reject(new Error('Email already exists'));
+  //       }
+  //     })
+  //   ),
 
   check('phone')
     .notEmpty()
