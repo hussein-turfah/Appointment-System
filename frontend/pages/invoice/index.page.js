@@ -19,11 +19,6 @@ const InvoiceTable = () => {
 
   const user = useSelector(({ UserData }) => UserData.data);
 
-  // const invoices = useSelector(
-  //   ({ InvoiceData }) =>
-  //     InvoiceData?.allInvoices || InvoiceData?.invoicesByDoctor
-  // );
-
   const allInvoices = useSelector(
     ({ InvoiceData }) => InvoiceData?.allInvoices?.data
   );
@@ -100,7 +95,9 @@ const InvoiceTable = () => {
               key={index}
               className={`${
                 index % 2 === 0 ? "bg-white" : "bg-gray-50"
-              } border-b dark:bg-gray-800 dark:border-gray-700`}
+              } border-b dark:bg-gray-800 dark:border-gray-700 ${
+                invoice.paymentStatus === "Unpaid" ? "bg-red-100" : ""
+              }`}
             >
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {`${invoice.patient.firstName} ${invoice.patient.lastName}`}
@@ -170,3 +167,5 @@ const InvoiceTable = () => {
 };
 
 export default InvoiceTable;
+
+

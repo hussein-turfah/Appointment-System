@@ -222,28 +222,33 @@ const getMedicalRecordById = async (req, res) => {
   }
 };
 
-// Function to get medical records by patient ID
-const getMedicalRecordByPatientId = async (req, res) => {
-  try {
-    const { patientId } = req.params;
 
-    const medicalRecords = await MedicalRecord.find({
-      patient: patientId,
-    }).populate("prescriptions patient doctor");
-
-    if (!medicalRecords || medicalRecords.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "Medical records not found for the patient." });
+  const getMedicalRecordByPatientId = async (req, res) => {
+    try {
+      const { patientId } = req.params;
+  
+      const medicalRecords = await MedicalRecord.find({
+        patient: patientId,
+      })
+      .populate("prescriptions patient doctor")
+      .sort({ createdAt: -1 }); // (newest to oldest)
+  
+      if (!medicalRecords || medicalRecords.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "Medical records not found for the patient." });
+      }
+  
+      console.log("Medical records retrieved successfully:", medicalRecords);
+      res.status(200).json(medicalRecords);
+    } catch (error) {
+      console.error("Error retrieving medical records:", error);
+      res.status(500).json({ message: "Server Error" });
     }
-
-    console.log("Medical records retrieved successfully:", medicalRecords);
-    res.status(200).json(medicalRecords);
-  } catch (error) {
-    console.error("Error retrieving medical records:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
+  };
+  
+  module.exports = getMedicalRecordByPatientId;
+  
 
 module.exports = {
   createMedicalRecord,
