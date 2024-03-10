@@ -259,7 +259,7 @@ const InvoiceStatement = () => {
     "
     >
       <div className="flex justify-between align-items-center mb-4">
-        {user?.role === "admin" && (
+        {(user?.role === "admin" || user?.role === "secretary") && (
           <div className="flex items-center">
             <label className="mr-2">Doctor:</label>
             <Dropdown
