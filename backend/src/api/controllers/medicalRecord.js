@@ -141,8 +141,8 @@ const uploadAttachmentToMedicalRecord = async (req, res) => {
     // Add attachment to the medical record
     medicalRecord.attachments.push(attachment);
     await medicalRecord.save();
-    
-    res.status(200).json(medicalRecord);  
+
+    res.status(200).json(medicalRecord);
   } catch (error) {
     console.error("Error uploading attachment:", error);
     res.status(500).json({ message: "Server Error" });
@@ -222,38 +222,15 @@ const getMedicalRecordById = async (req, res) => {
   }
 };
 
+const getMedicalRecordByPatientId = async (req, res) => {
+  try {
+    const { patientId } = req.params;
 
-<<<<<<< HEAD
-  const getMedicalRecordByPatientId = async (req, res) => {
-    try {
-      const { patientId } = req.params;
-  
-      const medicalRecords = await MedicalRecord.find({
-        patient: patientId,
-      })
-      .populate("prescriptions patient doctor")
-      .sort({ createdAt: -1 }); // (newest to oldest)
-  
-      if (!medicalRecords || medicalRecords.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "Medical records not found for the patient." });
-      }
-  
-      console.log("Medical records retrieved successfully:", medicalRecords);
-      res.status(200).json(medicalRecords);
-    } catch (error) {
-      console.error("Error retrieving medical records:", error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  };
-  
-  module.exports = getMedicalRecordByPatientId;
-  
-=======
     const medicalRecords = await MedicalRecord.find({
       patient: patientId,
-    }).populate("prescriptions patient doctor").sort({ createdAt: -1 });
+    })
+      .populate("prescriptions patient doctor")
+      .sort({ createdAt: -1 }); // (newest to oldest)
 
     if (!medicalRecords || medicalRecords.length === 0) {
       return res
@@ -267,7 +244,6 @@ const getMedicalRecordById = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
->>>>>>> 56d2c497242671b848eedfd0c0f40c98df462c4a
 
 module.exports = {
   createMedicalRecord,
