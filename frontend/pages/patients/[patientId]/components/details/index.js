@@ -8,15 +8,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Input from "../../../../../common/Input";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePatient, updatePatient } from "../../../../../actions/PatientActions";
+import {
+  deletePatient,
+  updatePatient,
+} from "../../../../../actions/PatientActions";
+import { useRouter } from "next/router";
 
 const Patients = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [addActive, setAddActive] = useState(false);
   const [editActive, setEditActive] = useState(false);
 
   const selectedPatient = useSelector(
-    ({ PatientData }) => PatientData?.selectedPatient.data
+    ({ PatientData }) => PatientData?.selectedPatient?.data
   );
 
   const [newPatientData, setNewPatientData] = useState(
@@ -42,7 +47,6 @@ const Patients = () => {
   return (
     <div className={styles.container}>
       <div className={styles.details}>
-       
         {addActive || editActive ? (
           <div className={styles.actions}>
             <div
@@ -50,7 +54,7 @@ const Patients = () => {
               onClick={() => {
                 setAddActive(false);
                 setEditActive(false);
-                editActive ? update(selectedPatient._id) : null;
+                editActive ? update(selectedPatient?._id) : null;
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
@@ -89,8 +93,9 @@ const Patients = () => {
             </div>
             <div
               className={styles.btn}
-              onClick={() => {
-                dispatch(deletePatient(selectedPatient._id));
+              onClick={async () => {
+                await dispatch(deletePatient(selectedPatient?._id));
+                router.push("/patients/");
               }}
             >
               <FontAwesomeIcon icon={faTrashCan} />
@@ -192,8 +197,8 @@ const Patients = () => {
                       id="male"
                       value="male"
                       checked={
-                        selectedPatient.gender === "male" ||
-                        newPatientData.gender === "male"
+                        selectedPatient?.gender === "male" ||
+                        newPatientData?.gender === "male"
                       }
                       onChange={(e) => {
                         setNewPatientData((prev) => ({
@@ -211,8 +216,8 @@ const Patients = () => {
                       id="female"
                       value="female"
                       checked={
-                        selectedPatient.gender === "female" ||
-                        newPatientData.gender === "female"
+                        selectedPatient?.gender === "female" ||
+                        newPatientData?.gender === "female"
                       }
                       onChange={(e) => {
                         setNewPatientData((prev) => ({
@@ -232,7 +237,7 @@ const Patients = () => {
                       name="gender"
                       id="male"
                       value="male"
-                      checked={selectedPatient.gender === "male"}
+                      checked={selectedPatient?.gender === "male"}
                       onChange={(e) => {
                         setNewPatientData((prev) => ({
                           ...prev,
@@ -249,7 +254,7 @@ const Patients = () => {
                       name="gender"
                       id="female"
                       value="female"
-                      checked={selectedPatient.gender === "female"}
+                      checked={selectedPatient?.gender === "female"}
                       onChange={(e) => {
                         setNewPatientData((prev) => ({
                           ...prev,
@@ -320,7 +325,9 @@ const Patients = () => {
               {addActive || editActive ? (
                 <Input
                   type="text"
-                  value={newPatientData?.allergies || selectedPatient?.allergies}
+                  value={
+                    newPatientData?.allergies || selectedPatient?.allergies
+                  }
                   placeholder=""
                   setValue={(value) => {
                     setNewPatientData((prev) => ({
@@ -338,8 +345,6 @@ const Patients = () => {
               )}
             </p>
           </div>
-
-
 
           <div className={styles.row}>
             <h4>Notes</h4>
