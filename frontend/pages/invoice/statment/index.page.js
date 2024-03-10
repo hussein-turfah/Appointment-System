@@ -7,7 +7,10 @@ import InvoiceForm from "../../../common/EditInvoiceModal";
 import { getAllPatients } from "../../../actions/PatientActions";
 import { useRouter } from "next/router";
 import Dropdown from "../../../common/Dropdown";
-import { getInvoiceStatement } from "../../../actions/InvoiceActions";
+import {
+  getClinicStatement,
+  getInvoiceStatement,
+} from "../../../actions/InvoiceActions";
 
 const InvoiceStatement = () => {
   const dispatch = useDispatch();
@@ -17,26 +20,31 @@ const InvoiceStatement = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const user = useSelector(({ UserData }) => UserData.data);
   const doctors = useSelector(({ DoctorData }) => DoctorData.allDoctors?.data);
 
-  const user = useSelector(({ UserData }) => UserData.data);
   const statementData = useSelector(
     ({ InvoiceData }) => InvoiceData.invoiceStatement?.data
   );
   const [formData, setFormData] = useState({
-    selectedDoctor: "",
+    selectedDoctor: 0,
     startDate: "",
     endDate: "",
   });
   const { selectedDoctor, startDate, endDate } = formData;
 
-  const handleGetInvoices = useCallback(
-    async () =>
+  const handleGetInvoices = useCallback(async () => {
+    if (selectedDoctor === 0 || !selectedDoctor) {
+      await dispatch(getClinicStatement({ startDate, endDate }));
+    } else {
       await dispatch(
-        getInvoiceStatement({ ...formData, doctorId: selectedDoctor._id })
-      ),
-    [formData]
-  );
+        getInvoiceStatement({
+          ...formData,
+          doctorId: selectedDoctor === 0 ? "" : selectedDoctor?._id,
+        })
+      );
+    }
+  }, [dispatch, formData]);
 
   useEffect(() => {
     dispatch(getAllDoctors());
@@ -165,7 +173,9 @@ const InvoiceStatement = () => {
           <header>
             <h1>Invoice Statement</h1>
             <p class="invoice-info">
-              <span>Doctor:</span> <span class="doctor-name">${selectedDoctor.firstName} ${selectedDoctor.lastName}</span>
+              <span>Doctor:</span> <span class="doctor-name">${
+                selectedDoctor.firstName
+              } ${selectedDoctor.lastName}</span>
               <span>Date Range:</span> <span class="date-range">${startDate} - ${endDate}</span>
             </p>
           </header>
@@ -184,34 +194,44 @@ const InvoiceStatement = () => {
               </tr>
             </thead>
             <tbody>
-              ${statementData?.invoices?.map(invoice => `
+              ${statementData?.invoices
+                ?.map(
+                  (invoice) => `
               <tr>
                 <td>${invoice?.patient?.firstName} ${
-                  invoice?.patient?.lastName
-                }</td>
+                    invoice?.patient?.lastName
+                  }</td>
                 <td>${invoice?.doctor?.firstName} ${
-                  invoice?.doctor?.lastName
-                }</td>
+                    invoice?.doctor?.lastName
+                  }</td>
                 <td>${new Date(invoice?.date).toLocaleDateString()}</td>
                 <td>${invoice?.doctorAmount}</td>
                 <td>${invoice?.clinicAmount}</td>
                 <td>${invoice?.amount}</td>
                 <td>${invoice?.currency}</td>
-                <td class="${invoice?.paymentStatus === "Unpaid" ? "text-red-500" : ""}">
+                <td class="${
+                  invoice?.paymentStatus === "Unpaid" ? "text-red-500" : ""
+                }">
                   ${invoice?.paymentStatus}
                 </td>
               </tr>
-              `).join('')}
+              `
+                )
+                .join("")}
             </tbody>
           </table>
           <div class="total">
             <div>
               <span class="total-label">Total Doctor Amount:</span>
-              <span class="total-value">${statementData?.doctorAmountTotal}</span>
+              <span class="total-value">${
+                statementData?.doctorAmountTotal
+              }</span>
             </div>
             <div>
               <span class="total-label">Total Clinic Amount:</span>
-              <span class="total-value">${statementData?.clinicAmountTotal}</span>
+              <span class="total-value">${
+                statementData?.clinicAmountTotal
+              }</span>
             </div>
             <div>
               <span class="total-label">Total Amount:</span>
@@ -231,8 +251,6 @@ const InvoiceStatement = () => {
     // Directly open print dialog
     win.print();
   };
-  
-    
 
   return (
     <div
@@ -241,34 +259,47 @@ const InvoiceStatement = () => {
     "
     >
       <div className="flex justify-between align-items-center mb-4">
-        <div className="flex items-center">
-          <label className="mr-2">Doctor:</label>
-          <Dropdown
-            values={[
-              ...doctors.map((doctor) => ({
-                value: doctor._id,
-                label: `${doctor.firstName} ${doctor.lastName}`,
-              })),
-            ]}
-            value={
-              selectedDoctor
-                ? {
-                    value: selectedDoctor,
-                    label:
-                      doctors.find((doctor) => doctor === selectedDoctor)
-                        ?.firstName +
-                      " " +
-                      doctors.find((doctor) => doctor === selectedDoctor)
-                        ?.lastName,
-                  }
-                : null
-            }
-            setValue={(selectedDoctor) => {
-              const doctor = doctors.find((doc) => doc._id === selectedDoctor);
-              setFormData({ ...formData, selectedDoctor: doctor });
-            }}
-          />
-        </div>
+        {user?.role === "admin" && (
+          <div className="flex items-center">
+            <label className="mr-2">Doctor:</label>
+            <Dropdown
+              values={[
+                {
+                  value: 0,
+                  label: "All",
+                },
+                ...doctors.map((doctor) => ({
+                  value: doctor._id,
+                  label: `${doctor.firstName} ${doctor.lastName}`,
+                })),
+              ]}
+              value={
+                selectedDoctor === "all" || selectedDoctor === 0
+                  ? {
+                      value: 0,
+                      label: "All",
+                    }
+                  : selectedDoctor
+                  ? {
+                      value: selectedDoctor?._id,
+                      label: `${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`,
+                    }
+                  : null
+              }
+              setValue={(value) => {
+                if (value === 0) {
+                  setFormData({ ...formData, selectedDoctor: "" });
+                  return;
+                } else {
+                  const selectedDoctor = doctors.find(
+                    (doctor) => doctor._id === value
+                  );
+                  setFormData({ ...formData, selectedDoctor });
+                }
+              }}
+            />
+          </div>
+        )}
         <div className="flex items-center">
           <label className="mr-2">Start Date:</label>
           <input
@@ -371,17 +402,32 @@ const InvoiceStatement = () => {
         </tbody>
       </table>
       <div className={styles.total}>
-        <div>
-          <span className={styles.totalLabel}>Total Doctor Amount:</span>{" "}
-          <span>${statementData?.doctorAmountTotal}</span>
-        </div>
+        {(selectedDoctor || selectedDoctor !== 0) && user?.role === "admin" && (
+          <div>
+            {console.log("selectedDoctor", selectedDoctor)}
+            <span className={styles.totalLabel}>Total Doctor Amount:</span>{" "}
+            <span>
+              $
+              {statementData?.doctorAmountTotal
+                ? statementData?.doctorAmountTotal
+                : 0}
+            </span>
+          </div>
+        )}
         <div>
           <span className={styles.totalLabel}>Total Clinic Amount:</span>{" "}
-          <span>${statementData?.clinicAmountTotal}</span>
+          <span>
+            $
+            {statementData?.clinicAmountTotal
+              ? statementData?.clinicAmountTotal
+              : 0}
+          </span>
         </div>
         <div>
           <span className={styles.totalLabel}>Total Amount:</span>{" "}
-          <span>${statementData?.overallTotal}</span>
+          <span>
+            ${statementData?.overallTotal ? statementData?.overallTotal : 0}
+          </span>
         </div>
       </div>
     </div>

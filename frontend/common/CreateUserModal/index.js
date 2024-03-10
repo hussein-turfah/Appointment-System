@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import Input from "../Input";
 import { useDispatch } from "react-redux";
-import { createPatient } from "../../actions/PatientActions";
 import styles from "./styles/index.module.scss";
 import { createUser, updateUser } from "../../actions/AdminActions";
 

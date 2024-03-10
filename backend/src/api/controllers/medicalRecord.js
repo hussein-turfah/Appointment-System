@@ -229,7 +229,7 @@ const getMedicalRecordByPatientId = async (req, res) => {
 
     const medicalRecords = await MedicalRecord.find({
       patient: patientId,
-    }).populate("prescriptions patient doctor");
+    }).populate("prescriptions patient doctor").sort({ createdAt: -1 });
 
     if (!medicalRecords || medicalRecords.length === 0) {
       return res
@@ -237,7 +237,6 @@ const getMedicalRecordByPatientId = async (req, res) => {
         .json({ message: "Medical records not found for the patient." });
     }
 
-    console.log("Medical records retrieved successfully:", medicalRecords);
     res.status(200).json(medicalRecords);
   } catch (error) {
     console.error("Error retrieving medical records:", error);

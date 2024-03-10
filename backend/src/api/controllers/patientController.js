@@ -3,11 +3,10 @@ const mongoose = require("mongoose");
 
 const createPatient = async (req, res) => {
   try {
-    const { firstName, lastName, email, dob, phone, city, gender } = req.body;
+    const { firstName, lastName, dob, phone, city, gender } = req.body;
     const newPatient = await Patient.createPatient({
       firstName,
       lastName,
-      email,
       dob,
       phone,
       city,
@@ -55,7 +54,6 @@ const getAllPatients = async (req, res) => {
       $or: [
         { firstName: { $regex: search, $options: "i" } },
         { lastName: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
         { city: { $regex: search, $options: "i" } },
         {

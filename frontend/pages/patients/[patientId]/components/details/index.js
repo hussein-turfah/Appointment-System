@@ -39,33 +39,6 @@ const Patients = () => {
     [addActive, newPatientData]
   );
 
-  // const age = (newPatientData) => {
-  //   const dob = new Date(newPatientData.dob);
-  //   const now = new Date();
-  //   const ageInYears = now.getFullYear() - dob.getFullYear();
-  //   const ageInMonths = now.getMonth() - dob.getMonth();
-  //   const ageInDays = now.getDate() - dob.getDate();
-  //   const ageInHours = Math.floor((now - dob) / (1000 * 60 * 60));
-  //   const ageInWeeks = Math.floor(ageInDays / 7);
-
-  //   // Condition for years
-  //   if (ageInYears > 1) {
-  //     return `${ageInYears} years`;
-  //   } else if (ageInYears === 1) {
-  //     return `${ageInYears} year`;
-  //   } else if (ageInMonths > 0) {
-  //     return `${ageInMonths} months`;
-  //   } else if (ageInDays > 0) {
-  //     return `${ageInDays} days`;
-  //   } else if (ageInHours > 0) {
-  //     return `${ageInHours} hours`;
-  //   } else if (ageInWeeks > 0) {
-  //     return `${ageInWeeks} weeks`;
-  //   } else {
-  //     return "";
-  //   }
-  // };
-
   return (
     <div className={styles.container}>
       <div className={styles.details}>
@@ -77,7 +50,7 @@ const Patients = () => {
               onClick={() => {
                 setAddActive(false);
                 setEditActive(false);
-                editActive ? update(selectedPatient.id) : null;
+                editActive ? update(selectedPatient._id) : null;
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
@@ -117,7 +90,7 @@ const Patients = () => {
             <div
               className={styles.btn}
               onClick={() => {
-                dispatch(deletePatient(selectedPatient.id));
+                dispatch(deletePatient(selectedPatient._id));
               }}
             >
               <FontAwesomeIcon icon={faTrashCan} />
