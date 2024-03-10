@@ -8,6 +8,7 @@ import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import MedicalRecordsPrintComponent from "./components/mrprint";
 import FullMedicalRecordsPrintComponent from "./components/detailedmrprint/index.page";
+import AddAttachementModal from "../../../../../common/AddAttachmentModal";
 
 const Medicalrecords = ({
   data,
@@ -192,7 +193,12 @@ const Medicalrecords = ({
           />
         }
       />
-      <Modal active={attachModal} setActive={setAttachModal} />
+      <Modal
+        active={attachModal}
+        setActive={setAttachModal}
+        title={`Attach Medical Record`}
+        children={<AddAttachementModal />}
+      />
       <Modal
         active={invoiceModal}
         setActive={setInvoiceModal}

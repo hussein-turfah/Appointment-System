@@ -48,10 +48,6 @@ export default function AddAttachementModal({
     setAttachmentModal(false);
   }, [dispatch, formData, file, patient._id]);
 
-  useEffect(() => {
-    dispatch(getAllDoctors());
-  }, [dispatch]);
-
   return (
     <form
       className="flex flex-col gap-4"
@@ -60,56 +56,6 @@ export default function AddAttachementModal({
         handleCreatePrescription();
       }}
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="title">Title</label>
-          <Input
-            type="text"
-            id="title"
-            className="border border-gray-300 rounded-lg"
-            value={formData.title}
-            setValue={(title) => {
-              setFormData({ ...formData, title });
-            }}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="doctor">Doctor:</label>
-          <select
-            id="doctor"
-            value={formData.doctor}
-            onChange={(e) =>
-              setFormData({ ...formData, doctor: e.target.value })
-            }
-            required
-            className="w-full border  border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
-          >
-            {doctors.map((doctor) => (
-              <option value={doctor._id}>
-                {doctor.firstName} {doctor.lastName}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="patient">Patient:</label>
-          <Input
-            id="patient"
-            value={
-              patient?.firstName && patient?.lastName
-                ? `${patient?.firstName} ${patient?.lastName}`
-                : ""
-            }
-            setValue={(e) => {
-              setFormData({ ...formData, patient: e.target.value });
-            }}
-            disabled
-            required
-            className="w-full border  border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
-          />
-        </div>
-      </div>
       <div class="flex items-center justify-center w-full">
         <label
           for="dropzone-file"

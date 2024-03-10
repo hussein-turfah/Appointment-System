@@ -354,7 +354,7 @@ const makeClinicStatement = async (req, res) => {
 
     const invoices = await Invoice.find({
       date: { $gte: startDate, $lte: endDate },
-    }).populate("doctor");
+    }).populate("doctor patient");
 
     if (!invoices || invoices.length === 0) {
       return res.status(404).json({
@@ -378,7 +378,7 @@ const makeClinicStatement = async (req, res) => {
       clinicAmountTotal += clinicAmount;
     });
 
-    res.status(200).json({ clinicStatement, clinicAmountTotal });
+    res.status(200).json({ clinicStatement, clinicAmountTotal,  invoices});
   } catch (error) {
     console.error("Error generating clinic statement:", error);
     res.status(500).json({ message: "Server Error" });

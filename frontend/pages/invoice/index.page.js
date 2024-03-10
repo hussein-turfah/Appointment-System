@@ -1,3 +1,4 @@
+import styles from "./styles/index.module.scss";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,6 +10,7 @@ import Modal from "../../common/Modal";
 import InvoiceForm from "../../common/EditInvoiceModal";
 import { getAllPatients } from "../../actions/PatientActions";
 import Link from "next/link";
+import classNames from "classnames";
 
 const InvoiceTable = () => {
   const dispatch = useDispatch();
@@ -98,9 +100,10 @@ const InvoiceTable = () => {
           {invoices?.map((invoice, index) => (
             <tr
               key={index}
-              className={`${
-                index % 2 === 0 ? "bg-white" : "bg-gray-50"
-              } border-b dark:bg-gray-800 dark:border-gray-700`}
+              className={classNames({
+                [styles.tableRow]: true,
+                [styles.unpaid]: invoice.paymentStatus === "Unpaid",
+              })}
             >
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {`${invoice.patient.firstName} ${invoice.patient.lastName}`}
