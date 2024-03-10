@@ -15,7 +15,11 @@ const InvoiceForm = ({
     date: new Date(),
     patient: "",
   },
+<<<<<<< HEAD
+  setInvoiceModal=()=>{},
+=======
   setInvoiceModal = () => {},
+>>>>>>> 56d2c497242671b848eedfd0c0f40c98df462c4a
 }) => {
   const dispatch = useDispatch();
   const [doctor, setDoctor] = useState(

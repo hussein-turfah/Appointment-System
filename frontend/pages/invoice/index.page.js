@@ -21,11 +21,6 @@ const InvoiceTable = () => {
 
   const user = useSelector(({ UserData }) => UserData.data);
 
-  // const invoices = useSelector(
-  //   ({ InvoiceData }) =>
-  //     InvoiceData?.allInvoices || InvoiceData?.invoicesByDoctor
-  // );
-
   const allInvoices = useSelector(
     ({ InvoiceData }) => InvoiceData?.allInvoices?.data
   );
@@ -173,3 +168,5 @@ const InvoiceTable = () => {
 };
 
 export default InvoiceTable;
+
+
