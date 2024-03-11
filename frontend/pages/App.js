@@ -27,24 +27,34 @@ const MyApp = ({ Component, pageProps, domainName }) => {
 
   useEffect(() => {
     if (!isLoadingUser) {
-      console.log("1")
       if (token) {
-        console.log("2")
         if (!user._id && !isAuthPage) {
-          console.log("3")
           // router.push("/login");
         } else if (user._id && isAuthPage) {
-          console.log("4")
           router.push("/calendar");
         }
       } else {
-        console.log("5")
         if (!isAuthPage) {
           // router.push("/login");
         }
       }
     }
   }, [token, isAuthPage, router, user._id, isLoadingUser]);
+
+
+  // refresh the page on back button click to prevent stale data
+  useEffect(() => {
+    window.onpopstate = () => {
+      window.location.reload();
+    };
+  }, []);
+
+  // refresh page on page change 
+  // useEffect(() => {
+  //   router.events.on("routeChangeComplete", () => {
+  //     window.location.reload();
+  //   });
+  // }, [router]);
 
   return (
     <div className="page">

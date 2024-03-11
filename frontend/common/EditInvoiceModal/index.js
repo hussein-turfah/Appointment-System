@@ -151,9 +151,9 @@ const InvoiceForm = ({
             setCurrency(e.target.value);
           }}
           className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
+          disabled
         >
           <option value="$"> $</option>
-          <option value="L.L">L.L</option>
         </select>
       </div>
       <div className="form-group">

@@ -36,5 +36,6 @@ router.use("/schedule", protect, scheduleRoutes);
 router.use("/user", protect, UserRoute);
 router.use("/service", protect, serviceRoute);
 router.use("/upload", uploadRoute);
+router.use("/uploads", express.static("uploads"));
 
 module.exports = router;

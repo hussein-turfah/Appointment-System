@@ -1,28 +1,61 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { createMedicalRecordValidator, deleteMedicalRecordValidator, getMedicalRecordByIdValidator, getMedicalRecordByPatientIdValidator } = require('../../utils/validators/recordValidator');
-const { createMedicalRecord, uploadRecordAttach, getMedicalRecordByPatientId, deleteMedicalRecord, updateMedicalRecord, getMedicalRecordById, addFeesToMedicalRecord, addPrescriptionsToMedicalRecord } = require('../../controllers/medicalRecord');
+const {
+  createMedicalRecordValidator,
+  deleteMedicalRecordValidator,
+  getMedicalRecordByIdValidator,
+  getMedicalRecordByPatientIdValidator,
+} = require("../../utils/validators/recordValidator");
+const {
+  createMedicalRecord,
+  uploadAttachment,
+  getMedicalRecordByPatientId,
+  deleteMedicalRecord,
+  updateMedicalRecord,
+  getMedicalRecordById,
+  addFeesToMedicalRecord,
+  addPrescriptionsToMedicalRecord,
+  uploadPrescription,
+  uploadAttachmentToMedicalRecord,
+} = require("../../controllers/medicalRecord");
 
-// Route for creating a medical record - 
-router.post('/:patientId', createMedicalRecordValidator, createMedicalRecord);
+// Route for creating a medical record -
+router.post("/:patientId", createMedicalRecordValidator, createMedicalRecord);
 
 // Route for updating a medical record
-router.put('/:medicalRecordId', uploadRecordAttach, updateMedicalRecord);
+router.put("/:medicalRecordId", updateMedicalRecord);
 
 // Route for deleting a medical record  -
-router.delete('/:medicalRecordId', deleteMedicalRecordValidator, deleteMedicalRecord);
+router.delete(
+  "/:medicalRecordId",
+  deleteMedicalRecordValidator,
+  deleteMedicalRecord
+);
 
 // Route for getting a medical record by its ID -
-router.get('/:medicalRecordId', getMedicalRecordByIdValidator, getMedicalRecordById);
+router.get(
+  "/:medicalRecordId",
+  getMedicalRecordByIdValidator,
+  getMedicalRecordById
+);
 
 // Route for getting medical records by patient ID -
-router.get('/patient/:patientId', getMedicalRecordByPatientIdValidator, getMedicalRecordByPatientId);
+router.get(
+  "/patient/:patientId",
+  getMedicalRecordByPatientIdValidator,
+  getMedicalRecordByPatientId
+);
 
 // Route for adding fees to a medical record -
-router.put('/:medicalRecordId/add-fees', addFeesToMedicalRecord);
+router.put("/:medicalRecordId/add-fees", addFeesToMedicalRecord);
 
 // Route for adding prescriptions to a medical record -
-router.put('/:medicalRecordId/add-prescriptions',uploadRecordAttach, addPrescriptionsToMedicalRecord);
+router.put(
+  "/:medicalRecordId/add-prescriptions",
+  addPrescriptionsToMedicalRecord
+);
+
+// Route for uploading an attachment to a medical record -
+router.put("/:medicalRecordId/attachment", uploadAttachmentToMedicalRecord);
 
 module.exports = router;
-

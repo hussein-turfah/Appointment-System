@@ -3,6 +3,7 @@ const Prescription = require("../models/prescriptionSchema");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
+const mongoose = require("mongoose");
 
 // Multer storage configuration for attachments
 const attachmentStorage = multer.diskStorage({
@@ -37,7 +38,7 @@ const fileFilter = (req, file, cb) => {
     "application/msword",
   ];
   if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true) // Allow specified file types
+    cb(null, true); // Allow specified file types
   } else {
     cb(new Error("Only Images (JPEG, PNG), PDFs, and DOCs Allowed"));
   }
@@ -106,23 +107,24 @@ const addFeesToMedicalRecord = async (req, res) => {
 const addPrescriptionsToMedicalRecord = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
-    const { title } = req.body;
-    console.log("req.file",req.file)
-
-    // Ensure attachment is provided
-    if (!req.file) {
-      return res.status(400).json({ message: "Attachment is required" });
-    }
+    const { title, attachment } = req.body;
 
     // Create a new prescription
     const newPrescription = new Prescription({
       title: title,
-      attachment: `/uploads/prescription/${req.file.filename}`,
+      attachment: attachment,
       medicalRecord: medicalRecordId,
     });
 
     // Save the prescription
-    const savedPrescription = await newPrescription.save();    
+    const savedPrescription = await newPrescription.save();
+
+    await MedicalRecord.findByIdAndUpdate(
+      medicalRecordId,
+      { $push: { prescriptions: savedPrescription._id } },
+      { new: true }
+    );
+
     res.status(200).json({
       message: "Prescription added to medical record",
       prescription: savedPrescription,
@@ -138,6 +140,7 @@ const addPrescriptionsToMedicalRecord = async (req, res) => {
 const uploadAttachmentToMedicalRecord = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
+    const { attachment } = req.body;
 
     // Check if medical record exists
     const medicalRecord = await MedicalRecord.findById(medicalRecordId);
@@ -145,20 +148,24 @@ const uploadAttachmentToMedicalRecord = async (req, res) => {
       return res.status(404).json({ message: "Medical record not found" });
     }
 
-    // Use uploadAttachment middleware to handle file upload
-    uploadAttachment(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ message: err.message });
-      }
+    // check if attachment is provided
+    if (!attachment) {
+      return res.status(400).json({ message: "Attachment is required" });
+    }
 
-      // Add attachment path to the medical record
-      medicalRecord.attachments.push(`/uploads/attach/${req.file.filename}`);
-      await medicalRecord.save();
-      res.status(200).json(medicalRecord);
-    });
+    // add attachment to the medical record
+    const updatedMedicalRecord = await MedicalRecord.findByIdAndUpdate(
+      medicalRecordId,
+      { $push: { attachments: attachment } },
+      { new: true }
+    );
+
+    res.status(200).json(updatedMedicalRecord);
   } catch (error) {
-    console.error("Error uploading attachment:", error);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Error adding attachment to medical record:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to add attachment to medical record" });
   }
 };
 

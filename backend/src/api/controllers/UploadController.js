@@ -5,14 +5,26 @@ const {
   getDownloadURL,
 } = require("firebase/storage");
 const multer = require("multer");
+const path = require("path");
 
 // Initialize Firebase storage
-const storage = getStorage(require("../../config/firebaseConfig"));
+// const storage = getStorage(require("../../config/firebaseConfig"));
+// // Multer configuration
+// const upload = multer({
+//   storage: multer.memoryStorage(),
+// });
 
-// Multer configuration
-const upload = multer({
-  storage: multer.memoryStorage(),
+// Set up storage with multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Appending extension
+  },
 });
+
+const upload = multer({ storage: storage });
 
 const uploadFile = async (req, res) => {
   try {
@@ -46,4 +58,16 @@ const uploadFile = async (req, res) => {
   }
 };
 
-module.exports = { upload, uploadFile };
+const handleFileUpload = upload.single("file");
+
+const uploadFileLocally = (req, res) => {
+  if (!req.file) {
+    return res
+      .status(400)
+      .send({ success: false, message: "No file uploaded" });
+  }
+
+  res.send({ success: true, filePath: req.file.path });
+};
+
+module.exports = { upload, uploadFile, uploadFileLocally };

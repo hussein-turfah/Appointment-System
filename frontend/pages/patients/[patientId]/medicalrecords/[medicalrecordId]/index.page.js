@@ -47,8 +47,6 @@ const MedicalRecordDetails = () => {
   //   } = medicalRecord;
   //   console.log(data);
 
-
-
   //   const win = window.open("", "_blank");
   //   win.document.write(printDocument);
   //   win.document.close();
@@ -120,13 +118,13 @@ const MedicalRecordDetails = () => {
                     className="text-blue-500 hover:underline"
                     onClick={() =>
                       window.open(
-                        attachment.attachment,
+                        `http://localhost:3000/v1/${attachment}`,
                         "_blank",
                         "noopener,noreferrer"
                       )
                     }
                   >
-                    {attachment.fileName}
+                    {attachment.split("\\")[1]}
                     {isEditing && (
                       <div
                         className="ml-2 text-red-500 hover:text-red-700"
@@ -145,6 +143,7 @@ const MedicalRecordDetails = () => {
             <div>
               <h3 className="text-lg font-semibold text-gray-800">
                 Prescriptions:
+                {console.log(medicalRecord.prescriptions)}
               </h3>
               <ul className="list-disc pl-6">
                 {medicalRecord?.prescriptions?.map((prescription, index) => (
@@ -153,7 +152,7 @@ const MedicalRecordDetails = () => {
                     className="text-blue-500 hover:underline cursor-pointer hover:underline flex items-center"
                     onClick={() =>
                       window.open(
-                        prescription.attachment,
+                        `http://localhost:3000/v1/${prescription?.attachment}`,
                         "_blank",
                         "noopener,noreferrer"
                       )

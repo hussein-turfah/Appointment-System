@@ -7,6 +7,7 @@ export const ACTIONS = {
   UPDATE_USER: "/admin/users/:userId",
   DELETE_USER: "/admin/users/:userId",
   GET_USER_BY_ID: "/admin/users/:userId",
+  RESET_STATE: "RESET_STATE",
 };
 
 export const getAllUsers = () => async (dispatch) => {
@@ -59,4 +60,8 @@ export const getUserById = (userId) => async (dispatch) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const resetState = () => (dispatch) => {
+  dispatch({ type: ACTIONS.RESET_STATE });
 };

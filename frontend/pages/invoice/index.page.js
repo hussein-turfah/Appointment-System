@@ -1,4 +1,3 @@
-import styles from "./styles/index.module.scss";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -95,10 +94,13 @@ const InvoiceTable = () => {
           {invoices?.map((invoice, index) => (
             <tr
               key={index}
-              className={classNames({
-                [styles.tableRow]: true,
-                [styles.unpaid]: invoice.paymentStatus === "Unpaid",
-              })}
+              className={
+                invoice.paymentStatus === "Unpaid"
+                  ? "bg-red-100"
+                  : index % 2 === 0
+                  ? "bg-gray-50 dark:bg-gray-800"
+                  : "bg-white dark:bg-gray-700"
+              }
             >
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {`${invoice.patient.firstName} ${invoice.patient.lastName}`}
@@ -168,5 +170,3 @@ const InvoiceTable = () => {
 };
 
 export default InvoiceTable;
-
-

@@ -197,7 +197,10 @@ const Medicalrecords = ({
         active={attachModal}
         setActive={setAttachModal}
         title={`Attach Medical Record`}
-        children={<AddAttachementModal />}
+        children={<AddAttachementModal 
+          selectedRecord={selectedRecord}
+          setAttachModal={setAttachModal}
+        />}
       />
       <Modal
         active={invoiceModal}

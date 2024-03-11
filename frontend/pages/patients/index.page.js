@@ -39,7 +39,7 @@ const PatientsTable = () => {
             placeholder="Search for patient"
             className="p-3 w-full bg-white dark:bg-gray-800 dark:text-white shadow-md sm:rounded-lg"
             onChange={(e) => {
-              setSearch(e.target.value)
+              setSearch(e.target.value);
             }}
           />
         </div>
@@ -75,7 +75,9 @@ const PatientsTable = () => {
                 key={index}
                 className={`${
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } border-b dark:bg-gray-800 dark:border-gray-700`}
+                } border-b dark:bg-gray-800 dark:border-gray-700
+                hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-200 dark:hover:border-gray-500 cursor-pointer
+                `}
                 onClick={() => router.push(`/patients/${patient._id}`)}
               >
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -84,7 +86,7 @@ const PatientsTable = () => {
                 <td className="px-6 py-4">{patient.email}</td>
                 <td className="px-6 py-4">{patient.phone}</td>
                 <td className="px-6 py-4">{patient.gender}</td>
-                <td className="px-6 py-4">{patient.city}</td>                
+                <td className="px-6 py-4">{patient.city}</td>
                 <td className="px-6 py-4"></td>
               </tr>
             ))}

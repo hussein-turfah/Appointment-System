@@ -4,56 +4,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllDoctors } from "../../actions/DoctorActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { createPrescription } from "../../actions/PrescriptionActions";
 import axios from "../../utils/Http";
+import { addAttachmentToRecord } from "../../actions/MedicalRecordActions";
 
 export default function AddAttachementModal({
   selectedRecord,
-  setAttachmentModal,
+  setAttachModal,
 }) {
   const dispatch = useDispatch();
-  const doctors = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
   const [file, setFile] = useState(null);
-  const patient = useSelector(
-    ({ PatientData }) => PatientData?.selectedPatient?.data
-  );
 
-  const [formData, setFormData] = useState({
-    title: "",
-    doctor: doctors[0]?._id,
-    patient: patient._id,
-    medicalRecordId: selectedRecord,
-  });
+  const handleAddAttachment = useCallback(async () => {
+    try {
+      const fileData = new FormData();
+      fileData.append("file", file);
+      const attachment = await axios.post("/upload/localFile", fileData);
 
-  const handleSetFile = (file) => {
-    setFile(file);
-  };
-
-  const handleCreatePrescription = useCallback(async () => {
-    const fileData = new FormData();
-    fileData.append("file", file);
-    const { data } = await axios.post("/upload/file", fileData);
-
-    if (data.success) {
       await dispatch(
-        createPrescription(patient._id, {
-          ...formData,
-          attachment: data.downloadURL,
+        addAttachmentToRecord(selectedRecord, {
+          attachment: attachment.data.filePath,
         })
       );
-    } else {
-      console.log("Error while uploading file");
-    }
 
-    setAttachmentModal(false);
-  }, [dispatch, formData, file, patient._id]);
+      setAttachModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch, file, selectedRecord]);
+
+  const handleSetFile = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  console.log(selectedRecord);
 
   return (
     <form
       className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
-        handleCreatePrescription();
+        handleAddAttachment();
       }}
     >
       <div class="flex items-center justify-center w-full">
@@ -91,7 +81,7 @@ export default function AddAttachementModal({
             class="hidden"
             required
             onChange={(e) => {
-              handleSetFile(e.target.files[0]);
+              handleSetFile(e);
             }}
             disabled={file}
           />
