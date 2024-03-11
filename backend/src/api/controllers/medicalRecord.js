@@ -4,17 +4,31 @@ const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: "uploads/records",
+// Multer storage configuration for attachments
+const attachmentStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/attach"); // Set destination folder for attachment files
+  },
   filename: (req, file, cb) => {
-    const ext = file.originalname.split(".").pop();
-    const filename = `records-${uuidv4()}.${ext}`;
-    cb(null, filename);
+    const ext = path.extname(file.originalname); // Extract file extension
+    const filename = `attach-${uuidv4()}${ext}`; // Generate unique filename
+    cb(null, filename); // Callback with the generated filename
   },
 });
 
-// Multer file filter
+// Multer storage configuration for prescriptions
+const prescriptionStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/prescription"); // Set destination folder for prescription files
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname); // Extract file extension
+    const filename = `prescription-${uuidv4()}${ext}`; // Generate unique filename
+    cb(null, filename); // Callback with the generated filename
+  },
+});
+
+// Multer file filter for allowed file types
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/jpeg",
@@ -23,23 +37,24 @@ const fileFilter = (req, file, cb) => {
     "application/msword",
   ];
   if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true); // Allow specified file types
+    cb(null, true) // Allow specified file types
   } else {
-    cb(new Error("Only Images, PDFs, and DOCs Allowed"));
+    cb(new Error("Only Images (JPEG, PNG), PDFs, and DOCs Allowed"));
   }
 };
 
-// Multer instance for uploading attachment
-const upload = multer({
-  storage: storage,
+// Configure multer middleware for attachments
+const uploadAttachment = multer({
+  storage: attachmentStorage,
   fileFilter: fileFilter,
-});
+}).single("attachment");
 
-// Middleware to handle file upload
-const uploadRecordAttach = upload.single("attachment");
+// Configure multer middleware for prescriptions
+const uploadPrescription = multer({
+  storage: prescriptionStorage,
+  fileFilter: fileFilter,
+}).single("attachment");
 
-// Function to create a medical record
-// Function to create a medical record
 const createMedicalRecord = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -92,24 +107,22 @@ const addPrescriptionsToMedicalRecord = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
     const { title } = req.body;
-    const attachment = req.file;
+    console.log("req.file",req.file)
 
     // Ensure attachment is provided
-    if (!attachment) {
+    if (!req.file) {
       return res.status(400).json({ message: "Attachment is required" });
     }
 
     // Create a new prescription
     const newPrescription = new Prescription({
       title: title,
-      attachment: `/uploads/prescription/${attachment.filename}`,
+      attachment: `/uploads/prescription/${req.file.filename}`,
       medicalRecord: medicalRecordId,
     });
 
     // Save the prescription
-    const savedPrescription = await newPrescription.save();
-
-    console.log("Prescription added to medical record:", savedPrescription);
+    const savedPrescription = await newPrescription.save();    
     res.status(200).json({
       message: "Prescription added to medical record",
       prescription: savedPrescription,
@@ -125,7 +138,6 @@ const addPrescriptionsToMedicalRecord = async (req, res) => {
 const uploadAttachmentToMedicalRecord = async (req, res) => {
   try {
     const { medicalRecordId } = req.params;
-    const { attachment } = req.body;
 
     // Check if medical record exists
     const medicalRecord = await MedicalRecord.findById(medicalRecordId);
@@ -133,16 +145,17 @@ const uploadAttachmentToMedicalRecord = async (req, res) => {
       return res.status(404).json({ message: "Medical record not found" });
     }
 
-    // Check if attachment is provided
-    if (!attachment) {
-      return res.status(400).json({ message: "Attachment is required" });
-    }
+    // Use uploadAttachment middleware to handle file upload
+    uploadAttachment(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
 
-    // Add attachment to the medical record
-    medicalRecord.attachments.push(attachment);
-    await medicalRecord.save();
-
-    res.status(200).json(medicalRecord);
+      // Add attachment path to the medical record
+      medicalRecord.attachments.push(`/uploads/attach/${req.file.filename}`);
+      await medicalRecord.save();
+      res.status(200).json(medicalRecord);
+    });
   } catch (error) {
     console.error("Error uploading attachment:", error);
     res.status(500).json({ message: "Server Error" });
@@ -247,7 +260,8 @@ const getMedicalRecordByPatientId = async (req, res) => {
 
 module.exports = {
   createMedicalRecord,
-  uploadRecordAttach,
+  uploadAttachment,
+  uploadPrescription,
   getMedicalRecordByPatientId,
   deleteMedicalRecord,
   updateMedicalRecord,
