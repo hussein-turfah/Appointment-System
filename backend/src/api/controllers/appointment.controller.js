@@ -298,8 +298,8 @@ const updateAppointment = async (req, res) => {
       oldEnd: appointment.end,
       reason,
       reschedulingPurpose,
-      start: newStart,
-      end: newEnd,
+      start: appointment.status === "rescheduled" ? newStart : start,
+      end: appointment.status === "rescheduled" ? newEnd : end,
     });
 
     // Transform appointment data before sending response

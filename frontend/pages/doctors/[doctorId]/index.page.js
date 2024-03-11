@@ -47,6 +47,12 @@ export default function DoctorInfo() {
     }
   }, [selectedService]);
 
+  useEffect(() => {
+    if(doctorId === "undefined" && user?._id && user?.role === "doctor") {
+      router.push(`/doctors/${user._id}`);
+    }
+  }, [doctorId, router, user]);
+
   return (
     <div className={styles.container}>
       <div>

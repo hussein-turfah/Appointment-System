@@ -22,25 +22,31 @@ const MyApp = ({ Component, pageProps, domainName }) => {
       setToken(storedToken);
       dispatch(getUser(storedToken));
     }
-    setIsLoadingUser(false);
   }, [dispatch]);
-
+  
+  useEffect(() => {
+    if (user._id) {
+      setIsLoadingUser(false);
+    }
+  }, [user]);
+  
   useEffect(() => {
     if (!isLoadingUser) {
       if (token) {
         if (!user._id && !isAuthPage) {
-          // router.push("/login");
+          router.push("/login");
         } else if (user._id && isAuthPage) {
           router.push("/calendar");
         }
-      } else {
-        if (!isAuthPage) {
-          // router.push("/login");
-        }
+      } else if (!token && !isAuthPage && !user._id) {
+        router.push("/login");
+      }
+    } else {
+      if (!isAuthPage) {
+        router.push("/login");
       }
     }
   }, [token, isAuthPage, router, user._id, isLoadingUser]);
-
 
   // refresh the page on back button click to prevent stale data
   useEffect(() => {
@@ -49,7 +55,7 @@ const MyApp = ({ Component, pageProps, domainName }) => {
     };
   }, []);
 
-  // refresh page on page change 
+  // refresh page on page change
   // useEffect(() => {
   //   router.events.on("routeChangeComplete", () => {
   //     window.location.reload();

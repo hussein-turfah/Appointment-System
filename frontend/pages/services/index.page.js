@@ -22,6 +22,10 @@ export default function ServicesInfo() {
 
   // if the page loads, the user is redirected to doctors/doctorId
   useEffect(() => {
+    // remove the /services from the history
+    if (router.pathname === "/services") {
+      router.replace(`/doctors/${user._id}`);
+    }
     router.push(`/doctors/${user._id}`);
   }, [services, router]);
 

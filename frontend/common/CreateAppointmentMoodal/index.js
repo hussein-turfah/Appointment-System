@@ -11,7 +11,7 @@ import classNames from "classnames";
 import Input from "../Input";
 import { getAllPatients } from "../../actions/PatientActions";
 
-export default function CreateAppointmentModal({
+export default function zCreateAppointmentModal({
   active,
   setActive,
   selectedAppointment,

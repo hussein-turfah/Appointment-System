@@ -51,7 +51,7 @@ export default function CreatePrescriptionModal() {
             className="w-full border  border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
           >
             {doctors.map((doctor) => (
-              <option value={doctor.id}>
+              <option value={doctor._id}>
                 {doctor.firstName} {doctor.lastName}
               </option>
             ))}

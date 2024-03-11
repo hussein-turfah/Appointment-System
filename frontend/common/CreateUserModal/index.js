@@ -25,12 +25,11 @@ export default function CreateUserModal({
   );
 
   const create = useCallback(() => {
-    console.log(data)
     if (!editing) dispatch(createUser(formData));
     else {
-      dispatch(updateUser(data.id, formData));
+      dispatch(updateUser(data._id, formData));
     }
-  }, [dispatch, formData, editing, data.id]);
+  }, [dispatch, formData, editing, data._id]);
 
   return (
     <form

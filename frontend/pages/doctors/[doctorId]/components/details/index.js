@@ -74,15 +74,6 @@ const DoctorData = () => {
               <FontAwesomeIcon icon={faPenToSquare} />
               <p>Edit</p>
             </div>
-            {/* <div
-              className={styles.btn}
-              onClick={() => {
-                dispatch(deletePatient(selectedDoctor.id));
-              }}
-            >
-              <FontAwesomeIcon icon={faTrashCan} />
-              <p>Delete</p>
-            </div> */}
           </div>
         )}
         <h3>Details</h3>

@@ -288,7 +288,7 @@ const InvoiceStatement = () => {
               }
               setValue={(value) => {
                 if (value === 0) {
-                  setFormData({ ...formData, selectedDoctor: "" });
+                  setFormData({ ...formData, selectedDoctor: 0 });
                   return;
                 } else {
                   const selectedDoctor = doctors.find(

@@ -48,7 +48,8 @@ export default function Calendar() {
   const allDoctors = useSelector(({ DoctorData }) => DoctorData.allDoctors);
 
   const removeAppointment = useCallback(() => {
-    dispatch(deleteAppointment(isSelected?._id));
+    console.log(isSelected);
+    dispatch(deleteAppointment(isSelected?.extendedProps?._id));
   }, [dispatch, isSelected]);
 
   useEffect(() => {

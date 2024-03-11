@@ -9,6 +9,7 @@ export default function Tab({
   active,
   setActive,
   profile = false,
+  push,
 }) {
   const router = useRouter();
 
@@ -20,7 +21,9 @@ export default function Tab({
       })}
       onClick={() => {
         setActive(text.toLowerCase());
-        profile
+        push
+          ? router.push(push)
+          : profile
           ? router.push(`/profile`)
           : router.push(`/${text.toLowerCase()}`);
       }}

@@ -17,10 +17,8 @@ const UsersTable = () => {
   const data = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
 
   useEffect(() => {
-    if (user.role === "admin") {
-      dispatch(getAllUsers());
-      dispatch(getAllDoctors());
-    } else if (user.role === "secretary") dispatch(getAllDoctors());
+    dispatch(getAllUsers());
+    dispatch(getAllDoctors());
   }, [dispatch, user.role]);
 
   return (
@@ -74,12 +72,15 @@ const UsersTable = () => {
                   <td className="px-6 py-4">{mUser.email}</td>
                   <td className="px-6 py-4">{mUser.phone}</td>
                   <td className="px-6 py-4">{mUser.role}</td>
-                  <td className="px-6 py-4">{mUser.ratio}</td>
+                  <td className="px-6 py-4">
+                    {mUser.feeRatio ? mUser.feeRatio : 0} %
+                  </td>
                   <td className="px-6 py-4">
                     {user.role === "admin" && (
                       <button
                         className="text-indigo-600 hover:text-indigo-900"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setModal(true);
                           setSelectedUser(mUser);
                         }}
@@ -91,8 +92,9 @@ const UsersTable = () => {
                   <td className="px-6 py-4">
                     {user.role === "admin" && (
                       <button
-                        onClick={() => {
-                          dispatch(deleteUser(mUser.id));
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch(deleteUser(mUser._id));
                         }}
                         className="text-indigo-600 hover:text-indigo-900"
                       >

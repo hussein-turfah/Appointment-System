@@ -71,6 +71,13 @@ export default function Nav() {
             }
             active={active === "services" || active === "doctors"}
             setActive={setActive}
+            push={
+              user.role === "doctor"
+                ? `/doctors/${user._id}`
+                : user.role === "admin" || user.role === "secretary"
+                ? "/doctors"
+                : null
+            }
           />
           <Tab
             text={user.firstName + " " + user.lastName}
