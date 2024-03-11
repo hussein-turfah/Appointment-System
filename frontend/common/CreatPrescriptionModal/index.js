@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllDoctors } from "../../actions/DoctorActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { createPrescription } from "../../actions/PrescriptionActions";
+import { addPrescriptionToRecord } from "../../actions/MedicalRecordActions";
 import axios from "../../utils/Http";
 
 export default function CreatePrescriptionModal({
@@ -13,8 +13,6 @@ export default function CreatePrescriptionModal({
 }) {
   const dispatch = useDispatch();
   const doctors = useSelector(({ DoctorData }) => DoctorData?.allDoctors?.data);
-  const [file, setFile] = useState(null);
-  const [uploaded, setUploaded] = useState(false);
   const patient = useSelector(
     ({ PatientData }) => PatientData?.selectedPatient?.data
   );
@@ -23,38 +21,35 @@ export default function CreatePrescriptionModal({
     title: "",
     doctor: doctors[0]?._id,
     patient: patient._id,
-    medicalRecordId: selectedRecord,
+    file: {},
   });
 
-  const handleSetFile = (file) => {
-    setFile(file);
-  };
-
-  const handleFileUpload = async () => {
-    const fileData = new FormData();
-    fileData.append("file", file);
-    const { data } = await axios.post("/upload/file", fileData);
-    return data;
-  }
-
   const handleCreatePrescription = useCallback(async () => {
-    const fileData = new FormData();
-    fileData.append("file", file);
-    const { data } = await axios.post("/upload/file", fileData);
+    try {
+      const fileData = new FormData();
+      fileData.append("file", formData.file);
+      const attachment = await axios.post("/upload/localFile", fileData);
 
-    if (data.success) {
+      console.log("attachment", attachment);
       await dispatch(
-        createPrescription(patient._id, {
+        addPrescriptionToRecord(selectedRecord, {
           ...formData,
-          attachment: data.downloadURL,
+          attachment: attachment.data.filePath,
         })
       );
-    } else {
-      console.log("Error while uploading file");
-    }
 
-    setPrescriptionModal(false);
-  }, [dispatch, formData, file, patient._id]);
+      setPrescriptionModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch, formData, selectedRecord]);
+
+  const handleFileChange = (e) => {
+    setFormData({
+      ...formData,
+      file: e.target.files[0],
+    });
+  };
 
   useEffect(() => {
     dispatch(getAllDoctors());
@@ -67,6 +62,7 @@ export default function CreatePrescriptionModal({
         e.preventDefault();
         handleCreatePrescription();
       }}
+      encType="multipart/form-data"
     >
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
@@ -94,7 +90,7 @@ export default function CreatePrescriptionModal({
             className="w-full border  border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-900"
           >
             {doctors.map((doctor) => (
-              <option value={doctor._id}>
+              <option value={doctor._id} key={doctor._id}>
                 {doctor.firstName} {doctor.lastName}
               </option>
             ))}
@@ -153,26 +149,20 @@ export default function CreatePrescriptionModal({
             class="hidden"
             required
             onChange={(e) => {
-              handleSetFile(e.target.files[0]);
+              handleFileChange(e);
             }}
-            disabled={file}
           />
         </label>
       </div>
       <div class="flex flex-col gap-2 mt-2">
-        {file && (
+        {formData?.file?.name && (
           <div
-            key={file.name}
+            key={formData?.file?.name}
             class="flex items-center justify-between w-full p-2 bg-gray-100 rounded-lg"
           >
-            <p>{file?.name}</p>
+            <p>{formData?.file?.name}</p>
             <div
-              onClick={() =>
-                setFile((prev) => {
-                  prev = null;
-                  return prev;
-                })
-              }
+              onClick={() => setFormData({ ...formData, file: {} })}
               class="cursor-pointer ml-2 hover:text-red-600 focus:outline-none focus:text-red-600"
             >
               <FontAwesomeIcon icon={faTrash} />
